@@ -1,0 +1,14 @@
+node_modules
+dist
+.build
+.esbuild
+.eslintignore
+.eslintrc
+.gitignore
+.nvmrc
+package-lock.json
+package.json
+secrets.json
+tsconfig.json
+tsconfig.paths.json
+serverless.ts
