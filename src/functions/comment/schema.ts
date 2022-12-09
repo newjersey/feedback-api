@@ -2,7 +2,9 @@ export default {
   type: 'object',
   properties: {
     comment: { type: 'string' },
-    feedbackId: { type: 'number' }
+    feedbackId: { type: 'number' },
+    pageURL: { type: 'string' },
+    rating: { type: 'boolean' }
   },
-  required: ['comment', 'feedbackId']
+  required: ['comment']
 } as const;
