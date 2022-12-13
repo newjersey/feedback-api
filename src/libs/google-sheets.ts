@@ -77,9 +77,9 @@ export async function updateFeedback(
 }
 
 export function getRowFromAppendRange(sheetsRange: string) {
-  return parseInt(sheetsRange.split(':')[1].charAt(1));
+  return parseInt(sheetsRange.split(':')[1].slice(1));
 }
 
 export function getRowFromUpdateRange(sheetsRange: string) {
-  return parseInt(sheetsRange.split('!')[1].charAt(1));
+  return parseInt(sheetsRange.split('!')[1].slice(1));
 }
