@@ -39,10 +39,10 @@ Check the [sls invoke local command documentation](https://www.serverless.com/fr
 Copy and replace your `url` - found in Serverless `deploy` command output - and `name` parameter in the following `curl` command in your terminal or in Postman to test your newly deployed application.
 
 ```
-curl --location --request POST 'https://apiendpoint/rating' \
+curl --location --request POST 'https://endpoint.execute-api.region.amazonaws.com/dev/rating' \
 --header 'Content-Type: application/json' \
 --data-raw '{
-    "pageUrl": "example.com",
+    "pageURL": "example.com",
     "rating": true
 }'
 ```

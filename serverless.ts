@@ -11,6 +11,9 @@ const serverlessConfiguration: AWS = {
   provider: {
     name: 'aws',
     runtime: 'nodejs14.x',
+    deploymentBucket: {
+      serverSideEncryption: 'AES256'
+    },
     apiGateway: {
       minimumCompressionSize: 1024,
       shouldStartNameWithService: true
