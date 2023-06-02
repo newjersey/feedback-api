@@ -80,6 +80,8 @@ The project code base is mainly located within the `src` folder. This folder is 
 └── webpack.config.js           # Webpack configuration
 ```
 
+This project also contains a `scripts` folder, which contains post-processing Python scripts that help analyze the feedback data. 
+
 ### 3rd party libraries
 
 - [json-schema-to-ts](https://github.com/ThomasAribart/json-schema-to-ts) - uses JSON-Schema definitions used by API Gateway for HTTP request validation to statically generate TypeScript types in your lambda's handler code base
