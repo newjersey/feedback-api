@@ -18,6 +18,9 @@ const comment: ValidatedEventAPIGatewayProxyEvent<typeof schema> = async (
 ) => {
   const { feedbackId, comment, pageURL, rating } = event.body;
 
+  let redactedComment = comment.replace(/[0-9]/g, '*');
+  redactedComment = redactedComment.replace(/^\S+@\S+\.\S+$/g, '*');
+
   try {
     const client = await getAuthClient();
     if (feedbackId != null) {
@@ -25,14 +28,19 @@ const comment: ValidatedEventAPIGatewayProxyEvent<typeof schema> = async (
         client,
         feedbackId,
         Feedback.Comment,
-        comment
+        redactedComment
       );
       return formatJSONResponse({
         message: 'Success',
         feedbackId: updatedId
       });
     } else if (pageURL != null && rating != null) {
-      const createdId = await createFeedback(client, pageURL, rating, comment);
+      const createdId = await createFeedback(
+        client,
+        pageURL,
+        rating,
+        redactedComment
+      );
       return formatJSONResponse({
         message: 'Success',
         feedbackId: createdId
