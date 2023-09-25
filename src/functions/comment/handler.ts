@@ -19,7 +19,10 @@ const comment: ValidatedEventAPIGatewayProxyEvent<typeof schema> = async (
   const { feedbackId, comment, pageURL, rating } = event.body;
 
   let redactedComment = comment.replace(/[0-9]/g, '*');
-  redactedComment = redactedComment.replace(/^\S+@\S+\.\S+$/g, '*');
+  redactedComment = redactedComment.replace(
+    /([^.@\s]+)(\.[^.@\s]+)*@([^.@\s]+\.)+([^.@\s]+)/,
+    '[EMAIL]'
+  );
 
   try {
     const client = await getAuthClient();
