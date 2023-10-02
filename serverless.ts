@@ -24,6 +24,17 @@ const serverlessConfiguration: AWS = {
       SHEET_ID: process.env.SHEET_ID,
       GOOGLE_PRIVATE_KEY: process.env.GOOGLE_PRIVATE_KEY,
       CLIENT_EMAIL: process.env.CLIENT_EMAIL
+    },
+    iam: {
+      role: {
+        statements: [
+          {
+            Effect: 'Allow',
+            Action: ['comprehend:DetectPiiEntities'],
+            Resource: '*'
+          }
+        ]
+      }
     }
   },
   // import the function via paths

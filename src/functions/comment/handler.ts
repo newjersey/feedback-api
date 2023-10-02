@@ -10,22 +10,21 @@ import {
   updateFeedback
 } from '@libs/google-sheets';
 import { middyfy } from '@libs/lambda';
+import { ComprehendClient } from '@aws-sdk/client-comprehend';
+
+const COMPREHEND_CLIENT = new ComprehendClient({ region: 'us-east-1' });
 
 import schema from './schema';
+import { redactPii } from '@libs/pii-redaction';
 
 const comment: ValidatedEventAPIGatewayProxyEvent<typeof schema> = async (
   event
 ) => {
   const { feedbackId, comment, pageURL, rating } = event.body;
 
-  let redactedComment = comment.replace(/[0-9]/g, '*');
-  redactedComment = redactedComment.replace(
-    // eslint-disable-next-line no-control-regex
-    /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/,
-    '[EMAIL]'
-  );
-
   try {
+    const redactedComment = await redactPii(comment, COMPREHEND_CLIENT);
+
     const client = await getAuthClient();
     if (feedbackId != null) {
       const updatedId = await updateFeedback(
@@ -51,7 +50,10 @@ const comment: ValidatedEventAPIGatewayProxyEvent<typeof schema> = async (
       });
     }
   } catch (e) {
-    return formatErrorResponse({ message: 'Error - Unknown' });
+    const message = e instanceof Error ? e.message : 'No further details';
+    return formatErrorResponse({
+      message: `Failed to save comment: ${message}`
+    });
   }
 };
 
