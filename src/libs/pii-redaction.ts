@@ -24,13 +24,13 @@ export const redactPii = async (
       return 0;
     });
 
-    let redactedText = input;
+    let result = input;
     sortedEntities.forEach((pii) => {
-      const redactedString = input.substring(pii.BeginOffset, pii.EndOffset);
-      redactedText = redactedText.replace(redactedString, `[${pii.Type}]`);
+      const stringToRedact = input.substring(pii.BeginOffset, pii.EndOffset);
+      result = result.replace(stringToRedact, `[${pii.Type}]`);
     });
 
-    return redactedText;
+    return result;
   } catch (e) {
     const message = e instanceof Error ? e.message : 'No further details';
     throw new Error(`Failed to redact PII with AWS Comprehend: ${message}`);
