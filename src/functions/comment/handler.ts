@@ -50,7 +50,10 @@ const comment: ValidatedEventAPIGatewayProxyEvent<typeof schema> = async (
       });
     }
   } catch (e) {
-    return formatErrorResponse({ message: 'Error - Unknown' });
+    const message = e instanceof Error ? e.message : 'No further details';
+    return formatErrorResponse({
+      message: `Failed to save comment: ${message}`
+    });
   }
 };
 
