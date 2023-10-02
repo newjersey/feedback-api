@@ -14,8 +14,18 @@ export const redactPii = async (
     });
     const response = await comprehendClient.send(command);
 
+    const sortedEntities = [...response.Entities].sort((a, b) => {
+      if (a.BeginOffset < b.BeginOffset) {
+        return -1;
+      }
+      if (a.BeginOffset > b.BeginOffset) {
+        return 1;
+      }
+      return 0;
+    });
+
     let redactedText = input;
-    response.Entities.forEach((pii) => {
+    sortedEntities.forEach((pii) => {
       const redactedString = input.substring(pii.BeginOffset, pii.EndOffset);
       redactedText = redactedText.replace(redactedString, `[${pii.Type}]`);
     });
