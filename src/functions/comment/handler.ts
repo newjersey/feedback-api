@@ -51,6 +51,8 @@ const comment: ValidatedEventAPIGatewayProxyEvent<typeof schema> = async (
     }
   } catch (e) {
     const message = e instanceof Error ? e.message : 'No further details';
+    // eslint-disable-next-line no-console
+    console.error(`Error: ${message}`);
     return formatErrorResponse({
       message: `Failed to save comment: ${message}`
     });

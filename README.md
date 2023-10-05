@@ -4,6 +4,8 @@ This project is for the REST API that handles interactions on the feedback widge
 
 This project has been generated using the `aws-nodejs-typescript` template from the [Serverless framework](https://www.serverless.com/). For detailed instructions, please refer to the [documentation](https://www.serverless.com/framework/docs/providers/aws/).
 
+PII is automatically redacted from comments using AWS Comprehend, starting at timestamp 1696300983482.
+
 ## Installation/deployment instructions
 
 Depending on your preferred package manager, follow the instructions below to deploy your project.
@@ -80,7 +82,7 @@ The project code base is mainly located within the `src` folder. This folder is 
 └── webpack.config.js           # Webpack configuration
 ```
 
-This project also contains a `scripts` folder, which contains post-processing Python scripts that help analyze the feedback data. 
+This project also contains a `scripts` folder, which contains post-processing Python scripts that help analyze the feedback data.
 
 ### 3rd party libraries
 

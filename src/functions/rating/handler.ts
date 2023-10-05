@@ -22,8 +22,11 @@ const rating: ValidatedEventAPIGatewayProxyEvent<typeof schema> = async (
       feedbackId
     });
   } catch (e) {
+    const message = e instanceof Error ? e.message : 'No further details';
+    // eslint-disable-next-line no-console
+    console.error(`Error: ${message}`);
     return formatErrorResponse({
-      message: 'Error - Unknown' + e.message
+      message: `Failed to save rating: ${message}`
     });
   }
 };

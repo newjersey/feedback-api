@@ -26,7 +26,12 @@ const email: ValidatedEventAPIGatewayProxyEvent<typeof schema> = async (
       feedbackId: updatedId
     });
   } catch (e) {
-    return formatErrorResponse({ message: 'Error - Unknown' });
+    const message = e instanceof Error ? e.message : 'No further details';
+    // eslint-disable-next-line no-console
+    console.error(`Error: ${message}`);
+    return formatErrorResponse({
+      message: `Failed to save email: ${message}`
+    });
   }
 };
 
