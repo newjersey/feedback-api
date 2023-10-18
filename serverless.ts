@@ -12,7 +12,7 @@ const serverlessConfiguration: AWS = {
   provider: {
     name: 'aws',
     runtime: 'nodejs14.x',
-    timeout: 60,
+    timeout: 30,
     deploymentBucket: {
       serverSideEncryption: 'AES256'
     },

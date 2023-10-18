@@ -23,7 +23,7 @@ export async function getSummary(comments: string[], pageURL: string) {
     ? 'Temporary Disability Insurance and Family Leave Insurance'
     : '';
 
-  const systemContent = `You are an assistant designed to find common recurring themes from a large dataset of free text. Users will paste in a list of comments written by residents of New Jersey about their experience applying for ${programName} benefits, where each line represents one comment. You will list the 10 most common themes from the data and include 3 example comments for each theme.`;
+  const systemContent = `You are an assistant designed to find the most frequently recurring themes from a large dataset of free text. Users will paste in a list of comments written by residents of New Jersey about their experience applying for ${programName} benefits, where each line represents one comment. For your output, you will list the 10 most common themes found in the data. Each theme in the list should have a title, a short description, and a selection of 3 actual comments from the input data that related to the theme. For example, the first theme on the list can read "1. {TITLE}: {DESCRIPTION}\n- {COMMENT 1}\n- {COMMENT 2}\n- {COMMENT 3}\n`;
   const userContent = '---\n' + comments.join('\n') + '---';
   const prompt = [
     {
