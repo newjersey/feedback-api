@@ -6,13 +6,15 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint . --ext .ts",
-    "prettier-format": "prettier --config .prettierrc 'src/**/*.ts' --write"
+    "prettier-format": "prettier --config .prettierrc 'src/**/*.ts' --write",
+    "start:local": "npx sls offline --httpPort 3001"
   },
   "engines": {
     "node": ">=14.15.0"
   },
   "dependencies": {
     "@aws-sdk/client-comprehend": "^3.421.0",
+    "@azure/openai": "^1.0.0-beta.6",
     "@middy/core": "^3.4.0",
     "@middy/http-json-body-parser": "^3.4.0",
     "googleapis": "^109.0.1"

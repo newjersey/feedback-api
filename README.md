@@ -36,6 +36,8 @@ In order to test the rating function locally, run the following command:
 
 Check the [sls invoke local command documentation](https://www.serverless.com/framework/docs/providers/aws/cli-reference/invoke-local/) for more information.
 
+Note that to run locally, you need to export any environment variables used in code to your current environment. They can be found in the AWS Lambda configurations.
+
 ### Remotely
 
 Copy and replace your `url` - found in Serverless `deploy` command output - and `name` parameter in the following `curl` command in your terminal or in Postman to test your newly deployed application.

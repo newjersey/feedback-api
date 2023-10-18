@@ -4,10 +4,12 @@ export enum Feedback {
   PageURL,
   Rating,
   Comment,
-  Email
+  Email,
+  Timestamp
 }
 
-const SHEETS_COLUMN_MAP: { [K in Feedback]: 'B' | 'C' | 'D' | 'E' } = {
+const SHEETS_COLUMN_MAP: { [K in Feedback]: 'A' | 'B' | 'C' | 'D' | 'E' } = {
+  [Feedback.Timestamp]: 'A',
   [Feedback.PageURL]: 'B',
   [Feedback.Rating]: 'C',
   [Feedback.Comment]: 'D',
@@ -15,16 +17,52 @@ const SHEETS_COLUMN_MAP: { [K in Feedback]: 'B' | 'C' | 'D' | 'E' } = {
 };
 
 const SHEET_NAME = 'Sheet1';
+const TOTAL_ROWS_RANGE = 'Metadata!A2';
 
 export async function getAuthClient() {
-  const auth = new google.auth.JWT(
-    process.env.CLIENT_EMAIL,
-    null,
-    process.env.GOOGLE_PRIVATE_KEY.replace(/\\n/g, '\n'),
-    ['https://www.googleapis.com/auth/spreadsheets']
-  );
-  await auth.authorize();
-  return google.sheets({ version: 'v4', auth });
+  try {
+    const auth = new google.auth.JWT(
+      process.env.CLIENT_EMAIL,
+      null,
+      process.env.GOOGLE_PRIVATE_KEY.replace(/\\n/g, '\n'),
+      ['https://www.googleapis.com/auth/spreadsheets']
+    );
+    await auth.authorize();
+    return google.sheets({ version: 'v4', auth });
+  } catch (e) {
+    throw new Error(`Google Sheets API failed to authorize: ${e.message}`);
+  }
+}
+
+async function getTotalRows(sheetsClient: sheets_v4.Sheets) {
+  try {
+    const result = await sheetsClient.spreadsheets.values.get({
+      spreadsheetId: process.env.SHEET_ID,
+      range: TOTAL_ROWS_RANGE
+    });
+    return parseInt(result.data.values[0][0]);
+  } catch (e) {
+    throw Error(`Google Sheets API failed to get data size: ${e.message}`);
+  }
+}
+
+export async function getLastNComments(
+  sheetsClient: sheets_v4.Sheets,
+  n: number
+): Promise<string[][]> {
+  try {
+    const totalRows = await getTotalRows(sheetsClient);
+
+    const result = await sheetsClient.spreadsheets.values.get({
+      spreadsheetId: process.env.SHEET_ID,
+      range: `${SHEET_NAME}!${SHEETS_COLUMN_MAP[Feedback.Timestamp]}${
+        totalRows - (n - 1)
+      }:${SHEETS_COLUMN_MAP[Feedback.Comment]}${totalRows}`
+    });
+    return result.data.values ?? [];
+  } catch (e) {
+    throw Error(`Google Sheets API failed to get input data: ${e.message}`);
+  }
 }
 
 export async function createFeedback(

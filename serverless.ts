@@ -3,6 +3,7 @@ import type { AWS } from '@serverless/typescript';
 import rating from '@functions/rating';
 import comment from '@functions/comment';
 import email from '@functions/email';
+import summary from '@functions/summary';
 
 const serverlessConfiguration: AWS = {
   service: 'feedback-api',
@@ -11,6 +12,7 @@ const serverlessConfiguration: AWS = {
   provider: {
     name: 'aws',
     runtime: 'nodejs14.x',
+    timeout: 60,
     deploymentBucket: {
       serverSideEncryption: 'AES256'
     },
@@ -23,7 +25,9 @@ const serverlessConfiguration: AWS = {
       NODE_OPTIONS: '--enable-source-maps --stack-trace-limit=1000',
       SHEET_ID: process.env.SHEET_ID,
       GOOGLE_PRIVATE_KEY: process.env.GOOGLE_PRIVATE_KEY,
-      CLIENT_EMAIL: process.env.CLIENT_EMAIL
+      CLIENT_EMAIL: process.env.CLIENT_EMAIL,
+      AZURE_OPENAI_ENDPOINT: process.env.AZURE_OPENAI_ENDPOINT,
+      AZURE_OPENAI_KEY: process.env.AZURE_OPENAI_KEY
     },
     iam: {
       role: {
@@ -38,7 +42,7 @@ const serverlessConfiguration: AWS = {
     }
   },
   // import the function via paths
-  functions: { rating, comment, email },
+  functions: { rating, comment, email, summary },
   package: { individually: true },
   custom: {
     esbuild: {
