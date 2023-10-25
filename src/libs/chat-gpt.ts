@@ -4,7 +4,7 @@ const ENDPOINT = process.env['AZURE_OPENAI_ENDPOINT'];
 const API_KEY = process.env['AZURE_OPENAI_KEY'];
 const API_VERSION = '2023-07-01-preview';
 const PARAMETERS = {
-  maxTokens: 1000,
+  maxTokens: 2000,
   temperature: 0.3,
   frequencyPenalty: 0,
   presencePenalty: 0,
@@ -23,7 +23,7 @@ export async function getSummary(comments: string[], pageURL: string) {
     ? 'Temporary Disability Insurance and Family Leave Insurance'
     : '';
 
-  const systemContent = `You are an assistant designed to find the most frequently recurring themes from a large dataset of free text. Users will paste in a list of comments written by residents of New Jersey about their experience applying for ${programName} benefits, where each line represents one comment. For your output, you will list the 10 most common themes found in the data. Each theme in the list should have a title, a short description, and a selection of 3 actual comments from the input data that related to the theme. For example, the first theme on the list can read "1. {TITLE}: {DESCRIPTION}\n- {COMMENT 1}\n- {COMMENT 2}\n- {COMMENT 3}\n`;
+  const systemContent = `You are an assistant designed to find the most frequently recurring themes from a large dataset of free text. Users will paste in a list of comments written by residents of New Jersey about their experience applying for ${programName} benefits, where each line represents one comment. You will find the 10 most common themes in the data, and for each theme, you will generate a title, description, and include only 3 actual comments from the data that fit the given theme. Your output will be in the following structured valid JSON format: {"themes":[{"title":"title 1","description":"description 1","actualComments":["actual comment 1","actual comment 2","actual comment 3"]},{"title":"title 2","description":"description 2","actualComments":["actual comment 1","actual comment 2","actual comment 3"]}, ...]}. Make sure that the output is in valid JSON format, and do not add trailing commas.`;
   const userContent = '---\n' + comments.join('\n') + '---';
   const prompt = [
     {
