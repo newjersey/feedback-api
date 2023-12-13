@@ -23,7 +23,7 @@ const comment: ValidatedEventAPIGatewayProxyEvent<typeof schema> = async (
   const { feedbackId, comment, pageURL, rating } = event.body;
 
   try {
-    const redactedComment = await redactPii(comment, COMPREHEND_CLIENT);
+    const redactedComment = await redactPii(comment.trim(), COMPREHEND_CLIENT);
 
     const client = await getAuthClient();
     if (feedbackId != null) {

@@ -18,12 +18,12 @@ export async function getSummary(comments: string[], pageURL: string) {
   });
 
   const programName = pageURL.includes('uistatus')
-    ? 'Unemployment Insurance'
+    ? 'Unemployment Insurance benefits'
     : pageURL.includes('myleavebenefits')
-    ? 'Temporary Disability Insurance and Family Leave Insurance'
+    ? 'Temporary Disability Insurance and Family Leave Insurance benefits'
     : '';
 
-  const systemContent = `You are an assistant designed to find the most frequently recurring themes from a large dataset of free text. Users will paste in a list of comments written by residents of New Jersey about their experience applying for ${programName} benefits, where each line represents one comment. You will find the 10 most common themes in the data, and for each theme, you will generate a title, description, and include only 3 actual comments from the data that fit the given theme. Your output will be in the following structured valid JSON format: {"themes":[{"title":"title 1","description":"description 1","actualComments":["actual comment 1","actual comment 2","actual comment 3"]},{"title":"title 2","description":"description 2","actualComments":["actual comment 1","actual comment 2","actual comment 3"]}, ...]}. Make sure that the output is in valid JSON format, and do not add trailing commas.`;
+  const systemContent = `You are an assistant designed to find the most common themes in a large dataset of free text. Users will send a list of comments written by residents of New Jersey about their experience applying for ${programName}, where each line represents one comment. You will find the 10 most common themes in the data, and for each theme, you will include a theme title, theme description, and 3 real comments (actually in the dataset, not generated) that fit the given theme. Your output will be in the following structured valid JSON format: {"themes":[{"title":"title 1","description":"description 1","actualComments":["real comment 1","real comment 2","real comment 3"]},{"title":"title 2","description":"description 2","actualComments":["real comment 1","real comment 2","real comment 3"]}, ...]}. Make sure that the 3 comments are in the user-provided list of comments, not generated. Make sure the output is in valid JSON format, and do not add trailing commas.`;
   const userContent = '---\n' + comments.join('\n') + '---';
   const prompt = [
     {
