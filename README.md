@@ -4,18 +4,31 @@ This project is for the REST API that handles interactions on the feedback widge
 
 This project has been generated using the `aws-nodejs-typescript` template from the [Serverless framework](https://www.serverless.com/). For detailed instructions, please refer to the [documentation](https://www.serverless.com/framework/docs/providers/aws/).
 
-PII is automatically redacted from comments using AWS Comprehend, starting at timestamp 1696300983482.
+## Setup
+
+1. Clone this repository
+2. Create `.env` file in root directory, pasting in values from [Bitwarden secure note](https://vault.bitwarden.com/#/vault?collectionId=30a0c305-72f6-4e50-a403-b09a010f5467&itemId=65d29f31-d443-415d-b8b9-b10f017a41a5)
+3. Run `source .env` in terminal to export into environment
+4. Run `npm install` (on Node 18, as listed in `.nvmrc`) to install Node dependencies
+5. Run `npx sls offline` to start the API locally
+6. In another terminal, try calling API endpoints such as the example below. Note that this will actually add data to our live production database (Google Sheets). We hope to create a local and/or dev stage later.
+
+```bash
+curl -d '{"pageURL":"www.test.com","rating":true}' -H "Content-Type: application/json" http://localhost:3000/rating
+```
+
+## Deployment
+
+Deployment is done locally to the AWS account `Innov-RES-Dev` and _not_ yet connected to Github version control.
+
+1. Make code changes locally
+2. Test code changes locally
+3. Ensure that environment variables are set before deploying, as they currently override the ones set in AWS
+4. Log into AWS console, and open "Command line and programmatic access" option under `Innov-RES-Dev` account
+5. Follow instructions in modal to save AWS credentials to `~/.aws/credentials` file
+6. Run `npx sls deploy --aws-profile {INSERT PROFILE NAME HERE}` to deploy this Serverless project to AWS
 
 ## Installation/deployment instructions
-
-Depending on your preferred package manager, follow the instructions below to deploy your project.
-
-> **Requirements**: NodeJS `lts/fermium (v.14.15.0)`. If you're using [nvm](https://github.com/nvm-sh/nvm), run `nvm use` to ensure you're using the same Node version in local and in your lambda's runtime.
-
-### Using NPM
-
-- Run `npm i` to install the project dependencies
-- Run `npx sls deploy` to deploy this stack to AWS
 
 ## Test your service
 
