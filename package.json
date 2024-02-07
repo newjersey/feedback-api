@@ -10,7 +10,7 @@
     "start:local": "npx sls offline --httpPort 3001"
   },
   "engines": {
-    "node": ">=14.15.0"
+    "node": "18"
   },
   "dependencies": {
     "@aws-sdk/client-comprehend": "^3.421.0",
@@ -22,7 +22,7 @@
   "devDependencies": {
     "@serverless/typescript": "^3.0.0",
     "@types/aws-lambda": "^8.10.71",
-    "@types/node": "^14.14.25",
+    "@types/node": "18.19.14",
     "@typescript-eslint/eslint-plugin": "^5.46.0",
     "@typescript-eslint/parser": "^5.46.0",
     "esbuild": "^0.14.11",
