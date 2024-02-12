@@ -7,7 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint . --ext .ts",
     "prettier-format": "prettier --config .prettierrc 'src/**/*.ts' --write",
-    "start:local": "npx sls offline --httpPort 3001"
+    "start:local": "npx sls offline --httpPort 3001",
+    "typecheck": "tsc --noEmit --skipLibCheck"
   },
   "engines": {
     "node": "18"
