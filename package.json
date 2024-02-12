@@ -13,11 +13,10 @@
     "node": "18"
   },
   "dependencies": {
-<<<<<<< Updated upstream
-    "@aws-sdk/client-comprehend": "3.421.0",
-    "@azure/openai": "1.0.0-beta.6",
-    "@middy/core": "3.4.0",
-    "@middy/http-json-body-parser": "3.4.0",
+    "@aws-sdk/client-comprehend": "3.511.0",
+    "@azure/openai": "1.0.0-beta.11",
+    "@middy/core": "3.6.2",
+    "@middy/http-json-body-parser": "3.6.2",
     "googleapis": "109.0.1"
   },
   "devDependencies": {
@@ -38,32 +37,6 @@
     "ts-node": "10.4.0",
     "tsconfig-paths": "3.9.0",
     "typescript": "4.9.4"
-=======
-    "@aws-sdk/client-comprehend": "3.511.0",
-    "@azure/openai": "1.0.0-beta.11",
-    "@middy/core": "3.6.2",
-    "@middy/http-json-body-parser": "3.6.2",
-    "googleapis": "109.0.1"
-  },
-  "devDependencies": {
-    "@serverless/typescript": "3.38.0",
-    "@types/aws-lambda": "8.10.133",
-    "@types/node": "18.19.14",
-    "@typescript-eslint/eslint-plugin": "5.62.0",
-    "@typescript-eslint/parser": "5.62.0",
-    "esbuild": "0.20.0",
-    "eslint": "8.56.0",
-    "eslint-config-prettier": "8.10.0",
-    "eslint-plugin-prettier": "4.2.1",
-    "json-schema-to-ts": "1.6.5",
-    "prettier": "2.8.8",
-    "serverless": "3.38.0",
-    "serverless-esbuild": "1.51.0",
-    "serverless-offline": "12.0.4",
-    "ts-node": "10.9.2",
-    "tsconfig-paths": "3.15.0",
-    "typescript": "4.9.5"
->>>>>>> Stashed changes
   },
   "author": "The serverless webpack authors (https://github.com/elastic-coders/serverless-webpack)",
   "license": "MIT"

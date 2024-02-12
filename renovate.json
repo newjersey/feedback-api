@@ -3,16 +3,5 @@
   "extends": ["config:best-practices"],
   "transitiveRemediation": true,
   "reviewers": ["team:innovation-engineering-resx"],
-<<<<<<< Updated upstream
-  "ignoreDeps": ["node", "@types/node"],
-  "packageRules": [
-    {
-      "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
-      "automerge": true,
-      "automergeStrategy": "rebase"
-    }
-  ]
-=======
   "ignoreDeps": ["node", "@types/node"]
->>>>>>> Stashed changes
 }
