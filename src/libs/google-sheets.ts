@@ -76,20 +76,25 @@ export async function createFeedback(
   if (comment != null) newRecord.push(comment);
   if (email != null) newRecord.push(email);
 
-  const result = await sheetsClient.spreadsheets.values.append({
-    spreadsheetId: process.env.SHEET_ID,
-    range: SHEET_NAME,
-    valueInputOption: 'RAW',
-    requestBody: {
-      values: [newRecord]
+  try {
+    const result = await sheetsClient.spreadsheets.values.append({
+      spreadsheetId: process.env.SHEET_ID,
+      range: SHEET_NAME,
+      valueInputOption: 'RAW',
+      requestBody: {
+        values: [newRecord]
+      }
+    });
+
+    if (result.data.updates?.updatedRange == null) {
+      throw new Error('No updated range');
     }
-  });
-
-  if (result.data.updates?.updatedRange == null) {
-    throw new Error();
+    return getRowFromAppendRange(result.data.updates.updatedRange);
+  } catch (e) {
+    throw Error(
+      `Google Sheets API failed to create feedback row: ${e.message}`
+    );
   }
-
-  return getRowFromAppendRange(result.data.updates.updatedRange);
 }
 
 export async function updateFeedback(
@@ -98,20 +103,24 @@ export async function updateFeedback(
   valueType: Feedback,
   value: string
 ): Promise<number> {
-  const result = await sheetsClient.spreadsheets.values.update({
-    spreadsheetId: process.env.SHEET_ID,
-    range: SHEET_NAME + '!' + SHEETS_COLUMN_MAP[valueType] + feedbackId,
-    valueInputOption: 'RAW',
-    requestBody: {
-      values: [[value]]
+  try {
+    const result = await sheetsClient.spreadsheets.values.update({
+      spreadsheetId: process.env.SHEET_ID,
+      range: SHEET_NAME + '!' + SHEETS_COLUMN_MAP[valueType] + feedbackId,
+      valueInputOption: 'RAW',
+      requestBody: {
+        values: [[value]]
+      }
+    });
+    if (result.data.updatedRange == null) {
+      throw new Error('No updated range');
     }
-  });
-
-  if (result.data.updatedRange == null) {
-    throw new Error();
+    return getRowFromUpdateRange(result.data.updatedRange);
+  } catch (e) {
+    throw Error(
+      `Google Sheets API failed to update feedback row: ${e.message}`
+    );
   }
-
-  return getRowFromUpdateRange(result.data.updatedRange);
 }
 
 export function getRowFromAppendRange(sheetsRange: string) {
