@@ -7,11 +7,10 @@ This project has been generated using the `aws-nodejs-typescript` template from 
 ## Setup
 
 1. Clone this repository
-2. Create `.env` file in root directory, pasting in values from [Bitwarden secure note](https://vault.bitwarden.com/#/vault?collectionId=30a0c305-72f6-4e50-a403-b09a010f5467&itemId=65d29f31-d443-415d-b8b9-b10f017a41a5)
-3. Run `source .env` in terminal to export into environment
-4. Run `npm install` (on Node 18, as listed in `.nvmrc`) to install Node dependencies
-5. Run `npx sls offline` to start the API locally
-6. In another terminal, try calling API endpoints such as the example below. Note that this will actually add data to our live production database (Google Sheets). We hope to create a local and/or dev stage later.
+2. Create `.env` file in root directory, pasting in values from [Bitwarden secure note](https://vault.bitwarden.com/#/vault?collectionId=30a0c305-72f6-4e50-a403-b09a010f5467&itemId=65d29f31-d443-415d-b8b9-b10f017a41a5). Note that these values are production keys that will allow for live testing. We hope to create a dev or local stage in the future.
+3. Run `npm install` (on Node 18, as listed in `.nvmrc`) to install Node dependencies
+4. Run `npx sls offline` to start the API locally
+5. In another terminal, try calling API endpoints such as the example below. Note that this will actually add data to our live production database (Google Sheets).
 
 ```bash
 curl -d '{"pageURL":"www.test.com","rating":true}' -H "Content-Type: application/json" http://localhost:3000/rating
@@ -23,10 +22,9 @@ Deployment is done locally to the AWS account `Innov-RES-Dev` and _not_ yet conn
 
 1. Make code changes locally
 2. Test code changes locally
-3. Ensure that environment variables are set before deploying, as they currently override the ones set in AWS
-4. Log into AWS console, and open "Command line and programmatic access" option under `Innov-RES-Dev` account
-5. Follow instructions in modal to save AWS credentials to `~/.aws/credentials` file
-6. Run `npx sls deploy --aws-profile {INSERT PROFILE NAME HERE}` to deploy this Serverless project to AWS
+3. Log into AWS console, and open "Command line and programmatic access" option under `Innov-RES-Dev` account
+4. Follow instructions in modal to save AWS credentials to `~/.aws/credentials` file
+5. Run `npx sls deploy --aws-profile {INSERT PROFILE NAME HERE}` to deploy this Serverless project to AWS
 
 ## Installation/deployment instructions
 

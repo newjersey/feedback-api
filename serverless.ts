@@ -8,9 +8,14 @@ import summary from '@functions/summary';
 const serverlessConfiguration: AWS = {
   service: 'feedback-api',
   frameworkVersion: '3',
-  plugins: ['serverless-esbuild', 'serverless-offline'],
+  plugins: [
+    'serverless-esbuild',
+    'serverless-offline-ssm',
+    'serverless-offline'
+  ],
   provider: {
     name: 'aws',
+    stage: 'dev',
     runtime: 'nodejs18.x',
     timeout: 30,
     deploymentBucket: {
@@ -57,6 +62,10 @@ const serverlessConfiguration: AWS = {
     },
     'serverless-offline': {
       noPrependStageInUrl: true
+    },
+    'serverless-offline-ssm': {
+      // Values mocked by .env file
+      stages: ['dev']
     }
   }
 };
