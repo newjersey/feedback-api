@@ -23,11 +23,11 @@ const serverlessConfiguration: AWS = {
     environment: {
       AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1',
       NODE_OPTIONS: '--enable-source-maps --stack-trace-limit=1000',
-      SHEET_ID: process.env.SHEET_ID,
-      GOOGLE_PRIVATE_KEY: process.env.GOOGLE_PRIVATE_KEY,
-      CLIENT_EMAIL: process.env.CLIENT_EMAIL,
-      AZURE_OPENAI_ENDPOINT: process.env.AZURE_OPENAI_ENDPOINT,
-      AZURE_OPENAI_KEY: process.env.AZURE_OPENAI_KEY
+      SHEET_ID: '${ssm:feedback-api-sheet-id}',
+      GOOGLE_PRIVATE_KEY: '${ssm:feedback-api-sheets-private-key}',
+      CLIENT_EMAIL: '${ssm:feedback-api-sheets-email}',
+      AZURE_OPENAI_ENDPOINT: '${ssm:feedback-api-azure-openai-endpoint}',
+      AZURE_OPENAI_KEY: '${ssm:feedback-api-azure-openai-key}'
     },
     iam: {
       role: {
