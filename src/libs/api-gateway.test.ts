@@ -1,18 +1,23 @@
 import { formatJSONResponse, formatErrorResponse } from './api-gateway';
 
 describe('formatJSONResponse', () => {
-  it('should return a 200 status code and the correct response body', () => {
-    const response = { message: 'Success' };
-    const formattedResponse = formatJSONResponse(response);
-    expect(formattedResponse).toEqual({
-      statusCode: 200,
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Credentials': true
-      },
-      body: '{"message":"Success"}'
-    });
-  });
+  it.each([
+    [{ message: 'Success' }, '{"message":"Success"}'],
+    [{}, '{}']
+  ])(
+    'should return a 200 status code and the correct response body for %j',
+    (responseBody, expectedBody) => {
+      const formattedResponse = formatJSONResponse(responseBody);
+      expect(formattedResponse).toEqual({
+        statusCode: 200,
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Credentials': true
+        },
+        body: expectedBody
+      });
+    }
+  );
 });
 
 describe('formatErrorResponse', () => {
@@ -29,4 +34,3 @@ describe('formatErrorResponse', () => {
     });
   });
 });
-
