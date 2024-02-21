@@ -21,16 +21,21 @@ describe('formatJSONResponse', () => {
 });
 
 describe('formatErrorResponse', () => {
-  it('should return a 500 status code and the correct response body', () => {
-    const response = { error: 'Something went wrong' };
-    const formattedResponse = formatErrorResponse(response);
-    expect(formattedResponse).toEqual({
-      statusCode: 500,
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Credentials': true
-      },
-      body: '{"error":"Something went wrong"}'
-    });
-  });
+  it.each([
+    [{ error: 'Something went wrong' }, '{"error":"Something went wrong"}'],
+    [{}, '{}']
+  ])(
+    'should return a 500 status code and the correct response body for %j',
+    (responseBody, expectedBody) => {
+      const formattedResponse = formatErrorResponse(responseBody);
+      expect(formattedResponse).toEqual({
+        statusCode: 500,
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Credentials': true
+        },
+        body: expectedBody
+      });
+    }
+  );
 });
