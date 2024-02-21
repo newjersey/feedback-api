@@ -22,3 +22,5 @@ jobs:
         run: npm run lint
       - name: Run type check (typescript)
         run: npm run typecheck
+      - name: Run tests (Jest)
+        run: npm test
