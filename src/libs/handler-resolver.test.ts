@@ -20,7 +20,7 @@ describe('handlerPath', () => {
     expect(handlerPath(inputPath)).toBe('src/handler.js');
   });
 
-  it('should return an empty string if the input path is the same as cwd', () => {
+  it('should return an empty string if the input path is the same as cwd path', () => {
     const inputPath = '/User/test/feedback-api';
     expect(handlerPath(inputPath)).toBe('');
   });
