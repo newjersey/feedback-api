@@ -18,10 +18,14 @@ describe('formatJSONResponse', () => {
 describe('formatErrorResponse', () => {
   it('should return a 500 status code and the correct response body', () => {
     const response = { error: 'Something went wrong' };
-    const result = formatErrorResponse(response);
-    expect(result.statusCode).toBe(500);
-    expect(result.headers['Access-Control-Allow-Origin']).toBe('*');
-    expect(result.headers['Access-Control-Allow-Credentials']).toBe(true);
-    expect(result.body).toBe(JSON.stringify(response));
+    const formattedResponse = formatErrorResponse(response);
+    expect(formattedResponse).toEqual({
+      statusCode: 500,
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Credentials': true
+      },
+      body: JSON.stringify(response)
+    });
   });
 });
