@@ -31,7 +31,7 @@ describe('handlerPath', () => {
     expect(handlerPath(inputPath)).toBe('');
   });
 
-  it('should throw an error if the context string and cwd do not share the same starting path', () => {
+  it('should throw an error if the context string and cwd path do not share the same starting path', () => {
     const inputPath = '/different/path/not/matching/cwd/handler.ts';
     expect(() => handlerPath(inputPath)).toThrow(TypeError);
   });
