@@ -10,7 +10,7 @@ describe('formatJSONResponse', () => {
         'Access-Control-Allow-Origin': '*',
         'Access-Control-Allow-Credentials': true
       },
-      body: JSON.stringify(response)
+      body: '{"message":"Success"}'
     });
   });
 });
@@ -25,7 +25,8 @@ describe('formatErrorResponse', () => {
         'Access-Control-Allow-Origin': '*',
         'Access-Control-Allow-Credentials': true
       },
-      body: JSON.stringify(response)
+      body: '{"error":"Something went wrong"}'
     });
   });
 });
+
