@@ -8,14 +8,14 @@ jest.mock('@middy/core', () => {
 });
 jest.mock('@middy/http-json-body-parser');
 
-const mockMiddy = middy as jest.MockedFunction<typeof middy>;
+const MOCK_MIDDY = middy as jest.MockedFunction<typeof middy>;
 
 describe('middyfy', () => {
   it('should wrap handler with middy, apply JSON body parser, and return middy instance', () => {
     const handler = jest.fn();
     const middyfiedHandler = middyfy(handler);
     expect(middy).toHaveBeenCalledWith(handler);
-    const mockMiddyInstance = mockMiddy.mock.results[0].value;
+    const mockMiddyInstance = MOCK_MIDDY.mock.results[0].value;
     expect(mockMiddyInstance.use).toHaveBeenCalledWith(middyJsonBodyParser());
     expect(middyfiedHandler).toBe('middyfied handler');
   });
