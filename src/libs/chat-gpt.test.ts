@@ -17,7 +17,7 @@ jest.mock('@azure/openai', () => {
 
 describe('getSummary', () => {
   const comments = ['Test Comment 1', 'Test Comment 2'];
-  const userContent = '---\n' + comments.join('\n') + '---';
+  const userContent = `---\nTest Comment 1\nTest Comment 2---`;
   const parameters = {
     maxTokens: 2000,
     temperature: 0.3,
