@@ -46,7 +46,6 @@ export async function getSummary(comments: string[], pageURL: string) {
       prompt,
       PARAMETERS
     );
-    console.log(typeof result.choices[0].message.content);
     return result.choices[0].message.content;
   } catch (e) {
     throw Error(
