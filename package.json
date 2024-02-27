@@ -22,7 +22,7 @@
   },
   "devDependencies": {
     "@serverless/typescript": "3.38.0",
-    "@types/aws-lambda": "8.10.133",
+    "@types/aws-lambda": "8.10.134",
     "@types/jest": "29.5.12",
     "@types/node": "18.19.14",
     "@typescript-eslint/eslint-plugin": "5.62.0",
