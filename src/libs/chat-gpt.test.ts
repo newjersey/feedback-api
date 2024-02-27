@@ -42,6 +42,14 @@ describe('getSummary', () => {
     expect(result).toBe('mocked response');
   });
 
+  it('should return "{}" and not call OpenAIClient when there are no comments', async () => {
+    const comments = [];
+    const pageURL = 'https://uistatus.dol.state.nj.us/';
+    const result = await getSummary(comments, pageURL);
+    expect(OpenAIClient).toHaveBeenCalledTimes(0);
+    expect(result).toBe('{}');
+  });
+
   describe('getSummary with different URLs', () => {
     const cases = [
       ['Unemployment Insurance benefits', 'https://uistatus.dol.state.nj.us/'],
