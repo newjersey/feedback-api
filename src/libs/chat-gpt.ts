@@ -17,6 +17,9 @@ const PARAMETERS = {
 const DEPLOYMENT_ID = 'gpt-35-turbo-16k';
 
 export async function getSummary(comments: string[], pageURL: string) {
+  if (comments.length === 0) {
+    return '{}';
+  }
   const client = new OpenAIClient(ENDPOINT, new AzureKeyCredential(API_KEY), {
     apiVersion: API_VERSION
   });
@@ -43,6 +46,7 @@ export async function getSummary(comments: string[], pageURL: string) {
       prompt,
       PARAMETERS
     );
+    console.log(typeof result.choices[0].message.content);
     return result.choices[0].message.content;
   } catch (e) {
     throw Error(
