@@ -129,4 +129,4 @@ export function getRowFromAppendRange(sheetsRange: string) {
 
 export function getRowFromUpdateRange(sheetsRange: string) {
   return parseInt(sheetsRange.split('!')[1].slice(1));
-};
+}
