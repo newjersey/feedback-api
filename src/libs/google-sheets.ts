@@ -52,12 +52,12 @@ export async function getLastNComments(
 ): Promise<string[][]> {
   try {
     const totalRows = await getTotalRows(sheetsClient);
-
+    const startRow = totalRows - 1 < n ? 2 : totalRows - (n - 1);
     const result = await sheetsClient.spreadsheets.values.get({
       spreadsheetId: process.env.SHEET_ID,
-      range: `${SHEET_NAME}!${SHEETS_COLUMN_MAP[Feedback.Timestamp]}${
-        totalRows - (n - 1)
-      }:${SHEETS_COLUMN_MAP[Feedback.Comment]}${totalRows}`
+      range: `${SHEET_NAME}!${
+        SHEETS_COLUMN_MAP[Feedback.Timestamp]
+      }${startRow}:${SHEETS_COLUMN_MAP[Feedback.Comment]}${totalRows}`
     });
     return result.data.values ?? [];
   } catch (e) {
@@ -129,4 +129,4 @@ export function getRowFromAppendRange(sheetsRange: string) {
 
 export function getRowFromUpdateRange(sheetsRange: string) {
   return parseInt(sheetsRange.split('!')[1].slice(1));
-}
+};
