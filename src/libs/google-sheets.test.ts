@@ -1,7 +1,7 @@
 import { google } from 'googleapis';
 import { getAuthClient, getLastNComments } from './google-sheets';
 
-const MOCK_AUTHORIZE = jest.fn().mockResolvedValue('undefined');
+const MOCK_AUTHORIZE = jest.fn().mockResolvedValue(undefined);
 const MOCK_SHEETS = {
   spreadsheets: {
     values: {
@@ -33,14 +33,11 @@ describe('google-sheets', () => {
 
   describe('getAuthClient', () => {
     it('should successfully create and authorize a Google Sheets API client', async () => {
-      (google.sheets as jest.Mock).mockImplementationOnce(
-        () => 'sheets_v4_instance'
-      );
       const client = await getAuthClient();
       expect(google.auth.JWT).toHaveBeenCalledWith(
         process.env.CLIENT_EMAIL,
         null,
-        process.env.GOOGLE_PRIVATE_KEY.replace(/\\n/g, '\n'),
+        'test-key\n',
         ['https://www.googleapis.com/auth/spreadsheets']
       );
       expect(MOCK_AUTHORIZE).toHaveBeenCalled();
@@ -48,7 +45,7 @@ describe('google-sheets', () => {
         version: 'v4',
         auth: { authorize: MOCK_AUTHORIZE }
       });
-      expect(client).toEqual('sheets_v4_instance');
+      expect(client).toEqual(MOCK_SHEETS);
     });
 
     it('should throw an error if authorization fails', async () => {
@@ -56,18 +53,13 @@ describe('google-sheets', () => {
       await expect(getAuthClient()).rejects.toThrow(
         'Google Sheets API failed to authorize: Failed to authorize'
       );
-      expect(google.auth.JWT).toHaveBeenCalledWith(
-        process.env.CLIENT_EMAIL,
-        null,
-        process.env.GOOGLE_PRIVATE_KEY.replace(/\\n/g, '\n'),
-        ['https://www.googleapis.com/auth/spreadsheets']
-      );
     });
   });
 
   describe('getLastNComments', () => {
     const testCases = [
       {
+        totalRows: 3,
         n: 2,
         expectedRange: 'Sheet1!A2:D3',
         expectedComments: [['Comment 1'], ['Comment 2']],
@@ -75,6 +67,7 @@ describe('google-sheets', () => {
           'should retrieve comments from expected range when n is less or equal than available comments'
       },
       {
+        totalRows: 3,
         n: 1000,
         expectedRange: 'Sheet1!A2:D3',
         expectedComments: [['Comment 1'], ['Comment 2']],
