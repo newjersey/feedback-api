@@ -34,7 +34,7 @@ export async function getAuthClient() {
   }
 }
 
-async function getTotalRows(sheetsClient: sheets_v4.Sheets) {
+export async function getTotalRows(sheetsClient: sheets_v4.Sheets) {
   try {
     const result = await sheetsClient.spreadsheets.values.get({
       spreadsheetId: process.env.SHEET_ID,
