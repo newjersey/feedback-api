@@ -1,5 +1,5 @@
 import { google } from 'googleapis';
-import { getAuthClient, getLastNComments } from './google-sheets';
+import { getTotalRows, getAuthClient, getLastNComments } from './google-sheets';
 
 const MOCK_AUTHORIZE = jest.fn().mockResolvedValue(undefined);
 const MOCK_SHEETS = {
@@ -52,6 +52,31 @@ describe('google-sheets', () => {
       MOCK_AUTHORIZE.mockRejectedValueOnce(new Error('Failed to authorize'));
       await expect(getAuthClient()).rejects.toThrow(
         'Google Sheets API failed to authorize: Failed to authorize'
+      );
+    });
+  });
+
+  describe('getTotalRows', () => {
+    it('should successfully get the total number of rows in the sheet', async () => {
+      MOCK_SHEETS.spreadsheets.values.get.mockResolvedValueOnce({
+        data: { values: [['4']] }
+      });
+      const sheetsClient = google.sheets('v4');
+      const totalRows = await getTotalRows(sheetsClient);
+      expect(MOCK_SHEETS.spreadsheets.values.get).toHaveBeenCalledWith({
+        spreadsheetId: process.env.SHEET_ID,
+        range: 'Metadata!A2'
+      });
+      expect(totalRows).toEqual(4);
+    });
+
+    it('should throw an error when failing to get the total number of rows', async () => {
+      MOCK_SHEETS.spreadsheets.values.get.mockRejectedValueOnce(
+        new Error('Failed to get row count')
+      );
+      const sheetsClient = google.sheets('v4');
+      await expect(getTotalRows(sheetsClient)).rejects.toThrow(
+        'Google Sheets API failed to get data size: Failed to get row count'
       );
     });
   });
