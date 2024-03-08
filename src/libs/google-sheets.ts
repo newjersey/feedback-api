@@ -1,4 +1,5 @@
 import { google, sheets_v4 } from 'googleapis';
+import * as googleSheetsFuncs from './google-sheets';
 
 export enum Feedback {
   PageURL,
@@ -51,7 +52,7 @@ export async function getLastNComments(
   n: number
 ): Promise<string[][]> {
   try {
-    const totalRows = await getTotalRows(sheetsClient);
+    const totalRows = await googleSheetsFuncs.getTotalRows(sheetsClient);
     const startRow = totalRows - 1 < n ? 2 : totalRows - (n - 1);
     const result = await sheetsClient.spreadsheets.values.get({
       spreadsheetId: process.env.SHEET_ID,
