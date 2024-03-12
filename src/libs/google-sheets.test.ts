@@ -1,6 +1,5 @@
 import { google } from 'googleapis';
-import { getTotalRows, getAuthClient, getLastNComments } from './google-sheets';
-import * as googleSheetsFuncs from './google-sheets';
+import { getAuthClient, getLastNComments } from './google-sheets';
 
 const MOCK_AUTHORIZE = jest.fn().mockResolvedValue(undefined);
 const MOCK_SHEETS = {
@@ -57,35 +56,7 @@ describe('google-sheets', () => {
     });
   });
 
-  describe('getTotalRows', () => {
-    it('should successfully get the total number of rows in the sheet', async () => {
-      MOCK_SHEETS.spreadsheets.values.get.mockResolvedValueOnce({
-        data: { values: [['4']] }
-      });
-      const sheetsClient = google.sheets('v4');
-      const totalRows = await getTotalRows(sheetsClient);
-      expect(MOCK_SHEETS.spreadsheets.values.get).toHaveBeenCalledWith({
-        spreadsheetId: process.env.SHEET_ID,
-        range: 'Metadata!A2'
-      });
-      expect(totalRows).toEqual(4);
-    });
-
-    it('should throw an error when failing to get the total number of rows', async () => {
-      MOCK_SHEETS.spreadsheets.values.get.mockRejectedValueOnce(
-        new Error('Failed to get row count')
-      );
-      const sheetsClient = google.sheets('v4');
-      await expect(getTotalRows(sheetsClient)).rejects.toThrow(
-        'Google Sheets API failed to get data size: Failed to get row count'
-      );
-    });
-  });
-
   describe('getLastNComments', () => {
-    afterEach(() => {
-      jest.restoreAllMocks();
-    });
     const testCases = [
       {
         totalRows: 3,
@@ -108,15 +79,16 @@ describe('google-sheets', () => {
     it.each(testCases)(
       '$description',
       async ({ n, expectedRange, expectedComments, totalRows }) => {
-        jest
-          .spyOn(googleSheetsFuncs, 'getTotalRows')
-          .mockResolvedValue(totalRows);
-        MOCK_SHEETS.spreadsheets.values.get.mockResolvedValueOnce({
-          data: { values: expectedComments }
-        });
+        MOCK_SHEETS.spreadsheets.values.get
+          .mockResolvedValueOnce({ data: { values: [[`${totalRows}`]] } }) // called in  getTotalRows
+          .mockResolvedValueOnce({ data: { values: expectedComments } }); // called in getLastNComments
         const sheetsClient = google.sheets('v4');
         const comments = await getLastNComments(sheetsClient, n);
         expect(MOCK_SHEETS.spreadsheets.values.get.mock.calls[0][0]).toEqual({
+          spreadsheetId: process.env.SHEET_ID,
+          range: 'Metadata!A2'
+        });
+        expect(MOCK_SHEETS.spreadsheets.values.get.mock.calls[1][0]).toEqual({
           spreadsheetId: process.env.SHEET_ID,
           range: expectedRange
         });
@@ -125,17 +97,21 @@ describe('google-sheets', () => {
     );
 
     it('should throw an error when failing to get row count from getTotalRows', async () => {
-      jest
-        .spyOn(googleSheetsFuncs, 'getTotalRows')
-        .mockRejectedValue(Error('Failed to get row count'));
+      // first call within getTotalRows fails
+      MOCK_SHEETS.spreadsheets.values.get.mockRejectedValueOnce(
+        new Error('Failed to get row count')
+      );
       const sheetsClient = google.sheets('v4');
       await expect(getLastNComments(sheetsClient, 2)).rejects.toThrow(
-        'Google Sheets API failed to get input data: Failed to get row count'
+        'Google Sheets API failed to get data size: Failed to get row count'
       );
     });
 
     it('should throw an error when failing to get comments', async () => {
-      jest.spyOn(googleSheetsFuncs, 'getTotalRows').mockResolvedValue(2);
+      // first call within getTotalRows is successful
+      MOCK_SHEETS.spreadsheets.values.get.mockResolvedValueOnce({
+        data: { values: [['2']] }
+      });
       MOCK_SHEETS.spreadsheets.values.get.mockRejectedValueOnce(
         new Error('Failed to fetch comments')
       );
