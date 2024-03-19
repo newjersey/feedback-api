@@ -29,6 +29,7 @@ const serverlessConfiguration: AWS = {
       AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1',
       NODE_OPTIONS: '--enable-source-maps --stack-trace-limit=1000',
       SHEET_ID: '${ssm:feedback-api-sheet-id}',
+      PFL_SHEET_ID: '${ssm:feedback-api-pfl-sheet-id}',
       GOOGLE_PRIVATE_KEY: '${ssm:feedback-api-sheets-private-key}',
       CLIENT_EMAIL: '${ssm:feedback-api-sheets-email}',
       AZURE_OPENAI_ENDPOINT: '${ssm:feedback-api-azure-openai-endpoint}',
