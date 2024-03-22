@@ -5,7 +5,7 @@ import {
 import { formatJSONResponse } from '@libs/api-gateway';
 import {
   getAuthClient,
-  getLastNComments,
+  getLastNIterative,
   SHEET_CONFIGS
 } from '@libs/google-sheets';
 import { middyfy } from '@libs/lambda';
@@ -26,7 +26,7 @@ const summary: ValidatedEventAPIGatewayProxyEvent<typeof schema> = async (
     : INPUT_SIZE_SPARSE;
   try {
     const client = await getAuthClient();
-    const { url, comments } = await getLastNComments(
+    const { url, comments } = await getLastNIterative(
       client,
       dataReach,
       pageURL,

@@ -117,7 +117,29 @@ type GetLastNCommentsType = {
   comments: string[][];
 };
 
-export async function getLastNComments(
+// export async function getLastNComments(
+//   sheetsClient: sheets_v4.Sheets,
+//   n: number,
+//   pageURL: string,
+//   sheet: keyof typeof SHEET_CONFIGS
+// ): Promise<GetLastNCommentsType> {
+//   try {
+//     const url = getSheetConfig(pageURL, sheet);
+//     const totalRows = await getTotalRows(sheetsClient, sheet);
+//     if (totalRows < 2) return { url, comments: [] };
+//     const startRow = totalRows - 1 < n ? 2 : totalRows - (n - 1);
+//     const result = await sheetsClient.spreadsheets.values.get({
+//       spreadsheetId: SHEET_CONFIGS[sheet].sheetId,
+//       range: `${SHEET_CONFIGS[sheet].sheetName}!A${startRow}:${SHEET_CONFIGS[sheet].columnMap.Comment}${totalRows}`
+//     });
+
+//     return { url, comments: result.data.values };
+//   } catch (e) {
+//     throw Error(`Google Sheets API failed to get input data: ${e.message}`);
+//   }
+// }
+
+export async function getLastNIterative(
   sheetsClient: sheets_v4.Sheets,
   n: number,
   pageURL: string,
@@ -127,12 +149,27 @@ export async function getLastNComments(
     const url = getSheetConfig(pageURL, sheet);
     const totalRows = await getTotalRows(sheetsClient, sheet);
     if (totalRows < 2) return { url, comments: [] };
-    const startRow = totalRows - 1 < n ? 2 : totalRows - (n - 1);
-    const result = await sheetsClient.spreadsheets.values.get({
-      spreadsheetId: SHEET_CONFIGS[sheet].sheetId,
-      range: `${SHEET_CONFIGS[sheet].sheetName}!A${startRow}:${SHEET_CONFIGS[sheet].columnMap.Comment}${totalRows}`
-    });
-    return { url, comments: result.data.values };
+    let accumulatedComments = [];
+    let currentBatchEnd = totalRows;
+    const batchSize = 1000;
+    while (accumulatedComments.length < n && currentBatchEnd > 1) {
+      const currentBatchStart = Math.max(currentBatchEnd - batchSize + 1, 2);
+      const result = await sheetsClient.spreadsheets.values.get({
+        spreadsheetId: SHEET_CONFIGS[sheet].sheetId,
+        range: `${SHEET_CONFIGS[sheet].sheetName}!A${currentBatchStart}:${SHEET_CONFIGS[sheet].columnMap.Comment}${totalRows}`
+      });
+      const filteredRows = result.data.values?.filter(
+        (v) =>
+          v[SHEET_CONFIGS[sheet].columnOrder.PageURL].includes(url) &&
+          v[SHEET_CONFIGS[sheet].columnOrder.Comment]
+      );
+      accumulatedComments = [...filteredRows.reverse(), ...accumulatedComments];
+      currentBatchEnd = currentBatchStart - 1;
+      if (accumulatedComments.length > n) {
+        accumulatedComments = accumulatedComments.slice(0, n);
+      }
+    }
+    return { url, comments: accumulatedComments };
   } catch (e) {
     throw Error(`Google Sheets API failed to get input data: ${e.message}`);
   }
