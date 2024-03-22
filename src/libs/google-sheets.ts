@@ -16,8 +16,62 @@ const SHEETS_COLUMN_MAP: { [K in Feedback]: 'A' | 'B' | 'C' | 'D' | 'E' } = {
   [Feedback.Email]: 'E'
 };
 
+export const SHEET_CONFIGS = {
+  feedbackWidget: {
+    sheetId: process.env.SHEET_ID,
+    totalRowsRange: 'Metadata!A2',
+    sheetName: 'Sheet1',
+    relevantUrls: [
+      'uistatus.dol.state.nj.us',
+      'maternity/timeline-tool',
+      'myleavebenefits/worker/resources/claims-status.shtml',
+      'myleavebenefits/worker/resources/login-update',
+      'transgender',
+      'basicneeds'
+    ],
+    columnMap: {
+      Timestamp: 'A',
+      PageURL: 'B',
+      Rating: 'C',
+      Comment: 'D',
+      Email: 'E'
+    },
+    columnOrder: {
+      Timestamp: 0,
+      PageURL: 1,
+      Rating: 2,
+      Comment: 3,
+      Email: 4
+    }
+  },
+  pflSheet: {
+    sheetId: process.env.PFL_SHEET_ID,
+    totalRowsRange: 'Metadata!A2',
+    sheetName: 'Results',
+    relevantUrls: [
+      'Claim detail',
+      'Other',
+      'Payment detail',
+      'Application received'
+    ],
+    columnMap: {
+      ResponseID: 'A',
+      Timestamp: 'B',
+      PageURL: 'C',
+      Rating: 'D',
+      Comment: 'E'
+    },
+    columnOrder: {
+      ResponseID: 0,
+      Timestamp: 1,
+      PageURL: 2,
+      Rating: 3,
+      Comment: 4
+    }
+  }
+};
+
 const SHEET_NAME = 'Sheet1';
-const TOTAL_ROWS_RANGE = 'Metadata!A2';
 
 export async function getAuthClient() {
   try {
@@ -35,11 +89,22 @@ export async function getAuthClient() {
 }
 
 // only used within getLastNComments function
-async function getTotalRows(sheetsClient: sheets_v4.Sheets) {
+function getSheetConfig(pageURL: string, sheet: keyof typeof SHEET_CONFIGS) {
+  for (const url of SHEET_CONFIGS[sheet].relevantUrls) {
+    if (pageURL.includes(url)) {
+      return url;
+    }
+  }
+  // if url is not recognized, default to feedbackWidget
+  return pageURL;
+}
+
+// only used within getLastNComments function
+async function getTotalRows(sheetsClient: sheets_v4.Sheets, sheet) {
   try {
     const result = await sheetsClient.spreadsheets.values.get({
-      spreadsheetId: process.env.SHEET_ID,
-      range: TOTAL_ROWS_RANGE
+      spreadsheetId: SHEET_CONFIGS[sheet].sheetId,
+      range: SHEET_CONFIGS[sheet].totalRowsRange
     });
     return parseInt(result.data.values[0][0]);
   } catch (e) {
@@ -47,20 +112,27 @@ async function getTotalRows(sheetsClient: sheets_v4.Sheets) {
   }
 }
 
+type GetLastNCommentsType = {
+  url: string;
+  comments: string[][];
+};
+
 export async function getLastNComments(
   sheetsClient: sheets_v4.Sheets,
-  n: number
-): Promise<string[][]> {
+  n: number,
+  pageURL: string,
+  sheet: keyof typeof SHEET_CONFIGS
+): Promise<GetLastNCommentsType> {
   try {
-    const totalRows = await getTotalRows(sheetsClient);
+    const url = getSheetConfig(pageURL, sheet);
+    const totalRows = await getTotalRows(sheetsClient, sheet);
+    if (totalRows < 2) return { url, comments: [] };
     const startRow = totalRows - 1 < n ? 2 : totalRows - (n - 1);
     const result = await sheetsClient.spreadsheets.values.get({
-      spreadsheetId: process.env.SHEET_ID,
-      range: `${SHEET_NAME}!${
-        SHEETS_COLUMN_MAP[Feedback.Timestamp]
-      }${startRow}:${SHEETS_COLUMN_MAP[Feedback.Comment]}${totalRows}`
+      spreadsheetId: SHEET_CONFIGS[sheet].sheetId,
+      range: `${SHEET_CONFIGS[sheet].sheetName}!A${startRow}:${SHEET_CONFIGS[sheet].columnMap.Comment}${totalRows}`
     });
-    return result.data.values ?? [];
+    return { url, comments: result.data.values };
   } catch (e) {
     throw Error(`Google Sheets API failed to get input data: ${e.message}`);
   }
