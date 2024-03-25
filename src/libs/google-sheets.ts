@@ -1,5 +1,7 @@
 import { google, sheets_v4 } from 'googleapis';
+import { SHEET_CONFIGS } from '../constants';
 
+// Feedback enum + SHEETS_COLUMN_MAP currently used in updateFeedback
 export enum Feedback {
   PageURL,
   Rating,
@@ -15,62 +17,6 @@ const SHEETS_COLUMN_MAP: { [K in Feedback]: 'A' | 'B' | 'C' | 'D' | 'E' } = {
   [Feedback.Comment]: 'D',
   [Feedback.Email]: 'E'
 };
-
-export const SHEET_CONFIGS = {
-  feedbackWidget: {
-    sheetId: process.env.SHEET_ID,
-    totalRowsRange: 'Metadata!A2',
-    sheetName: 'Sheet1',
-    relevantUrls: [
-      'uistatus.dol.state.nj.us',
-      'maternity/timeline-tool',
-      'myleavebenefits/worker/resources/claims-status.shtml',
-      'myleavebenefits/worker/resources/login-update',
-      'transgender',
-      'basicneeds'
-    ],
-    columnMap: {
-      Timestamp: 'A',
-      PageURL: 'B',
-      Rating: 'C',
-      Comment: 'D',
-      Email: 'E'
-    },
-    columnOrder: {
-      Timestamp: 0,
-      PageURL: 1,
-      Rating: 2,
-      Comment: 3,
-      Email: 4
-    }
-  },
-  pflSheet: {
-    sheetId: process.env.PFL_SHEET_ID,
-    totalRowsRange: 'Metadata!A2',
-    sheetName: 'Results',
-    relevantUrls: [
-      'Claim detail',
-      'Other',
-      'Payment detail',
-      'Application received'
-    ],
-    columnMap: {
-      ResponseID: 'A',
-      Timestamp: 'B',
-      PageURL: 'C',
-      Rating: 'D',
-      Comment: 'E'
-    },
-    columnOrder: {
-      ResponseID: 0,
-      Timestamp: 1,
-      PageURL: 2,
-      Rating: 3,
-      Comment: 4
-    }
-  }
-};
-
 const SHEET_NAME = 'Sheet1';
 
 export async function getAuthClient() {
@@ -88,18 +34,7 @@ export async function getAuthClient() {
   }
 }
 
-// only used within getLastNComments function
-function getSheetConfig(pageURL: string, sheet: keyof typeof SHEET_CONFIGS) {
-  for (const url of SHEET_CONFIGS[sheet].relevantUrls) {
-    if (pageURL.includes(url)) {
-      return url;
-    }
-  }
-  // if url is not recognized, default to feedbackWidget
-  return pageURL;
-}
-
-// only used within getLastNComments function
+// only used within getLastNIterative function
 async function getTotalRows(sheetsClient: sheets_v4.Sheets, sheet) {
   try {
     const result = await sheetsClient.spreadsheets.values.get({
@@ -112,64 +47,36 @@ async function getTotalRows(sheetsClient: sheets_v4.Sheets, sheet) {
   }
 }
 
-type GetLastNCommentsType = {
-  url: string;
-  comments: string[][];
-};
-
-// export async function getLastNComments(
-//   sheetsClient: sheets_v4.Sheets,
-//   n: number,
-//   pageURL: string,
-//   sheet: keyof typeof SHEET_CONFIGS
-// ): Promise<GetLastNCommentsType> {
-//   try {
-//     const url = getSheetConfig(pageURL, sheet);
-//     const totalRows = await getTotalRows(sheetsClient, sheet);
-//     if (totalRows < 2) return { url, comments: [] };
-//     const startRow = totalRows - 1 < n ? 2 : totalRows - (n - 1);
-//     const result = await sheetsClient.spreadsheets.values.get({
-//       spreadsheetId: SHEET_CONFIGS[sheet].sheetId,
-//       range: `${SHEET_CONFIGS[sheet].sheetName}!A${startRow}:${SHEET_CONFIGS[sheet].columnMap.Comment}${totalRows}`
-//     });
-
-//     return { url, comments: result.data.values };
-//   } catch (e) {
-//     throw Error(`Google Sheets API failed to get input data: ${e.message}`);
-//   }
-// }
-
-export async function getLastNIterative(
+export async function getLastNComments(
   sheetsClient: sheets_v4.Sheets,
   n: number,
   pageURL: string,
-  sheet: keyof typeof SHEET_CONFIGS
-): Promise<GetLastNCommentsType> {
+  sheet: string
+): Promise<string[][]> {
   try {
-    const url = getSheetConfig(pageURL, sheet);
     const totalRows = await getTotalRows(sheetsClient, sheet);
-    if (totalRows < 2) return { url, comments: [] };
+    if (totalRows < 2) return [];
     let accumulatedComments = [];
     let currentBatchEnd = totalRows;
-    const batchSize = 1000;
+    const batchSize = SHEET_CONFIGS[sheet].urls[pageURL].batchSize;
     while (accumulatedComments.length < n && currentBatchEnd > 1) {
       const currentBatchStart = Math.max(currentBatchEnd - batchSize + 1, 2);
       const result = await sheetsClient.spreadsheets.values.get({
         spreadsheetId: SHEET_CONFIGS[sheet].sheetId,
-        range: `${SHEET_CONFIGS[sheet].sheetName}!A${currentBatchStart}:${SHEET_CONFIGS[sheet].columnMap.Comment}${totalRows}`
+        range: `${SHEET_CONFIGS[sheet].sheetName}!A${currentBatchStart}:${SHEET_CONFIGS[sheet].columnMap.Comment}${currentBatchEnd}`
       });
       const filteredRows = result.data.values?.filter(
         (v) =>
-          v[SHEET_CONFIGS[sheet].columnOrder.PageURL].includes(url) &&
+          v[SHEET_CONFIGS[sheet].columnOrder.PageURL].includes(pageURL) &&
           v[SHEET_CONFIGS[sheet].columnOrder.Comment]
       );
-      accumulatedComments = [...filteredRows.reverse(), ...accumulatedComments];
+      accumulatedComments = [...filteredRows, ...accumulatedComments];
       currentBatchEnd = currentBatchStart - 1;
       if (accumulatedComments.length > n) {
-        accumulatedComments = accumulatedComments.slice(0, n);
+        accumulatedComments = accumulatedComments.slice(-n);
       }
     }
-    return { url, comments: accumulatedComments };
+    return accumulatedComments;
   } catch (e) {
     throw Error(`Google Sheets API failed to get input data: ${e.message}`);
   }

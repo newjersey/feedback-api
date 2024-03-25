@@ -1,5 +1,6 @@
 import { google } from 'googleapis';
 import { getAuthClient, getLastNComments } from './google-sheets';
+import { SHEET_CONFIGS } from '../constants';
 
 const MOCK_AUTHORIZE = jest.fn().mockResolvedValue(undefined);
 const MOCK_SHEETS = {
@@ -25,6 +26,34 @@ jest.mock('googleapis', () => {
     }
   };
 });
+
+jest.mock('../constants', () => ({
+  SHEET_CONFIGS: {
+    exampleSheet: {
+      sheetId: 'testSheetID',
+      totalRowsRange: 'Metadata!A2',
+      sheetName: 'Sheet1',
+      urls: {
+        'exampleUrl.com': {
+          prompt: 'example prompt',
+          batchSize: 4
+        },
+        'exampleUrl2.com': {
+          prompt: 'example prompt',
+          batchSize: 4
+        }
+      },
+      columnMap: {
+        PageURL: 'A',
+        Comment: 'B'
+      },
+      columnOrder: {
+        PageURL: 0,
+        Comment: 1
+      }
+    }
+  }
+}));
 
 describe('google-sheets', () => {
   afterEach(() => {
@@ -57,44 +86,197 @@ describe('google-sheets', () => {
   });
 
   describe('getLastNComments', () => {
-    const testCases = [
-      {
-        totalRows: 3,
-        n: 2,
-        expectedRange: 'Sheet1!A2:D3',
-        expectedComments: [['Comment 1'], ['Comment 2']],
-        description:
-          'should retrieve comments from expected range when n is less or equal than available comments'
-      },
-      {
-        totalRows: 3,
-        n: 1000,
-        expectedRange: 'Sheet1!A2:D3',
-        expectedComments: [['Comment 1'], ['Comment 2']],
-        description:
-          'should retrieve comments from expected range when n is greater than available comments (returns all rows excluding header row)'
-      }
-    ];
+    
+    const exampleKnownUrl1 = 'exampleUrl.com';
+    const exampleKnownUrl2 = 'exampleUrl2.com'
+    const sheet = 'exampleSheet';
 
-    it.each(testCases)(
-      '$description',
-      async ({ n, expectedRange, expectedComments, totalRows }) => {
-        MOCK_SHEETS.spreadsheets.values.get
-          .mockResolvedValueOnce({ data: { values: [[`${totalRows}`]] } }) // called in  getTotalRows
-          .mockResolvedValueOnce({ data: { values: expectedComments } }); // called in getLastNComments
-        const sheetsClient = google.sheets('v4');
-        const comments = await getLastNComments(sheetsClient, n);
-        expect(MOCK_SHEETS.spreadsheets.values.get.mock.calls[0][0]).toEqual({
-          spreadsheetId: process.env.SHEET_ID,
-          range: 'Metadata!A2'
-        });
-        expect(MOCK_SHEETS.spreadsheets.values.get.mock.calls[1][0]).toEqual({
-          spreadsheetId: process.env.SHEET_ID,
-          range: expectedRange
-        });
-        expect(comments).toEqual(expectedComments);
-      }
-    );
+    it('should return an empty array if the totalRows in a sheet is < 2', async () => {
+      const n = 3;
+      const sheetsClient = google.sheets('v4');
+      MOCK_SHEETS.spreadsheets.values.get.mockResolvedValueOnce({
+        data: { values: [['1']] }
+      });
+      const comments = await getLastNComments(
+        sheetsClient,
+        n,
+        exampleKnownUrl1,
+        sheet
+      );
+      expect(comments).toEqual([]);
+    });
+
+    it('should make one request for comments when requested comments (n) < # filtered comments returned in first call', async () => {
+      const n = 3;
+      const returnedComments = [
+        [exampleKnownUrl1, 'Comment 1'],
+        [`${exampleKnownUrl1}/extra`, 'Comment 2'],
+        [exampleKnownUrl1, 'Comment 3'],
+        [`${exampleKnownUrl1}/`, 'Comment 4']
+      ];
+      const expectedComments = [
+        [`${exampleKnownUrl1}/extra`, 'Comment 2'],
+        [exampleKnownUrl1, 'Comment 3'],
+        [`${exampleKnownUrl1}/`, 'Comment 4']
+      ];
+      const sheetsClient = google.sheets('v4');
+      MOCK_SHEETS.spreadsheets.values.get
+        .mockResolvedValueOnce({ data: { values: [['4']] } }) // called in  getTotalRows
+        .mockResolvedValueOnce({ data: { values: returnedComments } }); // called in getLastNComments
+      const comments = await getLastNComments(sheetsClient, n, exampleKnownUrl1, sheet);
+      expect(MOCK_SHEETS.spreadsheets.values.get.mock.calls[0][0]).toEqual({
+        spreadsheetId: 'testSheetID',
+        range: 'Metadata!A2'
+      });
+      expect(MOCK_SHEETS.spreadsheets.values.get.mock.calls[1][0]).toEqual({
+        spreadsheetId: SHEET_CONFIGS[sheet].sheetId,
+        range: 'Sheet1!A2:B4'
+      });
+      expect(comments).toEqual(expectedComments);
+      expect(MOCK_SHEETS.spreadsheets.values.get).toHaveBeenCalledTimes(2);
+    });
+
+    it('should make additional requests for comments when requested comments (n) > batch size', async () => {
+      // batch size set to 4
+      const n = 5;
+      const returnedComments1stCall = [
+        [exampleKnownUrl1, 'Comment 7'],
+        [`${exampleKnownUrl1}/extra`, 'Comment 8'],
+        [exampleKnownUrl1, 'Comment 9'],
+        [`${exampleKnownUrl1}/`, 'Comment 10']
+      ];
+
+      const returnedComments2ndCall = [
+        [exampleKnownUrl1, 'Comment 3'],
+        [`${exampleKnownUrl1}/extra`, 'Comment 4'],
+        [`${exampleKnownUrl1}/more`, 'Comment 5'],
+        [`${exampleKnownUrl1}/`, 'Comment 6']
+      ];
+
+      const expectedComments = [
+        [`${exampleKnownUrl1}/`, 'Comment 6'],
+        [exampleKnownUrl1, 'Comment 7'],
+        [`${exampleKnownUrl1}/extra`, 'Comment 8'],
+        [exampleKnownUrl1, 'Comment 9'],
+        [`${exampleKnownUrl1}/`, 'Comment 10']
+      ];
+      const sheetsClient = google.sheets('v4');
+      MOCK_SHEETS.spreadsheets.values.get
+        .mockResolvedValueOnce({ data: { values: [['11']] } }) // called in  getTotalRows
+        .mockResolvedValueOnce({ data: { values: returnedComments1stCall } }) // first call to get comments
+        .mockResolvedValueOnce({ data: { values: returnedComments2ndCall } }); // second call to get comments
+      const comments = await getLastNComments(
+        sheetsClient,
+        n,
+        exampleKnownUrl1,
+        sheet
+      );
+      expect(MOCK_SHEETS.spreadsheets.values.get.mock.calls[0][0]).toEqual({
+        spreadsheetId: 'testSheetID',
+        range: 'Metadata!A2'
+      });
+      expect(MOCK_SHEETS.spreadsheets.values.get.mock.calls[1][0]).toEqual({
+        spreadsheetId: SHEET_CONFIGS[sheet].sheetId,
+        range: 'Sheet1!A8:B11'
+      });
+      expect(MOCK_SHEETS.spreadsheets.values.get.mock.calls[2][0]).toEqual({
+        spreadsheetId: SHEET_CONFIGS[sheet].sheetId,
+        range: 'Sheet1!A4:B7'
+      });
+      expect(comments).toEqual(expectedComments);
+      expect(MOCK_SHEETS.spreadsheets.values.get).toHaveBeenCalledTimes(3);
+    });
+
+    it('should make additional requests for comments when requested comments (n) > filtered comments in first call', async () => {
+      // batch size set to 4
+      const n = 5;
+      const returnedComments1stCall = [
+        [exampleKnownUrl1, 'Comment 7'],
+        [`${exampleKnownUrl2}/extra`, 'Comment 8'],
+        [exampleKnownUrl2, 'Comment 9'],
+        [`${exampleKnownUrl1}/`, 'Comment 10']
+      ];
+
+      const returnedComments2ndCall = [
+        [exampleKnownUrl1, 'Comment 3'],
+        [`${exampleKnownUrl1}/extra`, 'Comment 4'],
+        [`${exampleKnownUrl2}/more`, 'Comment 5'],
+        [`${exampleKnownUrl1}/`, 'Comment 6']
+      ];
+
+      const expectedComments = [
+        [exampleKnownUrl1, 'Comment 3'],
+        [`${exampleKnownUrl1}/extra`, 'Comment 4'],
+        [`${exampleKnownUrl1}/`, 'Comment 6'],
+        [exampleKnownUrl1, 'Comment 7'],
+        [`${exampleKnownUrl1}/`, 'Comment 10']
+      ];
+      const sheetsClient = google.sheets('v4');
+      MOCK_SHEETS.spreadsheets.values.get
+        .mockResolvedValueOnce({ data: { values: [['11']] } }) // called in  getTotalRows
+        .mockResolvedValueOnce({ data: { values: returnedComments1stCall } }) // first call to get comments
+        .mockResolvedValueOnce({ data: { values: returnedComments2ndCall } }); // second call to get comments
+      const comments = await getLastNComments(sheetsClient, n, exampleKnownUrl1, sheet);
+      expect(MOCK_SHEETS.spreadsheets.values.get.mock.calls[0][0]).toEqual({
+        spreadsheetId: 'testSheetID',
+        range: 'Metadata!A2'
+      });
+      expect(MOCK_SHEETS.spreadsheets.values.get.mock.calls[1][0]).toEqual({
+        spreadsheetId: SHEET_CONFIGS[sheet].sheetId,
+        range: 'Sheet1!A8:B11'
+      });
+      expect(MOCK_SHEETS.spreadsheets.values.get.mock.calls[2][0]).toEqual({
+        spreadsheetId: SHEET_CONFIGS[sheet].sheetId,
+        range: 'Sheet1!A4:B7'
+      });
+      expect(comments).toEqual(expectedComments);
+      expect(MOCK_SHEETS.spreadsheets.values.get).toHaveBeenCalledTimes(3);
+    });
+
+    it('should not make additional requests for comments if there are not enough rows in the sheet to satisfy requested amount', async () => {
+      // batch size set to 4
+      const n = 10;
+      const returnedComments1stCall = [
+        [exampleKnownUrl1, 'Comment 3'],
+        [`${exampleKnownUrl1}/extra`, 'Comment 4'],
+        [exampleKnownUrl1, 'Comment 5'],
+        [`${exampleKnownUrl1}/`, 'Comment 6']
+      ];
+
+      const returnedComments2ndCall = [
+        [exampleKnownUrl1, 'Comment 1'],
+        [`${exampleKnownUrl1}/extra`, 'Comment 2'],
+      ];
+
+      const expectedComments = [
+        [exampleKnownUrl1, 'Comment 1'],
+        [`${exampleKnownUrl1}/extra`, 'Comment 2'],
+        [exampleKnownUrl1, 'Comment 3'],
+        [`${exampleKnownUrl1}/extra`, 'Comment 4'],
+        [exampleKnownUrl1, 'Comment 5'],
+        [`${exampleKnownUrl1}/`, 'Comment 6']
+      ];
+      const sheetsClient = google.sheets('v4');
+      MOCK_SHEETS.spreadsheets.values.get
+        .mockResolvedValueOnce({ data: { values: [['7']] } }) // called in  getTotalRows
+        .mockResolvedValueOnce({ data: { values: returnedComments1stCall } }) // first call to get comments
+        .mockResolvedValueOnce({ data: { values: returnedComments2ndCall } }); // second call to get comments
+      const comments = await getLastNComments(sheetsClient, n, exampleKnownUrl1, sheet);
+      expect(MOCK_SHEETS.spreadsheets.values.get.mock.calls[0][0]).toEqual({
+        spreadsheetId: 'testSheetID',
+        range: 'Metadata!A2'
+      });
+      expect(MOCK_SHEETS.spreadsheets.values.get.mock.calls[1][0]).toEqual({
+        spreadsheetId: SHEET_CONFIGS[sheet].sheetId,
+        range: 'Sheet1!A4:B7'
+      });
+      expect(MOCK_SHEETS.spreadsheets.values.get.mock.calls[2][0]).toEqual({
+        spreadsheetId: SHEET_CONFIGS[sheet].sheetId,
+        range: 'Sheet1!A2:B3'
+      });
+      expect(comments).toEqual(expectedComments);
+      expect(MOCK_SHEETS.spreadsheets.values.get).toHaveBeenCalledTimes(3);
+    });
 
     it('should throw an error when failing to get row count from getTotalRows', async () => {
       // first call within getTotalRows fails
@@ -102,9 +284,10 @@ describe('google-sheets', () => {
         new Error('Failed to get row count')
       );
       const sheetsClient = google.sheets('v4');
-      await expect(getLastNComments(sheetsClient, 2)).rejects.toThrow(
-        'Google Sheets API failed to get data size: Failed to get row count'
-      );
+      await expect(
+        getLastNComments(sheetsClient, 10, exampleKnownUrl1, sheet)
+      ).rejects.toThrow(
+        'Google Sheets API failed to get data size: Failed to get row count')
     });
 
     it('should throw an error when failing to get comments', async () => {
@@ -116,7 +299,9 @@ describe('google-sheets', () => {
         new Error('Failed to fetch comments')
       );
       const sheetsClient = google.sheets('v4');
-      await expect(getLastNComments(sheetsClient, 2)).rejects.toThrow(
+      await expect(
+        getLastNComments(sheetsClient, 10, exampleKnownUrl1, sheet)
+      ).rejects.toThrow(
         'Google Sheets API failed to get input data: Failed to fetch comments'
       );
     });
