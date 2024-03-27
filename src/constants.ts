@@ -4,29 +4,36 @@ const FEEDBACK_LARGE_BATCH_SIZE = 5000;
 const FEEDBACK_WIDGET_URLS = {
   'uistatus.dol.state.nj.us': {
     batchSize: FEEDBACK_SMALL_BATCH_SIZE,
-    prompt: 'applying for Unimployment Insurance benefits'
+    prompt: 'applying for Unimployment Insurance benefits',
+    tabName: 'uistatus'
+
   },
   'maternity/timeline-tool': {
     batchSize: FEEDBACK_LARGE_BATCH_SIZE,
-    prompt: 'using the Maternity Timeline Tool'
+    prompt: 'using the Maternity Timeline Tool',
+    tabName: 'maternity-timeline'
   },
   'claims-status.shtml': {
     batchSize: FEEDBACK_LARGE_BATCH_SIZE,
     prompt:
-      'using an FAQ page explaining what happens after applying for Temporary Disability or Family Leave benefits'
+      'using an FAQ page explaining what happens after applying for Temporary Disability or Family Leave benefits',
+    tabName: 'claims-status'
   },
   'login-update': {
     batchSize: FEEDBACK_LARGE_BATCH_SIZE,
     prompt:
-      'using a page explaining a new way to login system for Temporary Disability and Family Leave benefits'
+      'using a page explaining a new way to login system for Temporary Disability and Family Leave benefits',
+    tabName: 'login-update'
   },
   transgender: {
     batchSize: FEEDBACK_LARGE_BATCH_SIZE,
-    prompt: 'using the New Jersey Transgender Infomation Hub'
+    prompt: 'using the New Jersey Transgender Infomation Hub',
+    tabName: 'transgender'
   },
   basicneeds: {
     batchSize: FEEDBACK_LARGE_BATCH_SIZE,
-    prompt: 'using the New Jersey Basic Needs Hub'
+    prompt: 'using the New Jersey Basic Needs Hub',
+    tabName: 'basicneeds'
   }
 };
 
@@ -36,21 +43,31 @@ const PFL_SHEET_URLS = {
   'Claim detail': {
     batchSize: PFL_BATCH_SIZE,
     prompt:
-      'after seeing the `Claim detail` page in the Temporary Disability & Family Leave benefits tool'
+      'after seeing the `Claim detail` page in the Temporary Disability & Family Leave benefits tool',
+    tabName: 'claim-detail'
   },
   Other: {
     batchSize: PFL_BATCH_SIZE,
-    prompt: 'after using the Temporary Disability & Family Leave benefits tool'
+    prompt: 'after using the Temporary Disability & Family Leave benefits tool',
+    tabName: 'other'
   },
   'Payment detail': {
     batchSize: PFL_BATCH_SIZE,
     prompt:
-      'after seeing the `Payment detail` page in the Temporary Disability & Family Leave benefits tool'
+      'after seeing the `Payment detail` page in the Temporary Disability & Family Leave benefits tool',
+    tabName: 'payment-detail'
   },
   'Application received': {
     batchSize: PFL_BATCH_SIZE,
     prompt:
-      'after seeing the `Application Received` page in the Temporary Disability & Family Leave benefits tool'
+      'after seeing the `Application Received` page in the Temporary Disability & Family Leave benefits tool',
+    tabName: 'application-received'
+  },
+  'No claim on file': {
+    batchSize: PFL_BATCH_SIZE,
+    prompt:
+      'after seeing the `No claim on file` page in the Temporary Disability & Family Leave benefits tool',
+    tabName: 'no-claim'
   }
 };
 
