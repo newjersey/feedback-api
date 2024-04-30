@@ -4,5 +4,5 @@ export default {
     pageURL: { type: 'string' },
     sheet: { type: 'string' }
   },
-  required: ['pageURL']
+  required: ['sheet']
 } as const;

@@ -8,24 +8,29 @@ import { SHEET_CONFIGS } from '../../constants';
 import { middyfy } from '@libs/lambda';
 import schema from './schema';
 import { getSummary } from '@libs/chat-gpt';
-import { resolvedUrl } from '@libs/url-resolver';
+import { getSheetTab } from '@libs/tab-resolver';
 
 
 const INPUT_SIZE = 1000; // Maximum number of comments to summarize
 const summary: ValidatedEventAPIGatewayProxyEvent<typeof schema> = async (
   event
 ) => {
-  const { pageURL } = event.body;
-  const sheet =
-    event.body.sheet !== undefined ? event.body.sheet : 'feedbackWidget';
-  const resolvedURL = resolvedUrl(pageURL, sheet);
+  const { sheet, pageURL } = event.body;
+  const { resolvedUrl, sheetTabName,useDefaultSheet } = getSheetTab(pageURL, sheet);
   try {
     const client = await getAuthClient();
+    console.log('pageURL',pageURL,'resolvedUrl', resolvedUrl, 'sheetTabName', sheetTabName, 'sheet', sheet)
+// pageURL https://www.nj.gov/labor/myleavebenefits/worker/resources/login-update.shtml
+//resolvedUrl login-update.shtml 
+//sheetTabName login-update 
+//sheet feedbackWidget
     const comments = await getLastNComments(
       client,
       INPUT_SIZE,
-      resolvedURL,
-      sheet
+      resolvedUrl, 
+      sheetTabName, // known: claim-detail, unknown: Result
+      sheet, // pflSheet
+      useDefaultSheet
     );
     if (comments.length === 0) {
       return formatJSONResponse({
@@ -33,18 +38,23 @@ const summary: ValidatedEventAPIGatewayProxyEvent<typeof schema> = async (
         dataSize: 0
       });
     }
+    const columnMap = useDefaultSheet
+        ? SHEET_CONFIGS[sheet].defaultColumnMap
+        : SHEET_CONFIGS[sheet].filteredColumnMap;
+
     const cleanedComments = comments.map((v) =>
-      v[SHEET_CONFIGS[sheet].columnOrder.Comment].trim()
+      v[columnMap.Comment[1]].trim()
     );
-    const dataSummary = await getSummary(cleanedComments, sheet, resolvedURL);
+
+    const dataSummary = await getSummary(cleanedComments, sheet, sheetTabName); //pflSheet, other
     return formatJSONResponse({
       message: 'Success',
       dataSummary,
       dataSize: comments.length,
-      dataStart: comments[0][SHEET_CONFIGS[sheet].columnOrder.Timestamp],
+      dataStart: comments[0][SHEET_CONFIGS[sheet].defaultColumnMap.Timestamp[1]],
       dataEnd:
         comments[comments.length - 1][
-          SHEET_CONFIGS[sheet].columnOrder.Timestamp
+          SHEET_CONFIGS[sheet].defaultColumnMap.Timestamp[1]
         ]
     });
   } catch (e) {

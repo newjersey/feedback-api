@@ -17,6 +17,8 @@ const SHEETS_COLUMN_MAP: { [K in Feedback]: 'A' | 'B' | 'C' | 'D' | 'E' } = {
   [Feedback.Comment]: 'D',
   [Feedback.Email]: 'E'
 };
+
+
 const SHEET_NAME = 'Sheet1';
 
 export async function getAuthClient() {
@@ -35,11 +37,15 @@ export async function getAuthClient() {
 }
 
 // only used within getLastNIterative function
-async function getTotalRows(sheetsClient: sheets_v4.Sheets, sheet) {
+async function getTotalRows(sheetsClient: sheets_v4.Sheets, sheet:string,sheetTabName:string, useDefaultSheet:boolean) {
   try {
+
+    const rangeValue = useDefaultSheet
+      ? SHEET_CONFIGS[sheet].totalRowsRange
+      : SHEET_CONFIGS[sheet].urls[sheetTabName]?.totalRowsRange;
     const result = await sheetsClient.spreadsheets.values.get({
       spreadsheetId: SHEET_CONFIGS[sheet].sheetId,
-      range: SHEET_CONFIGS[sheet].totalRowsRange
+      range: rangeValue
     });
     return parseInt(result.data.values[0][0]);
   } catch (e) {
@@ -51,25 +57,52 @@ export async function getLastNComments(
   sheetsClient: sheets_v4.Sheets,
   n: number,
   pageURL: string,
-  sheet: string
+  sheetTabName: string, // known: claim-detail, unknown: Result
+  sheet: string, // pflSheet
+  useDefaultSheet:boolean
 ): Promise<string[][]> {
+
+  // pageURL https://www.nj.gov/labor/myleavebenefits/worker/resources/login-update.shtml
+//resolvedUrl login-update.shtml 
+//sheetTabName login-update 
+//sheet feedbackWidget
+  console.log('pageUrl in getLastN', pageURL) // Other
   try {
-    const totalRows = await getTotalRows(sheetsClient, sheet);
+    const totalRows = await getTotalRows(
+      sheetsClient,
+      sheet,
+      sheetTabName,
+      useDefaultSheet
+    );
+    console.log('totalRows', totalRows, 'useDefaultSheet', useDefaultSheet);
     if (totalRows < 2) return [];
     let accumulatedComments = [];
     let currentBatchEnd = totalRows;
-    const batchSize = SHEET_CONFIGS[sheet].urls[pageURL].batchSize;
+    const batchSize = useDefaultSheet
+      ? SHEET_CONFIGS[sheet].defaultBatchSize
+      : SHEET_CONFIGS[sheet].urls[sheetTabName]?.batchSize;
+    console.log('batchSize', batchSize);
     while (accumulatedComments.length < n && currentBatchEnd > 1) {
       const currentBatchStart = Math.max(currentBatchEnd - batchSize + 1, 2);
+      //  Results!A2:E783
+      const columnMap = useDefaultSheet
+        ? SHEET_CONFIGS[sheet].defaultColumnMap
+        : SHEET_CONFIGS[sheet].filteredColumnMap;
+
+//  console.log('range in getLastN', `${sheetTabName}!A${currentBatchStart}:${columnMap.Comment[0]}${currentBatchEnd}`)
       const result = await sheetsClient.spreadsheets.values.get({
         spreadsheetId: SHEET_CONFIGS[sheet].sheetId,
-        range: `${SHEET_CONFIGS[sheet].sheetName}!A${currentBatchStart}:${SHEET_CONFIGS[sheet].columnMap.Comment}${currentBatchEnd}`
+        range: `${sheetTabName}!A${currentBatchStart}:${columnMap.Comment[0]}${currentBatchEnd}`
+        // range: `${sheetTabName}!A${currentBatchStart}:${SHEET_CONFIGS[sheet].defaultColumnMap.Comment[0]}${currentBatchEnd}`
       });
+      // console.log('result',result.data.values.map(x=>x[SHEET_CONFIGS[sheet].defaultColumnMap.Comment[1]]).slice(0,4))
+      // may want to add behavior ot not filter when url is known
       const filteredRows = result.data.values?.filter(
         (v) =>
-          v[SHEET_CONFIGS[sheet].columnOrder.PageURL].includes(pageURL) &&
-          v[SHEET_CONFIGS[sheet].columnOrder.Comment]
+          v[columnMap.PageURL[1]].includes(pageURL) &&
+          v[columnMap.Comment[1]]
       );
+      // console.log('filteredRows',filteredRows.slice(0,4))
       accumulatedComments = [...filteredRows, ...accumulatedComments];
       currentBatchEnd = currentBatchStart - 1;
       if (accumulatedComments.length > n) {

@@ -43,13 +43,9 @@ jest.mock('../constants', () => ({
           batchSize: 4
         }
       },
-      columnMap: {
-        PageURL: 'A',
-        Comment: 'B'
-      },
-      columnOrder: {
-        PageURL: 0,
-        Comment: 1
+      defaultColumnMap: {
+        PageURL: ['A',0],
+        Comment: ['B',1]
       }
     }
   }
