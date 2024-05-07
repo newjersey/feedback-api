@@ -37,7 +37,12 @@ export async function getAuthClient() {
 }
 
 // only used within getLastNIterative function
-async function getTotalRows(sheetsClient: sheets_v4.Sheets, sheet:string,sheetTabName:string, useDefaultSheet:boolean) {
+async function getTotalRows(
+  sheetsClient: sheets_v4.Sheets,
+  sheet: string,
+  sheetTabName: string,
+  useDefaultSheet: boolean
+) {
   try {
 
     const rangeValue = useDefaultSheet
