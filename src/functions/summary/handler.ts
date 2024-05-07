@@ -10,7 +10,6 @@ import schema from './schema';
 import { getSummary } from '@libs/chat-gpt';
 import { getSheetTab } from '@libs/tab-resolver';
 
-
 const INPUT_SIZE = 1000; // Maximum number of comments to summarize
 const summary: ValidatedEventAPIGatewayProxyEvent<typeof schema> = async (
   event
@@ -27,15 +26,10 @@ const summary: ValidatedEventAPIGatewayProxyEvent<typeof schema> = async (
   );
   try {
     const client = await getAuthClient();
-    console.log('pageURL',pageURL,'resolvedUrl', resolvedUrl, 'sheetTabName', sheetTabName, 'sheet', sheet)
-// pageURL https://www.nj.gov/labor/myleavebenefits/worker/resources/login-update.shtml
-//resolvedUrl login-update.shtml 
-//sheetTabName login-update 
-//sheet feedbackWidget
     const comments = await getLastNComments(
       client,
       INPUT_SIZE,
-      resolvedUrl, 
+      resolvedUrl,
       sheetTabName, // known: claim-detail, unknown: Result
       sheet, // pflSheet
       useDefaultSheet
@@ -47,19 +41,18 @@ const summary: ValidatedEventAPIGatewayProxyEvent<typeof schema> = async (
       });
     }
     const columnMap = useDefaultSheet
-        ? SHEET_CONFIGS[sheet].defaultColumnMap
-        : SHEET_CONFIGS[sheet].filteredColumnMap;
+      ? SHEET_CONFIGS[sheet].defaultColumnMap
+      : SHEET_CONFIGS[sheet].filteredColumnMap;
 
-    const cleanedComments = comments.map((v) =>
-      v[columnMap.Comment[1]].trim()
-    );
+    const cleanedComments = comments.map((v) => v[columnMap.Comment[1]].trim());
 
     const dataSummary = await getSummary(cleanedComments, sheet, sheetTabName); //pflSheet, other
     return formatJSONResponse({
       message: 'Success',
       dataSummary,
       dataSize: comments.length,
-      dataStart: comments[0][SHEET_CONFIGS[sheet].defaultColumnMap.Timestamp[1]],
+      dataStart:
+        comments[0][SHEET_CONFIGS[sheet].defaultColumnMap.Timestamp[1]],
       dataEnd:
         comments[comments.length - 1][
           SHEET_CONFIGS[sheet].defaultColumnMap.Timestamp[1]
