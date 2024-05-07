@@ -44,7 +44,6 @@ async function getTotalRows(
   useDefaultSheet: boolean
 ) {
   try {
-
     const rangeValue = useDefaultSheet
       ? SHEET_CONFIGS[sheet].totalRowsRange
       : SHEET_CONFIGS[sheet].urls[sheetTabName]?.totalRowsRange;
@@ -64,14 +63,8 @@ export async function getLastNComments(
   pageURL: string,
   sheetTabName: string, // known: claim-detail, unknown: Result
   sheet: string, // pflSheet
-  useDefaultSheet:boolean
+  useDefaultSheet: boolean
 ): Promise<string[][]> {
-
-  // pageURL https://www.nj.gov/labor/myleavebenefits/worker/resources/login-update.shtml
-//resolvedUrl login-update.shtml 
-//sheetTabName login-update 
-//sheet feedbackWidget
-  console.log('pageUrl in getLastN', pageURL) // Other
   try {
     const totalRows = await getTotalRows(
       sheetsClient,
@@ -79,35 +72,26 @@ export async function getLastNComments(
       sheetTabName,
       useDefaultSheet
     );
-    console.log('totalRows', totalRows, 'useDefaultSheet', useDefaultSheet);
     if (totalRows < 2) return [];
     let accumulatedComments = [];
     let currentBatchEnd = totalRows;
     const batchSize = useDefaultSheet
       ? SHEET_CONFIGS[sheet].defaultBatchSize
       : SHEET_CONFIGS[sheet].urls[sheetTabName]?.batchSize;
-    console.log('batchSize', batchSize);
     while (accumulatedComments.length < n && currentBatchEnd > 1) {
       const currentBatchStart = Math.max(currentBatchEnd - batchSize + 1, 2);
-      //  Results!A2:E783
       const columnMap = useDefaultSheet
         ? SHEET_CONFIGS[sheet].defaultColumnMap
         : SHEET_CONFIGS[sheet].filteredColumnMap;
-
-//  console.log('range in getLastN', `${sheetTabName}!A${currentBatchStart}:${columnMap.Comment[0]}${currentBatchEnd}`)
       const result = await sheetsClient.spreadsheets.values.get({
         spreadsheetId: SHEET_CONFIGS[sheet].sheetId,
         range: `${sheetTabName}!A${currentBatchStart}:${columnMap.Comment[0]}${currentBatchEnd}`
-        // range: `${sheetTabName}!A${currentBatchStart}:${SHEET_CONFIGS[sheet].defaultColumnMap.Comment[0]}${currentBatchEnd}`
       });
-      // console.log('result',result.data.values.map(x=>x[SHEET_CONFIGS[sheet].defaultColumnMap.Comment[1]]).slice(0,4))
       // may want to add behavior ot not filter when url is known
       const filteredRows = result.data.values?.filter(
         (v) =>
-          v[columnMap.PageURL[1]].includes(pageURL) &&
-          v[columnMap.Comment[1]]
+          v[columnMap.PageURL[1]].includes(pageURL) && v[columnMap.Comment[1]]
       );
-      // console.log('filteredRows',filteredRows.slice(0,4))
       accumulatedComments = [...filteredRows, ...accumulatedComments];
       currentBatchEnd = currentBatchStart - 1;
       if (accumulatedComments.length > n) {
