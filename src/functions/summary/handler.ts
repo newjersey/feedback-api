@@ -16,7 +16,15 @@ const summary: ValidatedEventAPIGatewayProxyEvent<typeof schema> = async (
   event
 ) => {
   const { sheet, pageURL } = event.body;
-  const { resolvedUrl, sheetTabName,useDefaultSheet } = getSheetTab(pageURL, sheet);
+  if (!SHEET_CONFIGS[sheet]) {
+    return formatErrorResponse({
+      message: `POST /summary failed with error: Sheet ${sheet} not found`
+    });
+  }
+  const { resolvedUrl, sheetTabName, useDefaultSheet } = getSheetTab(
+    pageURL,
+    sheet
+  );
   try {
     const client = await getAuthClient();
     console.log('pageURL',pageURL,'resolvedUrl', resolvedUrl, 'sheetTabName', sheetTabName, 'sheet', sheet)
