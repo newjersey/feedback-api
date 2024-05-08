@@ -14,7 +14,7 @@ const INPUT_SIZE = 1000; // Maximum number of comments to summarize
 const summary: ValidatedEventAPIGatewayProxyEvent<typeof schema> = async (
   event
 ) => {
-  const { sheet, pageURL } = event.body;
+  const { sheet, pageURL, startDate, endDate } = event.body;
   if (!SHEET_CONFIGS[sheet]) {
     return formatErrorResponse({
       message: `POST /summary failed with error: Sheet ${sheet} not found`
@@ -32,7 +32,9 @@ const summary: ValidatedEventAPIGatewayProxyEvent<typeof schema> = async (
       resolvedUrl,
       sheetTabName, // known: claim-detail, unknown: Result
       sheet, // pflSheet
-      useDefaultSheet
+      useDefaultSheet,
+      startDate,
+      endDate
     );
     if (comments.length === 0) {
       return formatJSONResponse({
@@ -52,10 +54,10 @@ const summary: ValidatedEventAPIGatewayProxyEvent<typeof schema> = async (
       dataSummary,
       dataSize: comments.length,
       dataStart:
-        comments[0][SHEET_CONFIGS[sheet].defaultColumnMap.Timestamp[1]],
+        comments[0][columnMap.Timestamp[1]],
       dataEnd:
         comments[comments.length - 1][
-          SHEET_CONFIGS[sheet].defaultColumnMap.Timestamp[1]
+          columnMap.Timestamp[1]
         ]
     });
   } catch (e) {

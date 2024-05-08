@@ -1,6 +1,6 @@
 import { google, sheets_v4 } from 'googleapis';
 import { SHEET_CONFIGS } from '../constants';
-
+import { isDateInRange, dateResolver } from './date-funcs';
 // Feedback enum + SHEETS_COLUMN_MAP currently used in updateFeedback
 export enum Feedback {
   PageURL,
@@ -62,7 +62,9 @@ export async function getLastNComments(
   pageURL: string,
   sheetTabName: string, // known: claim-detail, unknown: Result
   sheet: string, // pflSheet
-  useDefaultSheet: boolean
+  useDefaultSheet: boolean,
+  startDate: string,
+  endDate: string
 ): Promise<string[][]> {
   try {
     const totalRows = await getTotalRows(
@@ -87,11 +89,29 @@ export async function getLastNComments(
         range: `${sheetTabName}!A${currentBatchStart}:${columnMap.Comment[0]}${currentBatchEnd}`
       });
       let batchRows = result.data.values;
-      if (useDefaultSheet) { // only filter by pageURL if using default sheet
-        batchRows = result.data.values?.filter(
-          (v) =>
-            v[columnMap.PageURL[1]].includes(pageURL) && v[columnMap.Comment[1]]
-        );
+      const filterByDate = !!startDate || !!endDate
+      if (useDefaultSheet || filterByDate) {
+        batchRows = result.data.values?.filter((v) => {
+          const dateOfComment = v[columnMap.Timestamp[1]];
+          const urlFilterMatches = v[columnMap.PageURL[1]].includes(pageURL); 
+          const rowCommentIsNotBlank = !!v[columnMap.Comment[1]];
+          const dateFilterMatches = isDateInRange(
+            startDate,
+            endDate,
+            dateOfComment
+          );
+          if (useDefaultSheet && !filterByDate) {
+            return urlFilterMatches && rowCommentIsNotBlank;
+          }
+          if (!useDefaultSheet && filterByDate) {
+            return dateFilterMatches;
+          }
+          if (useDefaultSheet && filterByDate) {
+            return (
+              urlFilterMatches && rowCommentIsNotBlank && dateFilterMatches
+            );
+          }
+        });
       }
       accumulatedComments = [...batchRows, ...accumulatedComments];
       currentBatchEnd = currentBatchStart - 1;

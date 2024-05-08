@@ -2,7 +2,9 @@ export default {
   type: 'object',
   properties: {
     pageURL: { type: 'string' },
-    sheet: { type: 'string' }
+    sheet: { type: 'string' },
+    startDate: { type: 'string' },
+    endDate: { type: 'string' }
   },
-  required: ['sheet']
+  required: ['sheet', 'pageURL']
 } as const;
