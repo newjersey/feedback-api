@@ -18,7 +18,6 @@ const SHEETS_COLUMN_MAP: { [K in Feedback]: 'A' | 'B' | 'C' | 'D' | 'E' } = {
   [Feedback.Email]: 'E'
 };
 
-
 const SHEET_NAME = 'Sheet1';
 
 export async function getAuthClient() {
@@ -87,12 +86,14 @@ export async function getLastNComments(
         spreadsheetId: SHEET_CONFIGS[sheet].sheetId,
         range: `${sheetTabName}!A${currentBatchStart}:${columnMap.Comment[0]}${currentBatchEnd}`
       });
-      // may want to add behavior ot not filter when url is known
-      const filteredRows = result.data.values?.filter(
-        (v) =>
-          v[columnMap.PageURL[1]].includes(pageURL) && v[columnMap.Comment[1]]
-      );
-      accumulatedComments = [...filteredRows, ...accumulatedComments];
+      let batchRows = result.data.values;
+      if (useDefaultSheet) { // only filter by pageURL if using default sheet
+        batchRows = result.data.values?.filter(
+          (v) =>
+            v[columnMap.PageURL[1]].includes(pageURL) && v[columnMap.Comment[1]]
+        );
+      }
+      accumulatedComments = [...batchRows, ...accumulatedComments];
       currentBatchEnd = currentBatchStart - 1;
       if (accumulatedComments.length > n) {
         accumulatedComments = accumulatedComments.slice(-n);
