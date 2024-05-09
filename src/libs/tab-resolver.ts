@@ -16,7 +16,7 @@ export const getSheetTab = (
       };
     }
   }
-  // if the URL isn't known, return Url and use the parent sheet
+  // if the URL isn't known, return full URL and use the parent sheet's default tab
   return {
     useDefaultSheet: true,
     resolvedUrl: requestUrl,
