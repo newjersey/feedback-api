@@ -2,54 +2,74 @@ const batchNsmall = 1100;
 const batchNLarge = 5000;
 const rowCountPrefix = 'Metadata!';
 
-const filteredSheetConfig = {
-  Timestamp: ['A', 0],
-  PageURL: ['B', 1],
-  Comment: ['C', 2]
+type ChildUrlConfig = {
+  batchSize: number;
+  prompt: string;
+  url: string;
+  totalRowsRange: string;
 };
 
-const feedbackWidgetUrls = {
+type PageChildUrls = {
+  [key: string]: ChildUrlConfig;
+};
+
+type ParentSheetConfig = {
+  sheetId: string;
+  totalRowsRange: string;
+  tabName: string;
+  defaultBatchSize: number;
+  urls: PageChildUrls;
+  defaultColumnMap: { [key: string]: [string, number] };
+  filteredColumnMap: { [key: string]: [string, number] };
+};
+
+type SheetConfigs = {
+  feedbackWidget: ParentSheetConfig;
+  pflSheet: ParentSheetConfig;
+};
+
+const feedbackWidgetUrls: PageChildUrls = {
   uistatus: {
-    batchSize: batchNsmall, // Assuming a variable placeholder
+    batchSize: batchNsmall,
     prompt: 'applying for Unemployment Insurance benefits',
     url: 'uistatus.dol.state.nj.us',
     totalRowsRange: `${rowCountPrefix}A2`
   },
   'maternity-timeline': {
-    batchSize: batchNLarge,
+    batchSize: batchNsmall,
     prompt: 'using the Maternity Timeline Tool',
     url: 'maternity/timeline-tool',
     totalRowsRange: `${rowCountPrefix}A8`
   },
   'claims-status': {
-    batchSize: batchNLarge,
+    batchSize: batchNsmall,
     prompt:
       'using an FAQ page explaining what happens after applying for Temporary Disability or Family Leave benefits',
     url: 'claims-status.shtml',
     totalRowsRange: `${rowCountPrefix}A11`
   },
   'login-update': {
-    batchSize: batchNLarge,
+    batchSize: batchNsmall,
     prompt:
       'using a page explaining a new way to login system for Temporary Disability and Family Leave benefits',
     url: 'login-update.shtml',
     totalRowsRange: `${rowCountPrefix}A14`
   },
   basicneeds: {
-    batchSize: batchNLarge,
+    batchSize: batchNsmall,
     prompt: 'using the New Jersey Basic Needs Hub',
     url: 'basicneeds',
     totalRowsRange: `${rowCountPrefix}A17`
   },
   transgender: {
-    batchSize: batchNLarge,
+    batchSize: batchNsmall,
     prompt: 'using the New Jersey Transgender Information Hub',
     url: 'transgender',
     totalRowsRange: `${rowCountPrefix}A20`
   }
 };
 
-const pflSheetUrls = {
+const pflSheetUrls: PageChildUrls = {
   'claim-detail': {
     batchSize: batchNsmall,
     prompt:
@@ -86,7 +106,8 @@ const pflSheetUrls = {
   }
 };
 
-export const SHEET_CONFIGS = {
+
+export const SHEET_CONFIGS: SheetConfigs = {
   feedbackWidget: {
     sheetId: process.env.SHEET_ID,
     totalRowsRange: 'Metadata!A2',
@@ -100,7 +121,11 @@ export const SHEET_CONFIGS = {
       Comment: ['D', 3],
       Email: ['E', 4]
     },
-    filteredColumnMap: filteredSheetConfig
+    filteredColumnMap: {
+      Timestamp: ['A', 0],
+      PageURL: ['B', 1],
+      Comment: ['C', 2]
+    }
   },
   pflSheet: {
     sheetId: process.env.PFL_SHEET_ID,
@@ -115,6 +140,10 @@ export const SHEET_CONFIGS = {
       Rating: ['D', 3],
       Comment: ['E', 4]
     },
-    filteredColumnMap: filteredSheetConfig
+    filteredColumnMap: {
+      Timestamp: ['A', 0],
+      PageURL: ['B', 1],
+      Comment: ['C', 2]
+    }
   }
 };
