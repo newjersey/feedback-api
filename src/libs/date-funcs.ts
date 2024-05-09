@@ -19,15 +19,12 @@ export const isDateInRange = (startDateRange, endDateRange, commentDate) => {
   if (startDateRange === undefined && endDateRange === undefined) {
     return true;
   }
-
   if (startDateRange !== undefined && endDateRange !== undefined) {
-    return resolvedDate >= resolvedStart && resolvedDate <= resolvedEnd
+    return resolvedDate >= resolvedStart && resolvedDate <= resolvedEnd;
   }
-
   if (startDateRange === undefined) {
     return resolvedDate <= resolvedEnd;
   }
-
   if (endDateRange === undefined) {
     return resolvedDate >= resolvedStart;
   }

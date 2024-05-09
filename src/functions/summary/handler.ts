@@ -9,6 +9,7 @@ import { middyfy } from '@libs/lambda';
 import schema from './schema';
 import { getSummary } from '@libs/chat-gpt';
 import { getSheetTab } from '@libs/tab-resolver';
+import { resolve } from 'path';
 
 const INPUT_SIZE = 1000; // Maximum number of comments to summarize
 const summary: ValidatedEventAPIGatewayProxyEvent<typeof schema> = async (
@@ -24,14 +25,15 @@ const summary: ValidatedEventAPIGatewayProxyEvent<typeof schema> = async (
     pageURL,
     sheet
   );
+  console.log('test',resolvedUrl, sheetTabName, useDefaultSheet)
   try {
     const client = await getAuthClient();
     const comments = await getLastNComments(
       client,
       INPUT_SIZE,
       resolvedUrl,
-      sheetTabName, // known: claim-detail, unknown: Result
-      sheet, // pflSheet
+      sheetTabName,
+      sheet,
       useDefaultSheet,
       startDate,
       endDate
@@ -53,12 +55,8 @@ const summary: ValidatedEventAPIGatewayProxyEvent<typeof schema> = async (
       message: 'Success',
       dataSummary,
       dataSize: comments.length,
-      dataStart:
-        comments[0][columnMap.Timestamp[1]],
-      dataEnd:
-        comments[comments.length - 1][
-          columnMap.Timestamp[1]
-        ]
+      dataStart: comments[0][columnMap.Timestamp[1]],
+      dataEnd: comments[comments.length - 1][columnMap.Timestamp[1]]
     });
   } catch (e) {
     const message = e instanceof Error ? e.message : 'No further details';
