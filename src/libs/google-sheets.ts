@@ -1,6 +1,6 @@
 import { google, sheets_v4 } from 'googleapis';
 import { SHEET_CONFIGS } from '../constants';
-import { isDateInRange, dateResolver } from './date-funcs';
+import { isDateInRange } from './date-funcs';
 // Feedback enum + SHEETS_COLUMN_MAP currently used in updateFeedback
 export enum Feedback {
   PageURL,
@@ -89,11 +89,11 @@ export async function getLastNComments(
         range: `${sheetTabName}!A${currentBatchStart}:${columnMap.Comment[0]}${currentBatchEnd}`
       });
       let batchRows = result.data.values;
-      const filterByDate = !!startDate || !!endDate
+      const filterByDate = !!startDate || !!endDate;
       if (useDefaultSheet || filterByDate) {
         batchRows = result.data.values?.filter((v) => {
           const dateOfComment = v[columnMap.Timestamp[1]];
-          const urlFilterMatches = v[columnMap.PageURL[1]].includes(pageURL); 
+          const urlFilterMatches = v[columnMap.PageURL[1]].includes(pageURL);
           const rowCommentIsNotBlank = !!v[columnMap.Comment[1]];
           const dateFilterMatches = isDateInRange(
             startDate,
