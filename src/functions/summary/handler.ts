@@ -9,7 +9,6 @@ import { middyfy } from '@libs/lambda';
 import schema from './schema';
 import { getSummary } from '@libs/chat-gpt';
 import { getSheetTab } from '@libs/tab-resolver';
-import { resolve } from 'path';
 
 const INPUT_SIZE = 1000; // Maximum number of comments to summarize
 const summary: ValidatedEventAPIGatewayProxyEvent<typeof schema> = async (
@@ -25,7 +24,6 @@ const summary: ValidatedEventAPIGatewayProxyEvent<typeof schema> = async (
     pageURL,
     sheet
   );
-  console.log('test',resolvedUrl, sheetTabName, useDefaultSheet)
   try {
     const client = await getAuthClient();
     const comments = await getLastNComments(
