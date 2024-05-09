@@ -4,7 +4,6 @@ import { OpenAIClient } from '@azure/openai';
 
 jest.mock('../constants', () => ({
   SHEET_CONFIGS: {
-    tabName: 'DefaultParentTab1',
     exampleSheet1: {
       tabName: 'DefaultParentTab1',
       urls: {
