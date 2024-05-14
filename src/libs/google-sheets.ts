@@ -63,8 +63,8 @@ export async function getLastNComments(
   sheetTabName: string, // known: claim-detail, unknown: Result
   sheet: string, // pflSheet
   useDefaultSheet: boolean,
-  startDate: string,
-  endDate: string
+  startDate?: string,
+  endDate?: string
 ): Promise<string[][]> {
   try {
     const totalRows = await getTotalRows(
@@ -75,23 +75,26 @@ export async function getLastNComments(
     );
     if (totalRows < 2) return [];
     let accumulatedComments = [];
+    let batchSize;
+    let columnMap;
+    if (useDefaultSheet) {
+      batchSize = SHEET_CONFIGS[sheet].defaultBatchSize;
+      columnMap = SHEET_CONFIGS[sheet].defaultColumnMap;
+    } else {
+      batchSize = SHEET_CONFIGS[sheet].urls[sheetTabName]?.batchSize;
+      columnMap = SHEET_CONFIGS[sheet].filteredColumnMap;
+    }
     let currentBatchEnd = totalRows;
-    const batchSize = useDefaultSheet
-      ? SHEET_CONFIGS[sheet].defaultBatchSize
-      : SHEET_CONFIGS[sheet].urls[sheetTabName]?.batchSize;
     while (accumulatedComments.length < n && currentBatchEnd > 1) {
       const currentBatchStart = Math.max(currentBatchEnd - batchSize + 1, 2);
-      const columnMap = useDefaultSheet
-        ? SHEET_CONFIGS[sheet].defaultColumnMap
-        : SHEET_CONFIGS[sheet].filteredColumnMap;
       const result = await sheetsClient.spreadsheets.values.get({
         spreadsheetId: SHEET_CONFIGS[sheet].sheetId,
         range: `${sheetTabName}!A${currentBatchStart}:${columnMap.Comment[0]}${currentBatchEnd}`
       });
-      let batchRows = result.data.values;
+      let batchOfRows = result.data.values;
       const filterByDate = !!startDate || !!endDate;
       if (useDefaultSheet || filterByDate) {
-        batchRows = result.data.values?.filter((v) => {
+        batchOfRows = result.data.values?.filter((v) => {
           const dateOfComment = v[columnMap.Timestamp[1]];
           const urlFilterMatches = v[columnMap.PageURL[1]].includes(pageURL);
           const rowCommentIsNotBlank = !!v[columnMap.Comment[1]];
