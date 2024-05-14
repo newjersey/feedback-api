@@ -113,11 +113,12 @@ export async function getLastNComments(
           }
         });
       }
-      accumulatedComments = [...batchRows, ...accumulatedComments];
       currentBatchEnd = currentBatchStart - 1;
-      if (accumulatedComments.length > n) {
-        accumulatedComments = accumulatedComments.slice(-n);
+      if (accumulatedComments.length + batchOfRows.length > n) {
+        const overflow = accumulatedComments.length + batchOfRows.length - n;
+        batchOfRows = batchOfRows.slice(overflow);
       }
+      accumulatedComments = [...batchOfRows, ...accumulatedComments];
     }
     return accumulatedComments;
   } catch (e) {
