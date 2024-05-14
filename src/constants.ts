@@ -31,39 +31,39 @@ type SheetConfigs = {
 const feedbackWidgetUrls: PageChildUrls = {
   uistatus: {
     batchSize: batchNsmall,
-    prompt: 'applying for Unemployment Insurance benefits',
+    prompt: ' applying for Unemployment Insurance benefits',
     url: 'uistatus.dol.state.nj.us',
     totalRowsRange: `${rowCountPrefix}A2`
   },
   'maternity-timeline': {
     batchSize: batchNsmall,
-    prompt: 'using the Maternity Timeline Tool',
+    prompt: ' using the Maternity Timeline Tool',
     url: 'maternity/timeline-tool',
     totalRowsRange: `${rowCountPrefix}A8`
   },
   'claims-status': {
     batchSize: batchNsmall,
     prompt:
-      'using an FAQ page explaining what happens after applying for Temporary Disability or Family Leave benefits',
+      ' using an FAQ page explaining what happens after applying for Temporary Disability or Family Leave benefits',
     url: 'claims-status.shtml',
     totalRowsRange: `${rowCountPrefix}A11`
   },
   'login-update': {
     batchSize: batchNsmall,
     prompt:
-      'using a page explaining a new way to login system for Temporary Disability and Family Leave benefits',
+      ' using a page explaining a new way to login system for Temporary Disability and Family Leave benefits',
     url: 'login-update.shtml',
     totalRowsRange: `${rowCountPrefix}A14`
   },
   basicneeds: {
     batchSize: batchNsmall,
-    prompt: 'using the New Jersey Basic Needs Hub',
+    prompt: ' using the New Jersey Basic Needs Hub',
     url: 'basicneeds',
     totalRowsRange: `${rowCountPrefix}A17`
   },
   transgender: {
     batchSize: batchNsmall,
-    prompt: 'using the New Jersey Transgender Information Hub',
+    prompt: ' using the New Jersey Transgender Information Hub',
     url: 'transgender',
     totalRowsRange: `${rowCountPrefix}A20`
   }
@@ -73,39 +73,38 @@ const pflSheetUrls: PageChildUrls = {
   'claim-detail': {
     batchSize: batchNsmall,
     prompt:
-      'after seeing the `Claim detail` page in the Temporary Disability & Family Leave benefits tool',
+      ' after seeing the `Claim detail` page in the Temporary Disability & Family Leave benefits tool',
     url: 'Claim detail',
     totalRowsRange: `${rowCountPrefix}A5`
   },
   other: {
     batchSize: batchNsmall,
-    prompt: 'after using the Temporary Disability & Family Leave benefits tool',
+    prompt: ' after using the Temporary Disability & Family Leave benefits tool',
     url: 'Other',
     totalRowsRange: `${rowCountPrefix}A17`
   },
   'payment-detail': {
     batchSize: batchNsmall,
     prompt:
-      'after seeing the `Payment detail` page in the Temporary Disability & Family Leave benefits tool',
+      ' after seeing the `Payment detail` page in the Temporary Disability & Family Leave benefits tool',
     url: 'Payment detail',
     totalRowsRange: `${rowCountPrefix}A8`
   },
   'application-received': {
     batchSize: batchNsmall,
     prompt:
-      'after seeing the `Application Received` page in the Temporary Disability & Family Leave benefits tool',
+      ' after seeing the `Application Received` page in the Temporary Disability & Family Leave benefits tool',
     url: 'Application received',
     totalRowsRange: `${rowCountPrefix}A11`
   },
   'no-claim': {
     batchSize: batchNsmall,
     prompt:
-      'after seeing the `No claim on file` page in the Temporary Disability & Family Leave benefits tool',
+      ' after seeing the `No claim on file` page in the Temporary Disability & Family Leave benefits tool',
     url: 'No claim on file',
     totalRowsRange: `${rowCountPrefix}A5`
   }
 };
-
 
 export const SHEET_CONFIGS: SheetConfigs = {
   feedbackWidget: {
