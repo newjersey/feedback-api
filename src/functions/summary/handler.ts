@@ -11,23 +11,26 @@ import { determineTabFromUrl } from '@libs/tab-resolver';
 
 const INPUT_SIZE_FREQUENT = 1000;
 const INPUT_SIZE_SPARSE = INPUT_SIZE_FREQUENT * 10;
+const MAX_COMMENTS = 1000;
 
 const summary: ValidatedEventAPIGatewayProxyEvent<typeof schema> = async (
   event
 ) => {
   const { pageURL } = event.body;
   const tabInfo = determineTabFromUrl(pageURL);
-  // console.log('tabInfo',tabInfo)
   const { columnMap } = tabInfo;
   const dataReach = tabInfo.isDefault ? INPUT_SIZE_SPARSE : INPUT_SIZE_FREQUENT;
   try {
     const client = await getAuthClient();
-    const data = await getLastNComments(client, dataReach, pageURL, tabInfo);
+    let data = await getLastNComments(client, dataReach, pageURL, tabInfo);
     if (data.length === 0) {
       return formatJSONResponse({
         message: 'No data found',
         dataSize: 0
       });
+    }
+    if (data.length > MAX_COMMENTS) {
+      data = data.slice(data.length - MAX_COMMENTS);
     }
     const comments = data.map((v) => v[columnMap.comment.index].trim());
     const dataSummary = await getSummary(comments, pageURL);
