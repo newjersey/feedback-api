@@ -18,8 +18,6 @@ const SHEETS_COLUMN_MAP: { [K in Feedback]: 'A' | 'B' | 'C' | 'D' | 'E' } = {
 };
 const SHEET_NAME = 'Sheet1';
 
-const MAX_COMMENTS = 1000;
-
 export async function getAuthClient() {
   try {
     const auth = new google.auth.JWT(
@@ -60,11 +58,11 @@ export async function getLastNComments(
     if (totalRows < 2) return [];
     let accumulatedComments = [];
     let commentBatchEnd = totalRows;
+    const highestIndexColumn = Object.keys(columnMap).reduce((a, b) =>
+      columnMap[a].index > columnMap[b].index ? a : b
+    );
     while (accumulatedComments.length < n && commentBatchEnd > 1) {
       const commentBatchStart = Math.max(commentBatchEnd - n + 1, 2);
-      const highestIndexColumn = Object.keys(columnMap).reduce((a, b) =>
-        columnMap[a].index > columnMap[b].index ? a : b
-      );
       const result = await sheetsClient.spreadsheets.values.get({
         spreadsheetId: process.env.SHEET_ID,
         range: `${tabName}!A${commentBatchStart}:${columnMap[highestIndexColumn].column}${commentBatchEnd}`
@@ -86,7 +84,7 @@ export async function getLastNComments(
       }
       commentBatchEnd = commentBatchStart - 1;
     }
-    return accumulatedComments.slice(accumulatedComments.length - MAX_COMMENTS);
+    return accumulatedComments;
   } catch (e) {
     throw Error(`Google Sheets API failed to get input data: ${e.message}`);
   }
