@@ -70,12 +70,20 @@ export async function getLastNComments(
         range: `${tabName}!A${commentBatchStart}:${columnMap[highestIndexColumn].column}${commentBatchEnd}`
       });
       let commentBatch = result.data.values ?? [];
-      if (isDefault && commentBatch.length > 0) {
-        commentBatch = commentBatch.filter((v) =>
-          v[columnMap.pageUrl.index].includes(pageURL)
-        );
+      if (commentBatch.length > 0) {
+        if (isDefault) {
+          commentBatch = commentBatch.filter(
+            (v) =>
+              v[columnMap.pageUrl.index].includes(pageURL) &&
+              !!v[columnMap.comment.index]
+          );
+        } else {
+          commentBatch = commentBatch.filter(
+            (v) => !!v[columnMap.comment.index]
+          );
+        }
+        accumulatedComments = commentBatch.concat(accumulatedComments);
       }
-      accumulatedComments = commentBatch.concat(accumulatedComments);
       commentBatchEnd = commentBatchStart - 1;
     }
     return accumulatedComments.slice(accumulatedComments.length - MAX_COMMENTS);
