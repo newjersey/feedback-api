@@ -19,7 +19,7 @@ const summary: ValidatedEventAPIGatewayProxyEvent<typeof schema> = async (
   let { pageURL } = event.body;
   pageURL = pageURL.toLowerCase();
   const tabInfo = determineTabFromUrl(pageURL);
-  const { columnMap } = tabInfo;
+  const { columnMap, prompt } = tabInfo;
   const dataReach = tabInfo.isDefault ? INPUT_SIZE_SPARSE : INPUT_SIZE_FREQUENT;
   try {
     const client = await getAuthClient();
@@ -34,7 +34,7 @@ const summary: ValidatedEventAPIGatewayProxyEvent<typeof schema> = async (
       data = data.slice(data.length - MAX_COMMENTS);
     }
     const comments = data.map((v) => v[columnMap.comment.index].trim());
-    const dataSummary = await getSummary(comments, pageURL);
+    const dataSummary = await getSummary(comments, prompt);
     return formatJSONResponse({
       message: 'Success',
       dataSummary,

@@ -28,14 +28,14 @@ const feedbackFilteredColumnMap = {
 
 const feedbackFilteredTabs: FeedbackFilteredTabs = {
   uistatus: {
-    prompt: ' applying for Unemployment Insurance benefits',
+    prompt: ' written by residents of New Jersey about their experience applying for Unemployment Insurance benefits',
     tabName: 'uistatus',
     url: 'uistatus',
     totalRowsRange: `${rowCountPrefix}A5`,
     columnMap: feedbackFilteredColumnMap
   },
   'maternity/timeline': {
-    prompt: ' using the Maternity Timeline Tool',
+    prompt: ' written by residents of New Jersey about their experience using the Maternity Timeline Tool',
     tabName: 'maternity-timeline',
     url: 'maternity/timeline',
     totalRowsRange: `${rowCountPrefix}A8`,
@@ -43,7 +43,7 @@ const feedbackFilteredTabs: FeedbackFilteredTabs = {
   },
   'claims-status': {
     prompt:
-      ' using an FAQ page explaining what happens after applying for Temporary Disability or Family Leave benefits',
+      ' written by residents of New Jersey about their experience using an FAQ page explaining what happens after applying for Temporary Disability or Family Leave benefits',
     tabName: 'claims-status',
     url: 'claims-status',
     totalRowsRange: `${rowCountPrefix}A11`,
@@ -51,42 +51,42 @@ const feedbackFilteredTabs: FeedbackFilteredTabs = {
   },
   'login-update': {
     prompt:
-      ' using a page explaining a new way to login system for Temporary Disability and Family Leave benefits',
+      '  written by residents of New Jersey about their experience using a page explaining a new way to login system for Temporary Disability and Family Leave benefits',
     tabName: 'login-update',
     url: 'login-update',
     totalRowsRange: `${rowCountPrefix}A14`,
     columnMap: feedbackFilteredColumnMap
   },
   basicneeds: {
-    prompt: ' using the New Jersey Basic Needs Hub',
+    prompt: ' written by residents of New Jersey about their experience using the New Jersey Basic Needs Hub',
     tabName: 'basicneeds',
     url: 'basicneeds',
     totalRowsRange: `${rowCountPrefix}A17`,
     columnMap: feedbackFilteredColumnMap
   },
   transgender: {
-    prompt: ' using the New Jersey Transgender Information Hub',
+    prompt: ' written by residents of New Jersey about their experience using the New Jersey Transgender Information Hub',
     tabName: 'transgender',
     url: 'transgender',
     totalRowsRange: `${rowCountPrefix}A20`,
     columnMap: feedbackFilteredColumnMap
   },
   disabilities: {
-    prompt: ' using the New Jersey Disability Information Hub',
+    prompt: ' written by residents of New Jersey about their experience using the New Jersey Disability Information Hub',
     tabName: 'disabilities',
     url: 'disabilities',
     totalRowsRange: `${rowCountPrefix}A23`,
     columnMap: feedbackFilteredColumnMap
   },
   'innovation.nj.gov': {
-    prompt: ' using the New Jersey Office of Innovation website',
+    prompt: ' written by residents of New Jersey about their experience using the New Jersey Office of Innovation website',
     tabName: 'innovation',
     url: 'innovation.nj.gov',
     totalRowsRange: `${rowCountPrefix}A26`,
     columnMap: feedbackFilteredColumnMap
   },
   'ai-assistant': {
-    prompt: ' using the internal New Jersey AI Assistant',
+    prompt: ' written by New Jersey State government employees about their experience using the internal New Jersey AI Assistant tool',
     tabName: 'ai-assistant',
     url: 'ai-assistant',
     totalRowsRange: `${rowCountPrefix}A29`,
@@ -94,7 +94,7 @@ const feedbackFilteredTabs: FeedbackFilteredTabs = {
   }
 };
 const defaultPageConfig: PageConfig = {
-  prompt: ' using the feedback widget',
+  prompt: '',
   tabName: 'Sheet1',
   totalRowsRange: 'Metadata!A2',
   columnMap: feedbackDefaultColumnMap,
