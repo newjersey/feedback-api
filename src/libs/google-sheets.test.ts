@@ -79,13 +79,14 @@ describe('google-sheets', () => {
         },
         isDefault: true
       }
+    const headerRowCount = 1 // header row is not included in the totalRows count
     const commentRows = [['Comment 1'], ['Comment 2']]
     const commentRowsWithEmptyFields = [['Comment 1'], []]
     const commentRowsinDefaultTab = [['knownUrl.com/moreinfo', 'Comment 1'], ['other.com/x', 'Comment 2'], ['other.com/y', 'Comment 3'], ['different.com/z', 'Comment 4']]
     const noNonEmptyCommentsinDefaulTab = [['knownUrl.com/moreinfo', 'Comment 1'], ['other.com/x', ''], ['other.com/y', ''], ['different.com/z', 'Comment 4']]
     const testCases = [
       {
-        totalRows: 3,
+        totalRows: headerRowCount + commentRows.length, // 3
         pageURL: 'www.knownUrl.com/moreinfo',
         n: 2,
         tabInfo: filteredTab,
@@ -96,7 +97,7 @@ describe('google-sheets', () => {
           'should retrieve comments from expected range when n is less or equal than available comments'
       },
       {
-        totalRows: 3,
+        totalRows: headerRowCount + commentRows.length, // 3
         n: 1000,
         tabInfo: filteredTab,
         pageURL: 'www.knownUrl.com/moreinfo',
@@ -107,7 +108,7 @@ describe('google-sheets', () => {
           'should retrieve comments from expected range when n is greater than available comments (returns all rows excluding header row)'
       },
       {
-        totalRows: 3,
+        totalRows: headerRowCount + commentRowsWithEmptyFields.length, // 3
         pageURL: 'www.knownUrl.com/moreinfo',
         n: 2,
         tabInfo: filteredTab,
@@ -118,7 +119,7 @@ describe('google-sheets', () => {
           'should only return comments that have content and filter out rows with no empty comments'
       },
       {
-        totalRows: 5,
+        totalRows: headerRowCount + commentRowsinDefaultTab.length, // 5
         pageURL: 'other.com',
         n: 4,
         tabInfo: defaultTab,
@@ -129,7 +130,7 @@ describe('google-sheets', () => {
           'should only return comments from default sheet tab that include the pageURL passed in'
       },
       {
-        totalRows: 5,
+        totalRows: headerRowCount + noNonEmptyCommentsinDefaulTab.length, // 5
         pageURL: 'other.com',
         n: 4,
         tabInfo: defaultTab,
@@ -145,8 +146,8 @@ describe('google-sheets', () => {
       '$description',
       async ({ n, expectedRange, rowsReturnedFromSheet, totalRows, pageURL, tabInfo,lastNComments }) => {
         MOCK_SHEETS.spreadsheets.values.get
-          .mockResolvedValueOnce({ data: { values: [[`${totalRows}`]] } }) // called in  getTotalRows
-          .mockResolvedValueOnce({ data: { values: rowsReturnedFromSheet } }); // called in getLastNComments
+          .mockResolvedValueOnce({ data: { values: [[`${totalRows}`]] } }) // called in  getTotalRows to get totalRows in sheet
+          .mockResolvedValueOnce({ data: { values: rowsReturnedFromSheet } }); // called in getLastNComments to get comment rows in sheet
         const sheetsClient = google.sheets('v4');
         const comments = await getLastNComments(sheetsClient, n, pageURL, tabInfo );
         expect(MOCK_SHEETS.spreadsheets.values.get.mock.calls[0][0]).toEqual({
