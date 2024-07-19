@@ -16,7 +16,8 @@ const MAX_COMMENTS = 1000;
 const summary: ValidatedEventAPIGatewayProxyEvent<typeof schema> = async (
   event
 ) => {
-  const { pageURL } = event.body;
+  let { pageURL } = event.body;
+  pageURL = pageURL.toLowerCase();
   const tabInfo = determineTabFromUrl(pageURL);
   const { columnMap } = tabInfo;
   const dataReach = tabInfo.isDefault ? INPUT_SIZE_SPARSE : INPUT_SIZE_FREQUENT;
