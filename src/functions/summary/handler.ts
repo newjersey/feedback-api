@@ -20,10 +20,17 @@ const summary: ValidatedEventAPIGatewayProxyEvent<typeof schema> = async (
   pageURL = pageURL.toLowerCase();
   const tabInfo = determineTabFromUrl(pageURL);
   const { columnMap, prompt } = tabInfo;
-  const dataReach = tabInfo.isDefault ? INPUT_SIZE_SPARSE : INPUT_SIZE_FREQUENT;
+  const commentBatchSize = tabInfo.isDefault
+    ? INPUT_SIZE_SPARSE
+    : INPUT_SIZE_FREQUENT;
   try {
     const client = await getAuthClient();
-    let data = await getLastNComments(client, dataReach, pageURL, tabInfo);
+    let data = await getLastNComments(
+      client,
+      commentBatchSize,
+      pageURL,
+      tabInfo
+    );
     if (data.length === 0) {
       return formatJSONResponse({
         message: 'No data found',

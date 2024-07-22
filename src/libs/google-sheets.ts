@@ -58,14 +58,14 @@ export async function getLastNComments(
     if (totalRows < 2) return [];
     let accumulatedComments = [];
     let commentBatchEnd = totalRows;
-    const highestIndexColumn = Object.keys(columnMap).reduce((a, b) =>
+    const rightmostColumn = Object.keys(columnMap).reduce((a, b) =>
       columnMap[a].index > columnMap[b].index ? a : b
     );
     while (accumulatedComments.length < n && commentBatchEnd > 1) {
       const commentBatchStart = Math.max(commentBatchEnd - n + 1, 2);
       const result = await sheetsClient.spreadsheets.values.get({
         spreadsheetId: process.env.SHEET_ID,
-        range: `${tabName}!A${commentBatchStart}:${columnMap[highestIndexColumn].column}${commentBatchEnd}`
+        range: `${tabName}!A${commentBatchStart}:${columnMap[rightmostColumn].column}${commentBatchEnd}`
       });
       let commentBatch = result.data.values ?? [];
       if (commentBatch.length > 0) {
