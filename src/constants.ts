@@ -42,7 +42,7 @@ const FEEDBACK_FILTERED_TABS: FeedbackFilteredTabs = {
     totalRowsRange: `${ROW_COUNT_PREFIX}A5`,
     columnMap: FEEDBACK_FILTERED_MAP
   },
-  'maternity/timeline': {
+  maternityTimeline: {
     promptCustomization:
       'written by residents of New Jersey about their experience using the Maternity Timeline Tool',
     tabName: 'maternity-timeline',
@@ -50,7 +50,7 @@ const FEEDBACK_FILTERED_TABS: FeedbackFilteredTabs = {
     totalRowsRange: `${ROW_COUNT_PREFIX}A8`,
     columnMap: FEEDBACK_FILTERED_MAP
   },
-  'claims-status': {
+  claimsStatus: {
     promptCustomization:
       'written by residents of New Jersey about their experience using an FAQ page explaining what happens after applying for Temporary Disability or Family Leave benefits',
     tabName: 'claims-status',
@@ -58,7 +58,7 @@ const FEEDBACK_FILTERED_TABS: FeedbackFilteredTabs = {
     totalRowsRange: `${ROW_COUNT_PREFIX}A11`,
     columnMap: FEEDBACK_FILTERED_MAP
   },
-  'login-update': {
+  loginUpdate: {
     promptCustomization:
       '  written by residents of New Jersey about their experience using a page explaining a new way to login system for Temporary Disability and Family Leave benefits',
     tabName: 'login-update',
@@ -66,7 +66,7 @@ const FEEDBACK_FILTERED_TABS: FeedbackFilteredTabs = {
     totalRowsRange: `${ROW_COUNT_PREFIX}A14`,
     columnMap: FEEDBACK_FILTERED_MAP
   },
-  basicneeds: {
+  basicNeeds: {
     promptCustomization:
       'written by residents of New Jersey about their experience using the New Jersey Basic Needs Hub',
     tabName: 'basicneeds',
@@ -90,7 +90,7 @@ const FEEDBACK_FILTERED_TABS: FeedbackFilteredTabs = {
     totalRowsRange: `${ROW_COUNT_PREFIX}A23`,
     columnMap: FEEDBACK_FILTERED_MAP
   },
-  'innovation.nj.gov': {
+  innovation: {
     promptCustomization:
       'written by residents of New Jersey about their experience using the New Jersey Office of Innovation website',
     tabName: 'innovation',
@@ -98,7 +98,7 @@ const FEEDBACK_FILTERED_TABS: FeedbackFilteredTabs = {
     totalRowsRange: `${ROW_COUNT_PREFIX}A26`,
     columnMap: FEEDBACK_FILTERED_MAP
   },
-  'ai-assistant': {
+  aiAssistant: {
     promptCustomization:
       'written by New Jersey State government employees about their experience using the internal New Jersey AI Assistant tool',
     tabName: 'ai-assistant',
