@@ -86,8 +86,8 @@ describe('google-sheets', () => {
     ];
     const noNonEmptyCommentsinDefaulTab = [
       ['knownUrl.com/moreinfo', 'Comment 1'],
-      ['other.com/x', ''],
-      ['other.com/y', ''],
+      ['other.com/x'], // if row has no comment, no element for it is included in the row array
+      ['other.com/y'],
       ['different.com/z', 'Comment 4']
     ];
     const testCases = [
