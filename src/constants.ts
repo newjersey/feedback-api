@@ -1,4 +1,5 @@
-const rowCountPrefix = 'Metadata!';
+const ROW_COUNT_PREFIX = 'Metadata!';
+
 type PageConfig = {
   prompt: string;
   tabName: string;
@@ -12,7 +13,7 @@ type FeedbackFilteredTabs = {
   [key: string]: FilteredPageConfig;
 };
 
-const feedbackDefaultColumnMap = {
+const FEEDBACK_DEFAULT_MAP = {
   timestamp: { index: 0, column: 'A' },
   pageUrl: { index: 1, column: 'B' },
   rating: { index: 2, column: 'C' },
@@ -20,96 +21,96 @@ const feedbackDefaultColumnMap = {
   email: { index: 4, column: 'E' }
 };
 
-const feedbackFilteredColumnMap = {
+const FEEDBACK_FILTERED_MAP = {
   timestamp: { index: 0, column: 'A' },
   pageUrl: { index: 1, column: 'B' },
   comment: { index: 2, column: 'C' }
 };
 
-const feedbackFilteredTabs: FeedbackFilteredTabs = {
+const FEEDBACK_FILTERED_TABS: FeedbackFilteredTabs = {
   uistatus: {
     prompt:
       ' written by residents of New Jersey about their experience applying for Unemployment Insurance benefits',
     tabName: 'uistatus',
     url: 'uistatus',
-    totalRowsRange: `${rowCountPrefix}A5`,
-    columnMap: feedbackFilteredColumnMap
+    totalRowsRange: `${ROW_COUNT_PREFIX}A5`,
+    columnMap: FEEDBACK_FILTERED_MAP
   },
   'maternity/timeline': {
     prompt:
       ' written by residents of New Jersey about their experience using the Maternity Timeline Tool',
     tabName: 'maternity-timeline',
     url: 'maternity/timeline',
-    totalRowsRange: `${rowCountPrefix}A8`,
-    columnMap: feedbackFilteredColumnMap
+    totalRowsRange: `${ROW_COUNT_PREFIX}A8`,
+    columnMap: FEEDBACK_FILTERED_MAP
   },
   'claims-status': {
     prompt:
       ' written by residents of New Jersey about their experience using an FAQ page explaining what happens after applying for Temporary Disability or Family Leave benefits',
     tabName: 'claims-status',
     url: 'claims-status',
-    totalRowsRange: `${rowCountPrefix}A11`,
-    columnMap: feedbackFilteredColumnMap
+    totalRowsRange: `${ROW_COUNT_PREFIX}A11`,
+    columnMap: FEEDBACK_FILTERED_MAP
   },
   'login-update': {
     prompt:
       '  written by residents of New Jersey about their experience using a page explaining a new way to login system for Temporary Disability and Family Leave benefits',
     tabName: 'login-update',
     url: 'login-update',
-    totalRowsRange: `${rowCountPrefix}A14`,
-    columnMap: feedbackFilteredColumnMap
+    totalRowsRange: `${ROW_COUNT_PREFIX}A14`,
+    columnMap: FEEDBACK_FILTERED_MAP
   },
   basicneeds: {
     prompt:
       ' written by residents of New Jersey about their experience using the New Jersey Basic Needs Hub',
     tabName: 'basicneeds',
     url: 'basicneeds',
-    totalRowsRange: `${rowCountPrefix}A17`,
-    columnMap: feedbackFilteredColumnMap
+    totalRowsRange: `${ROW_COUNT_PREFIX}A17`,
+    columnMap: FEEDBACK_FILTERED_MAP
   },
   transgender: {
     prompt:
       ' written by residents of New Jersey about their experience using the New Jersey Transgender Information Hub',
     tabName: 'transgender',
     url: 'transgender',
-    totalRowsRange: `${rowCountPrefix}A20`,
-    columnMap: feedbackFilteredColumnMap
+    totalRowsRange: `${ROW_COUNT_PREFIX}A20`,
+    columnMap: FEEDBACK_FILTERED_MAP
   },
   disabilities: {
     prompt:
       ' written by residents of New Jersey about their experience using the New Jersey Disability Information Hub',
     tabName: 'disabilities',
     url: 'disabilities',
-    totalRowsRange: `${rowCountPrefix}A23`,
-    columnMap: feedbackFilteredColumnMap
+    totalRowsRange: `${ROW_COUNT_PREFIX}A23`,
+    columnMap: FEEDBACK_FILTERED_MAP
   },
   'innovation.nj.gov': {
     prompt:
       ' written by residents of New Jersey about their experience using the New Jersey Office of Innovation website',
     tabName: 'innovation',
     url: 'innovation.nj.gov',
-    totalRowsRange: `${rowCountPrefix}A26`,
-    columnMap: feedbackFilteredColumnMap
+    totalRowsRange: `${ROW_COUNT_PREFIX}A26`,
+    columnMap: FEEDBACK_FILTERED_MAP
   },
   'ai-assistant': {
     prompt:
       ' written by New Jersey State government employees about their experience using the internal New Jersey AI Assistant tool',
     tabName: 'ai-assistant',
     url: 'ai-assistant',
-    totalRowsRange: `${rowCountPrefix}A29`,
-    columnMap: feedbackFilteredColumnMap
+    totalRowsRange: `${ROW_COUNT_PREFIX}A29`,
+    columnMap: FEEDBACK_FILTERED_MAP
   }
 };
-const defaultPageConfig: PageConfig = {
+const DEFAULT_PAGE_CONFIG: PageConfig = {
   prompt: '',
   tabName: 'Sheet1',
   totalRowsRange: 'Metadata!A2',
-  columnMap: feedbackDefaultColumnMap,
+  columnMap: FEEDBACK_DEFAULT_MAP,
   isDefault: true
 };
 
 export const FEEDBACK_SHEET_CONFIG = {
   sheetId: process.env.SHEET_ID,
-  filteredTabs: feedbackFilteredTabs,
-  defaultPage: defaultPageConfig
+  filteredTabs: FEEDBACK_FILTERED_TABS,
+  defaultPage: DEFAULT_PAGE_CONFIG
 };
