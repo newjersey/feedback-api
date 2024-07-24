@@ -73,7 +73,7 @@ export async function getLastNComments(
           commentBatch = commentBatch.filter(
             (v) =>
               v[columnMap.pageUrl.index].includes(pageURL) &&
-              !!v[columnMap.comment.index]
+              v[columnMap.comment.index] !== undefined
           );
         } else {
           commentBatch = commentBatch.filter(

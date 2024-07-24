@@ -17,8 +17,7 @@ const FEEDBACK_DEFAULT_MAP = {
   timestamp: { index: 0, column: 'A' },
   pageUrl: { index: 1, column: 'B' },
   rating: { index: 2, column: 'C' },
-  comment: { index: 3, column: 'D' },
-  email: { index: 4, column: 'E' }
+  comment: { index: 3, column: 'D' }
 };
 
 const FEEDBACK_FILTERED_MAP = {
