@@ -1,7 +1,7 @@
 const ROW_COUNT_PREFIX = 'Metadata!';
 
 type PageConfig = {
-  prompt: string;
+  promptCustomization: string;
   tabName: string;
   totalRowsRange: string;
   columnMap;
@@ -29,7 +29,7 @@ const FEEDBACK_FILTERED_MAP = {
 
 const FEEDBACK_FILTERED_TABS: FeedbackFilteredTabs = {
   uistatus: {
-    prompt:
+    promptCustomization:
       'written by residents of New Jersey about their experience applying for Unemployment Insurance benefits',
     tabName: 'uistatus',
     url: 'uistatus',
@@ -37,7 +37,7 @@ const FEEDBACK_FILTERED_TABS: FeedbackFilteredTabs = {
     columnMap: FEEDBACK_FILTERED_MAP
   },
   'maternity/timeline': {
-    prompt:
+    promptCustomization:
       'written by residents of New Jersey about their experience using the Maternity Timeline Tool',
     tabName: 'maternity-timeline',
     url: 'maternity/timeline',
@@ -45,7 +45,7 @@ const FEEDBACK_FILTERED_TABS: FeedbackFilteredTabs = {
     columnMap: FEEDBACK_FILTERED_MAP
   },
   'claims-status': {
-    prompt:
+    promptCustomization:
       'written by residents of New Jersey about their experience using an FAQ page explaining what happens after applying for Temporary Disability or Family Leave benefits',
     tabName: 'claims-status',
     url: 'claims-status',
@@ -53,7 +53,7 @@ const FEEDBACK_FILTERED_TABS: FeedbackFilteredTabs = {
     columnMap: FEEDBACK_FILTERED_MAP
   },
   'login-update': {
-    prompt:
+    promptCustomization:
       '  written by residents of New Jersey about their experience using a page explaining a new way to login system for Temporary Disability and Family Leave benefits',
     tabName: 'login-update',
     url: 'login-update',
@@ -61,7 +61,7 @@ const FEEDBACK_FILTERED_TABS: FeedbackFilteredTabs = {
     columnMap: FEEDBACK_FILTERED_MAP
   },
   basicneeds: {
-    prompt:
+    promptCustomization:
       'written by residents of New Jersey about their experience using the New Jersey Basic Needs Hub',
     tabName: 'basicneeds',
     url: 'basicneeds',
@@ -69,7 +69,7 @@ const FEEDBACK_FILTERED_TABS: FeedbackFilteredTabs = {
     columnMap: FEEDBACK_FILTERED_MAP
   },
   transgender: {
-    prompt:
+    promptCustomization:
       'written by residents of New Jersey about their experience using the New Jersey Transgender Information Hub',
     tabName: 'transgender',
     url: 'transgender',
@@ -77,7 +77,7 @@ const FEEDBACK_FILTERED_TABS: FeedbackFilteredTabs = {
     columnMap: FEEDBACK_FILTERED_MAP
   },
   disabilities: {
-    prompt:
+    promptCustomization:
       'written by residents of New Jersey about their experience using the New Jersey Disability Information Hub',
     tabName: 'disabilities',
     url: 'disabilities',
@@ -85,7 +85,7 @@ const FEEDBACK_FILTERED_TABS: FeedbackFilteredTabs = {
     columnMap: FEEDBACK_FILTERED_MAP
   },
   'innovation.nj.gov': {
-    prompt:
+    promptCustomization:
       'written by residents of New Jersey about their experience using the New Jersey Office of Innovation website',
     tabName: 'innovation',
     url: 'innovation.nj.gov',
@@ -93,7 +93,7 @@ const FEEDBACK_FILTERED_TABS: FeedbackFilteredTabs = {
     columnMap: FEEDBACK_FILTERED_MAP
   },
   'ai-assistant': {
-    prompt:
+    promptCustomization:
       'written by New Jersey State government employees about their experience using the internal New Jersey AI Assistant tool',
     tabName: 'ai-assistant',
     url: 'ai-assistant',
@@ -102,7 +102,7 @@ const FEEDBACK_FILTERED_TABS: FeedbackFilteredTabs = {
   }
 };
 const DEFAULT_PAGE_CONFIG: PageConfig = {
-  prompt: 'written by residents of New Jersey',
+  promptCustomization: 'written by residents of New Jersey',
   tabName: 'Sheet1',
   totalRowsRange: 'Metadata!A2',
   columnMap: FEEDBACK_DEFAULT_MAP,

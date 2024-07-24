@@ -19,7 +19,7 @@ const summary: ValidatedEventAPIGatewayProxyEvent<typeof schema> = async (
   let { pageURL } = event.body;
   pageURL = pageURL.toLowerCase();
   const tabInfo = determineTabFromUrl(pageURL);
-  const { columnMap, prompt } = tabInfo;
+  const { columnMap, promptCustomization } = tabInfo;
   const commentBatchSize = tabInfo.isDefault
     ? INPUT_SIZE_SPARSE
     : INPUT_SIZE_FREQUENT;
@@ -41,7 +41,7 @@ const summary: ValidatedEventAPIGatewayProxyEvent<typeof schema> = async (
       data = data.slice(data.length - MAX_COMMENTS);
     }
     const comments = data.map((v) => v[columnMap.comment.index].trim());
-    const dataSummary = await getSummary(comments, prompt);
+    const dataSummary = await getSummary(comments, promptCustomization);
     return formatJSONResponse({
       message: 'Success',
       dataSummary,

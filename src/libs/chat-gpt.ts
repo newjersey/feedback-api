@@ -16,7 +16,7 @@ const PARAMETERS = {
 };
 const DEPLOYMENT_ID = 'gpt-35-turbo-16k';
 
-export async function getSummary(comments: string[], promptText: string) {
+export async function getSummary(comments: string[], promptCustomText: string) {
   if (comments.length === 0) {
     return '{}';
   }
@@ -24,7 +24,7 @@ export async function getSummary(comments: string[], promptText: string) {
     apiVersion: API_VERSION
   });
 
-  const promptProgram = promptText || '';
+  const promptProgram = promptCustomText || '';
   const systemContent = `You are an assistant designed to find the most common themes in a large dataset of free text. Users will send a list of comments ${promptProgram}, where each line represents one comment. You will find the 10 most common themes in the data, and for each theme, you will include a theme title, theme description, and 3 real comments (actually in the dataset, not generated) that fit the given theme. Your output will be in the following structured valid JSON format: {"themes":[{"title":"title 1","description":"description 1","actualComments":["real comment 1","real comment 2","real comment 3"]},{"title":"title 2","description":"description 2","actualComments":["real comment 1","real comment 2","real comment 3"]}, ...]}. Make sure that the 3 comments are in the user-provided list of comments, not generated. Make sure the output is in valid JSON format, and do not add trailing commas.`;
   const userContent = '---\n' + comments.join('\n') + '---';
   const prompt: ChatRequestMessage[] = [
