@@ -2,13 +2,13 @@ import { determineTabFromUrl } from './tab-resolver';
 
 jest.mock('../constants', () => ({
   FEEDBACK_SHEET_CONFIG: {
-    filteredTabs: {
-      'test-page': {
+    tabs: {
+      testPage: {
         url: 'test-page.com'
+      },
+      default: {
+        isDefault: true
       }
-    },
-    defaultPage: {
-      isDefault: true
     }
   }
 }));

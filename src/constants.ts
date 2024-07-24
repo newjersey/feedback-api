@@ -1,16 +1,16 @@
 const ROW_COUNT_PREFIX = 'Metadata!';
 
-type PageConfig = {
+type TabConfig = {
   promptCustomization: string;
   tabName: string;
   totalRowsRange: string;
   columnMap;
-  isDefault?: boolean;
+  isDefault?: true;
+  url?: string;
 };
-type FilteredPageConfig = PageConfig & { url: string };
 
-type FeedbackFilteredTabs = {
-  [page: string]: FilteredPageConfig;
+type Tabs = {
+  [tab: string]: TabConfig;
 };
 
 type ColumnMap = {
@@ -33,7 +33,7 @@ const FEEDBACK_FILTERED_MAP: ColumnMap = {
   comment: { index: 2, column: 'C' }
 };
 
-const FEEDBACK_FILTERED_TABS: FeedbackFilteredTabs = {
+const FEEDBACK_TABS: Tabs = {
   uistatus: {
     promptCustomization:
       'written by residents of New Jersey about their experience applying for Unemployment Insurance benefits',
@@ -60,7 +60,7 @@ const FEEDBACK_FILTERED_TABS: FeedbackFilteredTabs = {
   },
   loginUpdate: {
     promptCustomization:
-      '  written by residents of New Jersey about their experience using a page explaining a new way to login system for Temporary Disability and Family Leave benefits',
+      'written by residents of New Jersey about their experience using a page explaining a new way to login system for Temporary Disability and Family Leave benefits',
     tabName: 'login-update',
     url: 'login-update',
     totalRowsRange: `${ROW_COUNT_PREFIX}A14`,
@@ -105,18 +105,17 @@ const FEEDBACK_FILTERED_TABS: FeedbackFilteredTabs = {
     url: 'ai-assistant',
     totalRowsRange: `${ROW_COUNT_PREFIX}A29`,
     columnMap: FEEDBACK_FILTERED_MAP
+  },
+  default: {
+    promptCustomization: 'written by residents of New Jersey',
+    tabName: 'Sheet1',
+    totalRowsRange: 'Metadata!A2',
+    columnMap: FEEDBACK_DEFAULT_MAP,
+    isDefault: true
   }
-};
-const DEFAULT_PAGE_CONFIG: PageConfig = {
-  promptCustomization: 'written by residents of New Jersey',
-  tabName: 'Sheet1',
-  totalRowsRange: 'Metadata!A2',
-  columnMap: FEEDBACK_DEFAULT_MAP,
-  isDefault: true
 };
 
 export const FEEDBACK_SHEET_CONFIG = {
   sheetId: process.env.SHEET_ID,
-  filteredTabs: FEEDBACK_FILTERED_TABS,
-  defaultPage: DEFAULT_PAGE_CONFIG
+  tabs: FEEDBACK_TABS
 };
