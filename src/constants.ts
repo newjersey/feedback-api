@@ -10,17 +10,24 @@ type PageConfig = {
 type FilteredPageConfig = PageConfig & { url: string };
 
 type FeedbackFilteredTabs = {
-  [key: string]: FilteredPageConfig;
+  [page: string]: FilteredPageConfig;
 };
 
-const FEEDBACK_DEFAULT_MAP = {
+type ColumnMap = {
+  timestamp: { index: number; column: string };
+  pageUrl: { index: number; column: string };
+  comment: { index: number; column: string };
+  [columnName: string]: { index: number; column: string };
+};
+
+const FEEDBACK_DEFAULT_MAP: ColumnMap = {
   timestamp: { index: 0, column: 'A' },
   pageUrl: { index: 1, column: 'B' },
   rating: { index: 2, column: 'C' },
   comment: { index: 3, column: 'D' }
 };
 
-const FEEDBACK_FILTERED_MAP = {
+const FEEDBACK_FILTERED_MAP: ColumnMap = {
   timestamp: { index: 0, column: 'A' },
   pageUrl: { index: 1, column: 'B' },
   comment: { index: 2, column: 'C' }
