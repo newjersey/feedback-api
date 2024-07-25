@@ -57,42 +57,130 @@ describe('google-sheets', () => {
   });
 
   describe('getLastNComments', () => {
+    const filteredTab = {
+      tabName: 'filtered-tab',
+      url: 'knownUrl.com',
+      totalRowsRange: 'Metadata!A2',
+      columnMap: {
+        comment: { index: 0, column: 'A' }
+      }
+    };
+
+    const defaultTab = {
+      tabName: 'default-tab',
+      totalRowsRange: 'Metadata!A5',
+      columnMap: {
+        pageUrl: { index: 0, column: 'A' },
+        comment: { index: 1, column: 'B' }
+      },
+      isDefault: true
+    };
+    const headerRowCount = 1; // header row is not included in the totalRows count
+    const commentRows = [['Comment 1'], ['Comment 2']];
+    const commentRowsWithEmptyFields = [['Comment 1'], []];
+    const commentRowsinDefaultTab = [
+      ['knownUrl.com/moreinfo', 'Comment 1'],
+      ['other.com/x', 'Comment 2'],
+      ['other.com/y', 'Comment 3'],
+      ['different.com/z', 'Comment 4']
+    ];
+    const noNonEmptyCommentsinDefaulTab = [
+      ['knownUrl.com/moreinfo', 'Comment 1'],
+      ['other.com/x'], // if row has no comment, no element for it is included in the row array
+      ['other.com/y'],
+      ['different.com/z', 'Comment 4']
+    ];
     const testCases = [
       {
-        totalRows: 3,
+        totalRows: headerRowCount + commentRows.length, // 3
+        pageURL: 'www.knownUrl.com/moreinfo',
         n: 2,
-        expectedRange: 'Sheet1!A2:D3',
-        expectedComments: [['Comment 1'], ['Comment 2']],
+        tabInfo: filteredTab,
+        expectedRange: 'filtered-tab!A2:A3',
+        rowsReturnedFromSheet: commentRows,
+        lastNComments: commentRows,
         description:
           'should retrieve comments from expected range when n is less or equal than available comments'
       },
       {
-        totalRows: 3,
+        totalRows: headerRowCount + commentRows.length, // 3
         n: 1000,
-        expectedRange: 'Sheet1!A2:D3',
-        expectedComments: [['Comment 1'], ['Comment 2']],
+        tabInfo: filteredTab,
+        pageURL: 'www.knownUrl.com/moreinfo',
+        expectedRange: 'filtered-tab!A2:A3',
+        rowsReturnedFromSheet: commentRows,
+        lastNComments: commentRows,
         description:
           'should retrieve comments from expected range when n is greater than available comments (returns all rows excluding header row)'
+      },
+      {
+        totalRows: headerRowCount + commentRowsWithEmptyFields.length, // 3
+        pageURL: 'www.knownUrl.com/moreinfo',
+        n: 2,
+        tabInfo: filteredTab,
+        expectedRange: 'filtered-tab!A2:A3',
+        rowsReturnedFromSheet: commentRowsWithEmptyFields,
+        lastNComments: [['Comment 1']],
+        description:
+          'should only return comments that have content and filter out rows with no empty comments'
+      },
+      {
+        totalRows: headerRowCount + commentRowsinDefaultTab.length, // 5
+        pageURL: 'other.com',
+        n: 4,
+        tabInfo: defaultTab,
+        expectedRange: 'default-tab!A2:B5',
+        rowsReturnedFromSheet: commentRowsinDefaultTab,
+        lastNComments: [
+          ['other.com/x', 'Comment 2'],
+          ['other.com/y', 'Comment 3']
+        ],
+        description:
+          'should only return comments from default sheet tab that include the pageURL passed in'
+      },
+      {
+        totalRows: headerRowCount + noNonEmptyCommentsinDefaulTab.length, // 5
+        pageURL: 'other.com',
+        n: 4,
+        tabInfo: defaultTab,
+        expectedRange: 'default-tab!A2:B5',
+        rowsReturnedFromSheet: noNonEmptyCommentsinDefaulTab,
+        lastNComments: [],
+        description:
+          'should return empty array when default sheet tab has no non-empty comments related to the pageURL passed in'
       }
     ];
 
     it.each(testCases)(
       '$description',
-      async ({ n, expectedRange, expectedComments, totalRows }) => {
+      async ({
+        n,
+        expectedRange,
+        rowsReturnedFromSheet,
+        totalRows,
+        pageURL,
+        tabInfo,
+        lastNComments
+      }) => {
         MOCK_SHEETS.spreadsheets.values.get
-          .mockResolvedValueOnce({ data: { values: [[`${totalRows}`]] } }) // called in  getTotalRows
-          .mockResolvedValueOnce({ data: { values: expectedComments } }); // called in getLastNComments
+          .mockResolvedValueOnce({ data: { values: [[`${totalRows}`]] } }) // called in  getTotalRows to get totalRows in sheet
+          .mockResolvedValueOnce({ data: { values: rowsReturnedFromSheet } }); // called in getLastNComments to get comment rows in sheet
         const sheetsClient = google.sheets('v4');
-        const comments = await getLastNComments(sheetsClient, n);
+        const comments = await getLastNComments(
+          sheetsClient,
+          n,
+          pageURL,
+          tabInfo
+        );
         expect(MOCK_SHEETS.spreadsheets.values.get.mock.calls[0][0]).toEqual({
           spreadsheetId: process.env.SHEET_ID,
-          range: 'Metadata!A2'
+          range: tabInfo.totalRowsRange
         });
         expect(MOCK_SHEETS.spreadsheets.values.get.mock.calls[1][0]).toEqual({
           spreadsheetId: process.env.SHEET_ID,
           range: expectedRange
         });
-        expect(comments).toEqual(expectedComments);
+        expect(comments).toEqual(lastNComments);
       }
     );
 
@@ -102,7 +190,9 @@ describe('google-sheets', () => {
         new Error('Failed to get row count')
       );
       const sheetsClient = google.sheets('v4');
-      await expect(getLastNComments(sheetsClient, 2)).rejects.toThrow(
+      await expect(
+        getLastNComments(sheetsClient, 2, 'testUrl.com', filteredTab)
+      ).rejects.toThrow(
         'Google Sheets API failed to get data size: Failed to get row count'
       );
     });
@@ -116,7 +206,9 @@ describe('google-sheets', () => {
         new Error('Failed to fetch comments')
       );
       const sheetsClient = google.sheets('v4');
-      await expect(getLastNComments(sheetsClient, 2)).rejects.toThrow(
+      await expect(
+        getLastNComments(sheetsClient, 2, 'testUrl.com', filteredTab)
+      ).rejects.toThrow(
         'Google Sheets API failed to get input data: Failed to fetch comments'
       );
     });

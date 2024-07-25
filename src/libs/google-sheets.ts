@@ -1,5 +1,6 @@
 import { google, sheets_v4 } from 'googleapis';
 
+// used by createFeedback, updateFeedback
 export enum Feedback {
   PageURL,
   Rating,
@@ -15,9 +16,7 @@ const SHEETS_COLUMN_MAP: { [K in Feedback]: 'A' | 'B' | 'C' | 'D' | 'E' } = {
   [Feedback.Comment]: 'D',
   [Feedback.Email]: 'E'
 };
-
 const SHEET_NAME = 'Sheet1';
-const TOTAL_ROWS_RANGE = 'Metadata!A2';
 
 export async function getAuthClient() {
   try {
@@ -35,11 +34,11 @@ export async function getAuthClient() {
 }
 
 // only used within getLastNComments function
-async function getTotalRows(sheetsClient: sheets_v4.Sheets) {
+async function getTotalRows(sheetsClient: sheets_v4.Sheets, totalRowRange) {
   try {
     const result = await sheetsClient.spreadsheets.values.get({
       spreadsheetId: process.env.SHEET_ID,
-      range: TOTAL_ROWS_RANGE
+      range: totalRowRange
     });
     return parseInt(result.data.values[0][0]);
   } catch (e) {
@@ -49,18 +48,43 @@ async function getTotalRows(sheetsClient: sheets_v4.Sheets) {
 
 export async function getLastNComments(
   sheetsClient: sheets_v4.Sheets,
-  n: number
+  n: number,
+  pageURL: string,
+  tabInfo
 ): Promise<string[][]> {
+  const { tabName, totalRowsRange, columnMap, isDefault } = tabInfo;
   try {
-    const totalRows = await getTotalRows(sheetsClient);
-    const startRow = totalRows - 1 < n ? 2 : totalRows - (n - 1);
-    const result = await sheetsClient.spreadsheets.values.get({
-      spreadsheetId: process.env.SHEET_ID,
-      range: `${SHEET_NAME}!${
-        SHEETS_COLUMN_MAP[Feedback.Timestamp]
-      }${startRow}:${SHEETS_COLUMN_MAP[Feedback.Comment]}${totalRows}`
-    });
-    return result.data.values ?? [];
+    const totalRows = await getTotalRows(sheetsClient, totalRowsRange);
+    if (totalRows < 2) return [];
+    let accumulatedComments = [];
+    let commentBatchEnd = totalRows;
+    const rightmostColumn = Object.keys(columnMap).reduce((a, b) =>
+      columnMap[a].index > columnMap[b].index ? a : b
+    );
+    while (accumulatedComments.length < n && commentBatchEnd > 1) {
+      const commentBatchStart = Math.max(commentBatchEnd - n + 1, 2);
+      const result = await sheetsClient.spreadsheets.values.get({
+        spreadsheetId: process.env.SHEET_ID,
+        range: `${tabName}!A${commentBatchStart}:${columnMap[rightmostColumn].column}${commentBatchEnd}`
+      });
+      let commentBatch = result.data.values ?? [];
+      if (commentBatch.length > 0) {
+        if (isDefault) {
+          commentBatch = commentBatch.filter(
+            (v) =>
+              v[columnMap.pageUrl.index].includes(pageURL) &&
+              v[columnMap.comment.index] !== undefined
+          );
+        } else {
+          commentBatch = commentBatch.filter(
+            (v) => !!v[columnMap.comment.index]
+          );
+        }
+        accumulatedComments = commentBatch.concat(accumulatedComments);
+      }
+      commentBatchEnd = commentBatchStart - 1;
+    }
+    return accumulatedComments;
   } catch (e) {
     throw Error(`Google Sheets API failed to get input data: ${e.message}`);
   }
