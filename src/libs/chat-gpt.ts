@@ -17,6 +17,7 @@ const PARAMETERS = {
 const DEPLOYMENT_ID = 'gpt-35-turbo-16k';
 const MAX_TOKENS_INPUT_OUTPUT = 16384;
 const CHARACTERS_PER_TOKEN = 4;
+const COMMENT_SLICE_VALUE = 50
 
 function reduceCommentToNotExceedTokenLimit(comments: string[]): string[] {
   const availableInputTokens = MAX_TOKENS_INPUT_OUTPUT - PARAMETERS.maxTokens;
@@ -91,7 +92,7 @@ export async function getSummary(comments: string[], promptCustomText: string) {
       break;
     } catch (e) {
       if (e.message.includes("This model's maximum context length")) {
-        comments = comments.slice(25);
+        comments = comments.slice(COMMENT_SLICE_VALUE);
         prompt = generatePrompt(comments, promptCustomText);
         retries += 1;
         lastError = e;
