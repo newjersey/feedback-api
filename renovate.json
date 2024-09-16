@@ -1,6 +1,5 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": ["config:best-practices"],
-  "transitiveRemediation": true,
   "ignoreDeps": ["node", "@types/node"]
 }
