@@ -9,9 +9,8 @@ import schema from './schema';
 import { getSummary } from '@libs/chat-gpt';
 import { determineTabFromUrl } from '@libs/tab-resolver';
 
-const INPUT_SIZE_FREQUENT = 1000;
+const INPUT_SIZE_FREQUENT = 1500;
 const INPUT_SIZE_SPARSE = INPUT_SIZE_FREQUENT * 10;
-const MAX_COMMENTS = 1000;
 
 const summary: ValidatedEventAPIGatewayProxyEvent<typeof schema> = async (
   event
@@ -25,7 +24,7 @@ const summary: ValidatedEventAPIGatewayProxyEvent<typeof schema> = async (
     : INPUT_SIZE_FREQUENT;
   try {
     const client = await getAuthClient();
-    let data = await getLastNComments(
+    const data = await getLastNComments(
       client,
       commentBatchSize,
       pageURL,
@@ -37,15 +36,17 @@ const summary: ValidatedEventAPIGatewayProxyEvent<typeof schema> = async (
         dataSize: 0
       });
     }
-    if (data.length > MAX_COMMENTS) {
-      data = data.slice(data.length - MAX_COMMENTS);
-    }
-    const comments = data.map((v) => v[columnMap.comment.index].trim());
-    const dataSummary = await getSummary(comments, promptCustomization);
+    const comments = data.map((v) =>
+      v[columnMap.comment.index].slice(0, 500).trim()
+    );
+    const { dataSummary, commentCount } = await getSummary(
+      comments,
+      promptCustomization
+    );
     return formatJSONResponse({
       message: 'Success',
       dataSummary,
-      dataSize: comments.length,
+      dataSize: commentCount,
       dataStart: data[0][columnMap.timestamp.index],
       dataEnd: data[data.length - 1][columnMap.timestamp.index]
     });
