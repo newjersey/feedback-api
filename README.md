@@ -1,8 +1,19 @@
 # Feedback Widget API
 
-This project is for the REST API that handles interactions on the feedback widget UI and adds this data to a database, currently Google Sheets. It is deployed to AWS Lambda + API Gateway.
+## Architecture
+
+This project is for the REST API that handles interactions on the feedback widget UI and adds this data to a database, currently Google Sheets. It is deployed to AWS Lambda + API Gateway. For full architecture of feedback system, see "Technical diagram" section below.
 
 This project has been generated using the `aws-nodejs-typescript` template from the [Serverless framework](https://www.serverless.com/). For detailed instructions, please refer to the [documentation](https://www.serverless.com/framework/docs/providers/aws/).
+
+## Endpoints
+
+For the latest information on the API endpoints maintained, see the functions imported and configured within the `serverless.ts` file. Within the `src/functions/` folder, each sub-folder corresponds to an API endpoint, and the `index.ts` file within it has detail on the type of endpoint. For example, see `src/functions/comment/index.ts` and `src/functions/comment/schema.ts` for details on the `POST /comment` endpoint. For a quick summary, this repo supports the following endpoints:
+
+- `POST /rating` - saves Yes/No rating to database
+- `POST /comment`- saves text comment to database (and cleans PII)
+- `POST /email` - saves email to database
+- `POST /summary` - generates summary from list of comments using OpenAI's GPT model
 
 ## Setup
 
@@ -25,8 +36,6 @@ Deployment is done locally to the AWS account `Innov-RES-Dev` and _not_ yet conn
 3. Log into AWS console, and open "Command line and programmatic access" option under `Innov-RES-Dev` account
 4. Follow instructions in modal to save AWS credentials to `~/.aws/credentials` file
 5. Run `npx sls deploy --aws-profile {INSERT PROFILE NAME HERE}` to deploy this Serverless project to AWS
-
-## Installation/deployment instructions
 
 ## Test your service
 
@@ -106,3 +115,9 @@ This project also contains a `scripts` folder, which contains post-processing Py
 ### Advanced usage
 
 Any tsconfig.json can be used, but if you do, set the environment variable `TS_NODE_CONFIG` for building the application, eg `TS_NODE_CONFIG=./tsconfig.app.json npx serverless webpack`
+
+## Technical diagram
+
+Below is the latest technical architecture as of November 2024. To update the file, download the `docs/Feedback-Widget-Diagram.excalidraw` file, import it on [Excalidraw](https://excalidraw.com/), edit the diagram, and update the corresponding files in this repository with the latest versions.
+
+![Feedback widget technical diagram](docs/Feedback-Widget-Diagram.png)
