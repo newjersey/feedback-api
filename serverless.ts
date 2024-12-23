@@ -6,7 +6,7 @@ import summary from '@functions/summary';
 const serverlessConfiguration = {
   service: 'feedback-api',
   frameworkVersion: '4',
-  plugins: ['serverless-offline-ssm', 'serverless-offline'],
+  plugins: ['serverless-offline'],
   provider: {
     name: 'aws',
     stage: 'dev',
@@ -57,10 +57,6 @@ const serverlessConfiguration = {
     },
     'serverless-offline': {
       noPrependStageInUrl: true
-    },
-    'serverless-offline-ssm': {
-      // Values mocked by .env file
-      stages: ['dev']
     }
   }
 };
