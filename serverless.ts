@@ -7,12 +7,8 @@ import summary from '@functions/summary';
 
 const serverlessConfiguration: AWS = {
   service: 'feedback-api',
-  frameworkVersion: '3',
-  plugins: [
-    'serverless-esbuild',
-    'serverless-offline-ssm',
-    'serverless-offline'
-  ],
+  frameworkVersion: '4',
+  plugins: ['serverless-offline-ssm', 'serverless-offline'],
   provider: {
     name: 'aws',
     stage: 'dev',
@@ -32,7 +28,8 @@ const serverlessConfiguration: AWS = {
       GOOGLE_PRIVATE_KEY: '${ssm:feedback-api-sheets-private-key}',
       CLIENT_EMAIL: '${ssm:feedback-api-sheets-email}',
       AZURE_OPENAI_ENDPOINT: '${ssm:feedback-api-azure-openai-endpoint}',
-      AZURE_OPENAI_KEY: '${ssm:feedback-api-azure-openai-key}'
+      AZURE_OPENAI_KEY: '${ssm:feedback-api-azure-openai-key}',
+      SERVERLESS_ACCESS_KEY: '${ssm:feedback-api-serverless-access-key}'
     },
     iam: {
       role: {
