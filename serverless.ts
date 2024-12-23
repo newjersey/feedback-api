@@ -1,11 +1,9 @@
-import type { AWS } from '@serverless/typescript';
-
 import rating from '@functions/rating';
 import comment from '@functions/comment';
 import email from '@functions/email';
 import summary from '@functions/summary';
 
-const serverlessConfiguration: AWS = {
+const serverlessConfiguration = {
   service: 'feedback-api',
   frameworkVersion: '4',
   plugins: ['serverless-offline-ssm', 'serverless-offline'],
