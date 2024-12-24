@@ -35,7 +35,9 @@ Deployment is done locally to the AWS account `Innov-RES-Dev` and _not_ yet conn
 2. Test code changes locally
 3. Log into AWS console, and open "Command line and programmatic access" option under `Innov-RES-Dev` account
 4. Follow instructions in modal to save AWS credentials to `~/.aws/credentials` file
-5. Run `npx sls deploy --aws-profile {INSERT PROFILE NAME HERE}` to deploy this Serverless project to AWS
+5. Log into Bitwarden and copy the value of the "Feedback API Serverless Access Key (feedback-api-access-key)" item in the "Resident Experience" collection
+6. Run `export SERVERLESS_ACCESS_KEY={INSERT ACCESS KEY VALUE FROM BITWARDEN HERE}` in the terminal
+7. Run `npx sls deploy --aws-profile {INSERT PROFILE NAME HERE} --` to deploy this Serverless project to AWS
 
 ## Test your service
 
