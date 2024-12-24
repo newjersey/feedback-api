@@ -26,8 +26,7 @@ const serverlessConfiguration = {
       GOOGLE_PRIVATE_KEY: '${ssm:feedback-api-sheets-private-key}',
       CLIENT_EMAIL: '${ssm:feedback-api-sheets-email}',
       AZURE_OPENAI_ENDPOINT: '${ssm:feedback-api-azure-openai-endpoint}',
-      AZURE_OPENAI_KEY: '${ssm:feedback-api-azure-openai-key}',
-      SERVERLESS_ACCESS_KEY: '${ssm:feedback-api-serverless-access-key}'
+      AZURE_OPENAI_KEY: '${ssm:feedback-api-azure-openai-key}'
     },
     iam: {
       role: {
