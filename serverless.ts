@@ -1,18 +1,12 @@
-import type { AWS } from '@serverless/typescript';
-
 import rating from '@functions/rating';
 import comment from '@functions/comment';
 import email from '@functions/email';
 import summary from '@functions/summary';
 
-const serverlessConfiguration: AWS = {
+const serverlessConfiguration = {
   service: 'feedback-api',
-  frameworkVersion: '3',
-  plugins: [
-    'serverless-esbuild',
-    'serverless-offline-ssm',
-    'serverless-offline'
-  ],
+  frameworkVersion: '4',
+  plugins: ['serverless-offline'],
   provider: {
     name: 'aws',
     stage: 'dev',
@@ -62,10 +56,6 @@ const serverlessConfiguration: AWS = {
     },
     'serverless-offline': {
       noPrependStageInUrl: true
-    },
-    'serverless-offline-ssm': {
-      // Values mocked by .env file
-      stages: ['dev']
     }
   }
 };
