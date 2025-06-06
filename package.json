@@ -11,19 +11,21 @@
     "typecheck": "tsc --noEmit --skipLibCheck"
   },
   "engines": {
-    "node": "18"
+    "node": "20"
   },
   "dependencies": {
     "@aws-sdk/client-comprehend": "3.511.0",
     "@azure/openai": "1.0.0-beta.11",
     "@middy/core": "3.6.2",
     "@middy/http-json-body-parser": "3.6.2",
+    "aws-cdk": "2.1017.1",
+    "aws-cdk-lib": "2.200.1",
     "googleapis": "109.0.1"
   },
   "devDependencies": {
     "@types/aws-lambda": "8.10.134",
     "@types/jest": "29.5.12",
-    "@types/node": "18.19.14",
+    "@types/node": "18.19.110",
     "@typescript-eslint/eslint-plugin": "5.62.0",
     "@typescript-eslint/parser": "5.62.0",
     "esbuild": "0.20.0",
