@@ -18,12 +18,12 @@ const SHEETS_COLUMN_MAP: { [K in Feedback]: 'A' | 'B' | 'C' | 'D' | 'E' } = {
 };
 const SHEET_NAME = 'Sheet1';
 
-export async function getAuthClient() {
+export async function getAuthClient(clientEmail: string, privateKey: string) {
   try {
     const auth = new google.auth.JWT(
-      process.env.CLIENT_EMAIL,
+      clientEmail,
       null,
-      process.env.GOOGLE_PRIVATE_KEY.replace(/\\n/g, '\n'),
+      privateKey.replace(/\\n/g, '\n'),
       ['https://www.googleapis.com/auth/spreadsheets']
     );
     await auth.authorize();
@@ -92,6 +92,7 @@ export async function getLastNComments(
 
 export async function createFeedback(
   sheetsClient: sheets_v4.Sheets,
+  sheetId: string,
   pageURL: string,
   rating: boolean,
   comment?: string,
@@ -103,7 +104,7 @@ export async function createFeedback(
 
   try {
     const result = await sheetsClient.spreadsheets.values.append({
-      spreadsheetId: process.env.SHEET_ID,
+      spreadsheetId: sheetId,
       range: SHEET_NAME,
       valueInputOption: 'RAW',
       requestBody: {

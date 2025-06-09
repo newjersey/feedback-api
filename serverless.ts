@@ -1,4 +1,4 @@
-import rating from '@functions/rating';
+// import rating from '@functions/rating';
 import comment from '@functions/comment';
 import email from '@functions/email';
 import summary from '@functions/summary';
@@ -24,9 +24,7 @@ const serverlessConfiguration = {
       NODE_OPTIONS: '--enable-source-maps --stack-trace-limit=1000',
       SHEET_ID: '${ssm:feedback-api-sheet-id}',
       GOOGLE_PRIVATE_KEY: '${ssm:feedback-api-sheets-private-key}',
-      CLIENT_EMAIL: '${ssm:feedback-api-sheets-email}',
-      AZURE_OPENAI_ENDPOINT: '${ssm:feedback-api-azure-openai-endpoint}',
-      AZURE_OPENAI_KEY: '${ssm:feedback-api-azure-openai-key}'
+      CLIENT_EMAIL: '${ssm:feedback-api-sheets-email}'
     },
     iam: {
       role: {

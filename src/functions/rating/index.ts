@@ -5,8 +5,13 @@ import {
 import { formatJSONResponse } from '@libs/api-gateway';
 import { createFeedback, getAuthClient } from '@libs/google-sheets';
 import { middyfy } from '@libs/lambda';
+import { SSMClient } from '@aws-sdk/client-ssm';
+
+import { getSsmParam } from '../../libs/awsUtils';
 
 import schema from './schema';
+
+const SSM = new SSMClient();
 
 const rating: ValidatedEventAPIGatewayProxyEvent<typeof schema> = async (
   event
@@ -14,8 +19,21 @@ const rating: ValidatedEventAPIGatewayProxyEvent<typeof schema> = async (
   const { pageURL, rating } = event.body;
 
   try {
-    const client = await getAuthClient();
-    const feedbackId = await createFeedback(client, pageURL, rating);
+    const googleSheetsClientEmail = await getSsmParam(
+      SSM,
+      'feedback-api-sheets-email'
+    );
+    const googleSheetsPrivateKey = await getSsmParam(
+      SSM,
+      'feedback-api-sheets-private-key'
+    );
+    const sheetId = await getSsmParam(SSM, 'feedback-api-sheet-id');
+
+    const client = await getAuthClient(
+      googleSheetsClientEmail,
+      googleSheetsPrivateKey
+    );
+    const feedbackId = await createFeedback(client, sheetId, pageURL, rating);
 
     return formatJSONResponse({
       message: 'Success',
