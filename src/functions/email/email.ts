@@ -3,7 +3,11 @@ import {
   ValidatedEventAPIGatewayProxyEvent
 } from 'src/utils/api-gateway';
 import { formatJSONResponse } from 'src/utils/api-gateway';
-import { Feedback, getAuthClient, updateFeedback } from 'src/utils/google-sheets';
+import {
+  Feedback,
+  getAuthClient,
+  updateFeedback
+} from 'src/utils/google-sheets';
 import { SSMClient } from '@aws-sdk/client-ssm';
 
 import { getSsmParam } from '../../utils/awsUtils';

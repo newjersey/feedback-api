@@ -32,8 +32,8 @@ describe('google-sheets', () => {
   });
 
   describe('getAuthClient', () => {
-    const mockClientEmail = "hello@hello.com";
-    const mockPrivateKey = "mockKey";
+    const mockClientEmail = 'hello@hello.com';
+    const mockPrivateKey = 'mockKey';
 
     it('should successfully create and authorize a Google Sheets API client', async () => {
       const client = await getAuthClient(mockClientEmail, mockPrivateKey);
