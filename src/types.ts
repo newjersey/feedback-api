@@ -1,19 +1,19 @@
 export type Rating = {
   pageURL: string;
   rating: boolean;
-}
+};
 
 export type Comment = {
-  comment: string,
-  feedbackId?: number,
-  pageURL?: string,
-  rating?: boolean
-}
+  comment: string;
+  feedbackId?: number;
+  pageURL?: string;
+  rating?: boolean;
+};
 
 export type Email = {
   email: string;
   feedbackId: number;
-}
+};
 
 export type FeedbackResponse = {
   statusCode: FeedbackResponseStatusCodes;
