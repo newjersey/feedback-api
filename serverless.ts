@@ -1,8 +1,3 @@
-// import rating from '@functions/rating';
-import comment from '@functions/comment';
-import email from '@functions/email';
-import summary from '@functions/summary';
-
 const serverlessConfiguration = {
   service: 'feedback-api',
   frameworkVersion: '4',
@@ -39,7 +34,7 @@ const serverlessConfiguration = {
     }
   },
   // import the function via paths
-  functions: { rating, comment, email, summary },
+  functions: {},
   package: { individually: true },
   custom: {
     esbuild: {

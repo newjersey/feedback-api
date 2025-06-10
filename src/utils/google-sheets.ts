@@ -33,63 +33,6 @@ export async function getAuthClient(clientEmail: string, privateKey: string) {
   }
 }
 
-// only used within getLastNComments function
-async function getTotalRows(sheetsClient: sheets_v4.Sheets, totalRowRange) {
-  try {
-    const result = await sheetsClient.spreadsheets.values.get({
-      spreadsheetId: process.env.SHEET_ID,
-      range: totalRowRange
-    });
-    return parseInt(result.data.values[0][0]);
-  } catch (e) {
-    throw Error(`Google Sheets API failed to get data size: ${e.message}`);
-  }
-}
-
-export async function getLastNComments(
-  sheetsClient: sheets_v4.Sheets,
-  n: number,
-  pageURL: string,
-  tabInfo
-): Promise<string[][]> {
-  const { tabName, totalRowsRange, columnMap, isDefault } = tabInfo;
-  try {
-    const totalRows = await getTotalRows(sheetsClient, totalRowsRange);
-    if (totalRows < 2) return [];
-    let accumulatedComments = [];
-    let commentBatchEnd = totalRows;
-    const rightmostColumn = Object.keys(columnMap).reduce((a, b) =>
-      columnMap[a].index > columnMap[b].index ? a : b
-    );
-    while (accumulatedComments.length < n && commentBatchEnd > 1) {
-      const commentBatchStart = Math.max(commentBatchEnd - n + 1, 2);
-      const result = await sheetsClient.spreadsheets.values.get({
-        spreadsheetId: process.env.SHEET_ID,
-        range: `${tabName}!A${commentBatchStart}:${columnMap[rightmostColumn].column}${commentBatchEnd}`
-      });
-      let commentBatch = result.data.values ?? [];
-      if (commentBatch.length > 0) {
-        if (isDefault) {
-          commentBatch = commentBatch.filter(
-            (v) =>
-              v[columnMap.pageUrl.index].includes(pageURL) &&
-              v[columnMap.comment.index] !== undefined
-          );
-        } else {
-          commentBatch = commentBatch.filter(
-            (v) => !!v[columnMap.comment.index]
-          );
-        }
-        accumulatedComments = commentBatch.concat(accumulatedComments);
-      }
-      commentBatchEnd = commentBatchStart - 1;
-    }
-    return accumulatedComments;
-  } catch (e) {
-    throw Error(`Google Sheets API failed to get input data: ${e.message}`);
-  }
-}
-
 export async function createFeedback(
   sheetsClient: sheets_v4.Sheets,
   sheetId: string,
@@ -125,13 +68,14 @@ export async function createFeedback(
 
 export async function updateFeedback(
   sheetsClient: sheets_v4.Sheets,
+  sheetId: string,
   feedbackId: number,
   valueType: Feedback,
   value: string
 ): Promise<number> {
   try {
     const result = await sheetsClient.spreadsheets.values.update({
-      spreadsheetId: process.env.SHEET_ID,
+      spreadsheetId: sheetId,
       range: SHEET_NAME + '!' + SHEETS_COLUMN_MAP[valueType] + feedbackId,
       valueInputOption: 'RAW',
       requestBody: {

@@ -1,19 +1,19 @@
 import {
   formatErrorResponse,
   ValidatedEventAPIGatewayProxyEvent
-} from '@libs/api-gateway';
-import { formatJSONResponse } from '@libs/api-gateway';
-import { createFeedback, getAuthClient } from '@libs/google-sheets';
-import { middyfy } from '@libs/lambda';
+} from 'src/utils/api-gateway';
+import { formatJSONResponse } from 'src/utils/api-gateway';
+import { createFeedback, getAuthClient } from 'src/utils/google-sheets';
 import { SSMClient } from '@aws-sdk/client-ssm';
+import { RatingEvent } from 'src/types';
 
-import { getSsmParam } from '../../libs/awsUtils';
+import { getSsmParam } from '../../utils/awsUtils';
 
 import schema from './schema';
 
 const SSM = new SSMClient();
 
-const rating: ValidatedEventAPIGatewayProxyEvent<typeof schema> = async (
+export const handler: ValidatedEventAPIGatewayProxyEvent<RatingEvent> = async (
   event
 ) => {
   const { pageURL, rating } = event.body;
@@ -21,13 +21,13 @@ const rating: ValidatedEventAPIGatewayProxyEvent<typeof schema> = async (
   try {
     const googleSheetsClientEmail = await getSsmParam(
       SSM,
-      'feedback-api-sheets-email'
+      '/feedback-api/sheets-email'
     );
     const googleSheetsPrivateKey = await getSsmParam(
       SSM,
-      'feedback-api-sheets-private-key'
+      '/feedback-api/sheets-private-key'
     );
-    const sheetId = await getSsmParam(SSM, 'feedback-api-sheet-id');
+    const sheetId = await getSsmParam(SSM, '/feedback-api/sheet-id');
 
     const client = await getAuthClient(
       googleSheetsClientEmail,
@@ -48,5 +48,3 @@ const rating: ValidatedEventAPIGatewayProxyEvent<typeof schema> = async (
     });
   }
 };
-
-export const handler = middyfy(rating);

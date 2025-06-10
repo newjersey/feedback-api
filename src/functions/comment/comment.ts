@@ -1,23 +1,27 @@
 import {
   formatErrorResponse,
   ValidatedEventAPIGatewayProxyEvent
-} from '@libs/api-gateway';
-import { formatJSONResponse } from '@libs/api-gateway';
+} from 'src/utils/api-gateway';
+import { formatJSONResponse } from 'src/utils/api-gateway';
 import {
   createFeedback,
   Feedback,
   getAuthClient,
   updateFeedback
-} from '@libs/google-sheets';
-import { middyfy } from '@libs/lambda';
+} from 'src/utils/google-sheets';
 import { ComprehendClient } from '@aws-sdk/client-comprehend';
+import { SSMClient } from '@aws-sdk/client-ssm';
+
+import { getSsmParam } from '../../utils/awsUtils';
 
 const COMPREHEND_CLIENT = new ComprehendClient({ region: 'us-east-1' });
 
 import schema from './schema';
-import { redactPii } from '@libs/pii-redaction';
+import { redactPii } from 'src/utils/pii-redaction';
 
-const comment: ValidatedEventAPIGatewayProxyEvent<typeof schema> = async (
+const SSM = new SSMClient();
+
+export const handler: ValidatedEventAPIGatewayProxyEvent<typeof schema> = async (
   event
 ) => {
   const { feedbackId, comment, pageURL, rating } = event.body;
@@ -25,10 +29,25 @@ const comment: ValidatedEventAPIGatewayProxyEvent<typeof schema> = async (
   try {
     const redactedComment = await redactPii(comment.trim(), COMPREHEND_CLIENT);
 
-    const client = await getAuthClient();
+    const googleSheetsClientEmail = await getSsmParam(
+      SSM,
+      'feedback-api/sheets-email'
+    );
+    const googleSheetsPrivateKey = await getSsmParam(
+      SSM,
+      'feedback-api/sheets-private-key'
+    );
+    const sheetId = await getSsmParam(SSM, 'feedback-api/sheet-id');
+
+    const client = await getAuthClient(
+      googleSheetsClientEmail,
+      googleSheetsPrivateKey
+    );
+
     if (feedbackId != null) {
       const updatedId = await updateFeedback(
         client,
+        sheetId,
         feedbackId,
         Feedback.Comment,
         redactedComment
@@ -40,6 +59,7 @@ const comment: ValidatedEventAPIGatewayProxyEvent<typeof schema> = async (
     } else if (pageURL != null && rating != null) {
       const createdId = await createFeedback(
         client,
+        sheetId,
         pageURL,
         rating,
         redactedComment
@@ -58,5 +78,3 @@ const comment: ValidatedEventAPIGatewayProxyEvent<typeof schema> = async (
     });
   }
 };
-
-export const main = middyfy(comment);

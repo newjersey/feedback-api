@@ -13,7 +13,6 @@ For the latest information on the API endpoints maintained, see the functions im
 - `POST /rating` - saves Yes/No rating to database
 - `POST /comment`- saves text comment to database (and cleans PII)
 - `POST /email` - saves email to database
-- `POST /summary` - generates summary from list of comments using OpenAI's GPT model
 
 ## Setup
 
@@ -74,39 +73,6 @@ curl --location --request POST 'https://endpoint.execute-api.region.amazonaws.co
 ```
 
 ## Template features
-
-### Project structure
-
-The project code base is mainly located within the `src` folder. This folder is divided in:
-
-- `functions` - containing code base and configuration for your lambda functions
-- `libs` - containing shared code base between your lambdas
-
-```
-.
-├── src
-│   ├── functions               # Lambda configuration and source code folder
-│   │   ├── rating
-│   │   │   ├── handler.ts      # `rating` lambda source code
-│   │   │   ├── index.ts        # `rating` lambda Serverless configuration
-│   │   │   ├── mock.json       # `rating` lambda input parameter, if any, for local invocation
-│   │   │   └── schema.ts       # `rating` lambda input event JSON-Schema
-│   │   │
-│   │   └── index.ts            # Import/export of all lambda configurations
-│   │
-│   └── libs                    # Lambda shared code
-│       └── apiGateway.ts       # API Gateway specific helpers
-│       └── handlerResolver.ts  # Sharable library for resolving lambda handlers
-│       └── lambda.ts           # Lambda middleware
-│
-├── package.json
-├── serverless.ts               # Serverless service file
-├── tsconfig.json               # Typescript compiler configuration
-├── tsconfig.paths.json         # Typescript paths
-└── webpack.config.js           # Webpack configuration
-```
-
-This project also contains a `scripts` folder, which contains post-processing Python scripts that help analyze the feedback data.
 
 ### 3rd party libraries
 
