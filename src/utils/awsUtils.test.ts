@@ -4,6 +4,7 @@ import { GetParameterCommand, SSMClient } from '@aws-sdk/client-ssm';
 
 expect.extend(AwsSdkMockMatchers);
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const { getSsmParam } = require('./awsUtils');
 const MOCK_SSM_CLIENT = mockClient(SSMClient);
 
