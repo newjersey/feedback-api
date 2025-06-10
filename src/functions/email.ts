@@ -7,13 +7,9 @@ import {
   updateFeedback
 } from 'src/utils/google-sheets';
 import { SSMClient } from '@aws-sdk/client-ssm';
-import {
-  Email,
-  FeedbackResponseStatusCodes,
-  FeedbackResponse
-} from '../../types';
+import { Email, FeedbackResponseStatusCodes, FeedbackResponse } from '../types';
 
-import { getSsmParam } from '../../utils/awsUtils';
+import { getSsmParam } from '../utils/awsUtils';
 
 const SSM = new SSMClient();
 
