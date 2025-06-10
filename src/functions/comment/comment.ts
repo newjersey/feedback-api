@@ -21,9 +21,9 @@ import { redactPii } from 'src/utils/pii-redaction';
 
 const SSM = new SSMClient();
 
-export const handler: ValidatedEventAPIGatewayProxyEvent<typeof schema> = async (
-  event
-) => {
+export const handler: ValidatedEventAPIGatewayProxyEvent<
+  typeof schema
+> = async (event) => {
   const { feedbackId, comment, pageURL, rating } = event.body;
 
   try {
