@@ -1,4 +1,4 @@
-import { FeedbackResponseStatusCodes, FeedbackResponse } from '../types';
+import { FeedbackResponseStatusCodes, FeedbackResponse } from '../shared/types';
 
 export const formatFeedbackResponse = (
   statusCode: FeedbackResponseStatusCodes,

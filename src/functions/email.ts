@@ -1,15 +1,19 @@
-import { formatFeedbackResponse } from 'src/utils/responseUtils';
+import { formatFeedbackResponse } from '../shared/utils/responseUtils';
 
 import { APIGatewayProxyEvent } from 'aws-lambda';
 import {
   Feedback,
   getAuthClient,
   updateFeedback
-} from 'src/utils/google-sheets';
+} from '../shared/utils/google-sheets';
 import { SSMClient } from '@aws-sdk/client-ssm';
-import { Email, FeedbackResponseStatusCodes, FeedbackResponse } from '../types';
+import {
+  Email,
+  FeedbackResponseStatusCodes,
+  FeedbackResponse
+} from '../shared/types';
 
-import { getSsmParam } from '../utils/awsUtils';
+import { getSsmParam } from '../shared/utils/awsUtils';
 
 const SSM = new SSMClient();
 

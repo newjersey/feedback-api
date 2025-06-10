@@ -1,24 +1,24 @@
-import { formatFeedbackResponse } from 'src/utils/responseUtils';
+import { formatFeedbackResponse } from '../shared/utils/responseUtils';
 import { APIGatewayProxyEvent } from 'aws-lambda';
 import {
   createFeedback,
   Feedback,
   getAuthClient,
   updateFeedback
-} from 'src/utils/google-sheets';
+} from '../shared/utils/google-sheets';
 import { ComprehendClient } from '@aws-sdk/client-comprehend';
 import { SSMClient } from '@aws-sdk/client-ssm';
 import {
   Comment,
   FeedbackResponse,
   FeedbackResponseStatusCodes
-} from '../types';
+} from '../shared/types';
 
-import { getSsmParam } from '../utils/awsUtils';
+import { getSsmParam } from '../shared/utils/awsUtils';
 
 const COMPREHEND_CLIENT = new ComprehendClient({ region: 'us-east-1' });
 
-import { redactPii } from 'src/utils/pii-redaction';
+import { redactPii } from '../shared/utils/pii-redaction';
 
 const SSM = new SSMClient();
 
