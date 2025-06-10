@@ -53,7 +53,7 @@ export class FeedbackApiStack extends cdk.Stack {
     );
 
     const ratingFunction = new NodejsFunction(this, 'rating', {
-      entry: '../src/functions/rating/rating.ts',
+      entry: '../src/functions/rating.ts',
       functionName: 'feedback-api-rating',
       handler: 'handler',
       role: lambdaExecutionRole,
@@ -61,7 +61,7 @@ export class FeedbackApiStack extends cdk.Stack {
     });
 
     const commentFunction = new NodejsFunction(this, 'comment', {
-      entry: '../src/functions/comment/comment.ts',
+      entry: '../src/functions/comment.ts',
       functionName: 'feedback-api-comment',
       handler: 'handler',
       role: lambdaExecutionRole,
@@ -69,7 +69,7 @@ export class FeedbackApiStack extends cdk.Stack {
     });
 
     const emailFunction = new NodejsFunction(this, 'email', {
-      entry: '../src/functions/email/email.ts',
+      entry: '../src/functions/email.ts',
       functionName: 'feedback-api-email',
       handler: 'handler',
       role: lambdaExecutionRole,

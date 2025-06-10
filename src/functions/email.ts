@@ -1,25 +1,26 @@
-import {
-  formatErrorResponse,
-  ValidatedEventAPIGatewayProxyEvent
-} from 'src/utils/api-gateway';
-import { formatJSONResponse } from 'src/utils/api-gateway';
+import { formatFeedbackResponse } from 'src/utils/responseUtils';
+
+import { APIGatewayProxyEvent } from 'aws-lambda';
 import {
   Feedback,
   getAuthClient,
   updateFeedback
 } from 'src/utils/google-sheets';
 import { SSMClient } from '@aws-sdk/client-ssm';
+import {
+  Email,
+  FeedbackResponseStatusCodes,
+  FeedbackResponse
+} from '../../types';
 
 import { getSsmParam } from '../../utils/awsUtils';
 
-import schema from './schema';
-
 const SSM = new SSMClient();
 
-export const handler: ValidatedEventAPIGatewayProxyEvent<
-  typeof schema
-> = async (event) => {
-  const { email, feedbackId } = event.body;
+export const handler = async (
+  event: APIGatewayProxyEvent
+): Promise<FeedbackResponse> => {
+  const { email, feedbackId } = JSON.parse(event.body) as Email;
 
   try {
     const googleSheetsClientEmail = await getSsmParam(
@@ -44,7 +45,7 @@ export const handler: ValidatedEventAPIGatewayProxyEvent<
       Feedback.Email,
       email
     );
-    return formatJSONResponse({
+    return formatFeedbackResponse(FeedbackResponseStatusCodes.Success, {
       message: 'Success',
       feedbackId: updatedId
     });
@@ -52,7 +53,7 @@ export const handler: ValidatedEventAPIGatewayProxyEvent<
     const message = e instanceof Error ? e.message : 'No further details';
     // eslint-disable-next-line no-console
     console.error(`Error: ${message}`);
-    return formatErrorResponse({
+    return formatFeedbackResponse(FeedbackResponseStatusCodes.Error, {
       message: `Failed to save email: ${message}`
     });
   }

@@ -50,10 +50,38 @@ This template contains a single lambda function triggered by an HTTP request mad
 
 ### Locally
 
-In order to test the rating function locally, run the following command:
+In order to test functions run the following mock requests:
 
-- `npx sls invoke local -f rating --path src/functions/rating/mock.json` if you're using NPM
-- `npx sls offline` to run the API locally on `https://localhost:3000`
+#### Rating
+```
+{
+  "headers": {
+    "Content-Type": "application/json"
+  },
+  "body": "{\"pageURL\":\"example.com\",\"rating\":\"true\"}"
+}
+```
+
+#### Email
+```
+{
+  "headers": {
+    "Content-Type": "application/json"
+  },
+  "body": "{\"email\":\"hi@example.com\",\"feedbackId\":\"2\"}"
+}
+```
+
+#### Comment
+```
+{
+  "headers": {
+    "Content-Type": "application/json"
+  },
+  "body": "{\"feedbackId\":\"1\",\"comment\":\"good\"}"
+}
+```
+
 
 Check the [sls invoke local command documentation](https://www.serverless.com/framework/docs/providers/aws/cli-reference/invoke-local/) for more information.
 

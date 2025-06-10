@@ -1,22 +1,21 @@
-import {
-  formatErrorResponse,
-  ValidatedEventAPIGatewayProxyEvent
-} from 'src/utils/api-gateway';
-import { formatJSONResponse } from 'src/utils/api-gateway';
+import { formatFeedbackResponse } from 'src/utils/responseUtils';
+import { APIGatewayProxyEvent } from 'aws-lambda';
 import { createFeedback, getAuthClient } from 'src/utils/google-sheets';
 import { SSMClient } from '@aws-sdk/client-ssm';
-import { RatingEvent } from 'src/types';
+import {
+  Rating,
+  FeedbackResponse,
+  FeedbackResponseStatusCodes
+} from '../types';
 
-import { getSsmParam } from '../../utils/awsUtils';
-
-import schema from './schema';
+import { getSsmParam } from '../utils/awsUtils';
 
 const SSM = new SSMClient();
 
-export const handler: ValidatedEventAPIGatewayProxyEvent<RatingEvent> = async (
-  event
-) => {
-  const { pageURL, rating } = event.body;
+export const handler = async (
+  event: APIGatewayProxyEvent
+): Promise<FeedbackResponse> => {
+  const { pageURL, rating } = JSON.parse(event.body) as Rating;
 
   try {
     const googleSheetsClientEmail = await getSsmParam(
@@ -35,15 +34,15 @@ export const handler: ValidatedEventAPIGatewayProxyEvent<RatingEvent> = async (
     );
     const feedbackId = await createFeedback(client, sheetId, pageURL, rating);
 
-    return formatJSONResponse({
+    return formatFeedbackResponse(FeedbackResponseStatusCodes.Success, {
       message: 'Success',
-      feedbackId
+      feedbackId: feedbackId
     });
   } catch (e) {
     const message = e instanceof Error ? e.message : 'No further details';
     // eslint-disable-next-line no-console
     console.error(`Error: ${message}`);
-    return formatErrorResponse({
+    return formatFeedbackResponse(FeedbackResponseStatusCodes.Error, {
       message: `Failed to save rating: ${message}`
     });
   }
