@@ -50,7 +50,7 @@ This template contains a single lambda function triggered by an HTTP request mad
 > :warning: As is, this template, once deployed, opens a **public** endpoint within your AWS account resources. Anybody with the URL can actively execute the API Gateway endpoint and the corresponding lambda. You should protect this endpoint with the authentication method of your choice.
 
 ### Locally
-
+#### Testing the rating function
 In order to test the rating function locally, run the following command:
 
 - `npx sls invoke local -f rating --path src/functions/rating/mock.json` if you're using NPM
@@ -59,6 +59,19 @@ In order to test the rating function locally, run the following command:
 Check the [sls invoke local command documentation](https://www.serverless.com/framework/docs/providers/aws/cli-reference/invoke-local/) for more information.
 
 Note that to run locally, you need to export any environment variables used in code to your current environment. They can be found in the AWS Lambda configurations.
+
+#### Running the local dev database
+1. Make sure you have the following installed:
+    - Docker
+        - We recommend downloading [Docker Desktop](https://docs.docker.com/desktop/).
+    - (Optional but highly recommended) psql
+        - If you're using macOS, we recommend [using homebrew to install libpq](https://stackoverflow.com/questions/44654216/correct-way-to-install-psql-without-full-postgres-on-macos).
+2. Start the Docker daemon. You can do this by opening Docker Desktop.
+3. Run `docker-compose up -d` from the project root.
+    - The `-d` flag indicated detached mode, which runs the container in the background (so they won't be attached to your terminal)
+4. The database should now be running at the connection string `postgresql://postgres:postgres@localhost:5432/postgres`
+    - You can test this by running `psql postgresql://postgres:postgres@localhost:5432/postgres`
+5. To stop the docker container, run `docker compose down` from the project root.
 
 ### Remotely
 
@@ -72,6 +85,7 @@ curl --location --request POST 'https://endpoint.execute-api.region.amazonaws.co
     "rating": true
 }'
 ```
+
 
 ## Template features
 
