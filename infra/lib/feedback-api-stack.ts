@@ -57,7 +57,8 @@ export class FeedbackApiStack extends cdk.Stack {
       functionName: 'feedback-api-rating',
       handler: 'handler',
       role: lambdaExecutionRole,
-      runtime: lambda.Runtime.NODEJS_20_X
+      runtime: lambda.Runtime.NODEJS_20_X,
+      timeout: cdk.Duration.seconds(30)
     });
 
     const commentFunction = new NodejsFunction(this, 'comment', {
@@ -65,7 +66,8 @@ export class FeedbackApiStack extends cdk.Stack {
       functionName: 'feedback-api-comment',
       handler: 'handler',
       role: lambdaExecutionRole,
-      runtime: lambda.Runtime.NODEJS_20_X
+      runtime: lambda.Runtime.NODEJS_20_X,
+      timeout: cdk.Duration.seconds(30)
     });
 
     const emailFunction = new NodejsFunction(this, 'email', {
@@ -73,7 +75,8 @@ export class FeedbackApiStack extends cdk.Stack {
       functionName: 'feedback-api-email',
       handler: 'handler',
       role: lambdaExecutionRole,
-      runtime: lambda.Runtime.NODEJS_20_X
+      runtime: lambda.Runtime.NODEJS_20_X,
+      timeout: cdk.Duration.seconds(30)
     });
 
     const functions = [
