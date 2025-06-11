@@ -1,6 +1,9 @@
 import { formatFeedbackResponse } from '../shared/utils/responseUtils';
 import { APIGatewayProxyEvent } from 'aws-lambda';
-import { createFeedback, getAuthClient } from '../shared/utils/google-sheets';
+import {
+  createFeedback,
+  getAuthClient
+} from '../shared/utils/googleSheetsUtils';
 import { SSMClient } from '@aws-sdk/client-ssm';
 import {
   Rating,

@@ -5,7 +5,7 @@ import {
   Feedback,
   getAuthClient,
   updateFeedback
-} from '../shared/utils/google-sheets';
+} from '../shared/utils/googleSheetsUtils';
 import { ComprehendClient } from '@aws-sdk/client-comprehend';
 import { SSMClient } from '@aws-sdk/client-ssm';
 import {

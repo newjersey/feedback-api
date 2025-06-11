@@ -1,5 +1,5 @@
 import { google } from 'googleapis';
-import { getAuthClient } from './google-sheets';
+import { getAuthClient } from './googleSheetsUtils';
 
 const MOCK_AUTHORIZE = jest.fn().mockResolvedValue(undefined);
 const MOCK_SHEETS = {
