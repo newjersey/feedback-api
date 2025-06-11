@@ -1,5 +1,5 @@
 import { formatFeedbackResponse } from './responseUtils';
-import { FeedbackResponseStatusCodes } from '../shared/types';
+import { FeedbackResponseStatusCodes } from '../types';
 
 describe('formatFeedbackResponse', () => {
   it('should return a formatted response including the given status code and response body', () => {
