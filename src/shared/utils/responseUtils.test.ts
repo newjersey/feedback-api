@@ -8,7 +8,7 @@ describe('formatFeedbackResponse', () => {
 
     const formattedResponse = formatFeedbackResponse(statusCode, response);
 
-    expect(formattedResponse).toContain(statusCode);
-    expect(formattedResponse).toContain(JSON.stringify(response));
+    expect(formattedResponse.statusCode).toEqual(statusCode);
+    expect(formattedResponse.body).toEqual(JSON.stringify(response));
   });
 });
