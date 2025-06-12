@@ -68,9 +68,12 @@ Note that to run locally, you need to export any environment variables used in c
         - If you're using macOS, we recommend [using homebrew to install libpq](https://stackoverflow.com/questions/44654216/correct-way-to-install-psql-without-full-postgres-on-macos).
 2. Start the Docker daemon. You can do this by opening Docker Desktop.
 3. Run `docker-compose up -d` from the project root.
-    - The `-d` flag indicated detached mode, which runs the container in the background (so they won't be attached to your terminal)
+    - The `-d` flag indicated detached mode, which runs the container in the background (so it won't be attached to your terminal)
 4. The database should now be running at the connection string `postgresql://postgres:postgres@localhost:5432/postgres`
-    - You can test this by running `psql postgresql://postgres:postgres@localhost:5432/postgres`
+    - You can test this by checking that you can connect to the database via psql with erroring: 
+        ```bash
+        psql postgresql://postgres:postgres@localhost:5432/postgres
+        ```
 5. To stop the docker container, run `docker compose down` from the project root.
 
 ### Remotely
