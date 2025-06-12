@@ -70,7 +70,7 @@ Note that to run locally, you need to export any environment variables used in c
 3. Run `docker-compose up -d` from the project root.
     - The `-d` flag indicated detached mode, which runs the container in the background (so it won't be attached to your terminal)
 4. The database should now be running at the connection string `postgresql://postgres:postgres@localhost:5432/postgres`
-    - You can test this by checking that you can connect to the database via psql with erroring: 
+    - You can test this by checking that you can connect to the database via psql without erroring: 
         ```bash
         psql postgresql://postgres:postgres@localhost:5432/postgres
         ```
