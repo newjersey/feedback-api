@@ -48,7 +48,7 @@ This template contains a single lambda function triggered by an HTTP request mad
 
 ### Locally
 
-In order to test functions run the following mock requests:
+In order to test functions, run the following mock requests:
 
 #### Rating
 ```
