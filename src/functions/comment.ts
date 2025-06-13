@@ -44,7 +44,7 @@ export const handler = async (
       SSM,
       '/feedback-api/sheets-private-key'
     );
-    const sheetId = await getSsmParam(SSM, 'feedback-api/sheet-id');
+    const sheetId = await getSsmParam(SSM, '/feedback-api/sheet-id');
 
     const client = await getAuthClient(
       googleSheetsClientEmail,
