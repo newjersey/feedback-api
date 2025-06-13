@@ -20,16 +20,16 @@ const SSM = new SSMClient();
 export const handler = async (
   event: APIGatewayProxyEvent
 ): Promise<FeedbackResponse> => {
-  const { email, feedbackId } = JSON.parse(event.body) as Email;
-
-  if (feedbackId == null) {
-    throw new Error('Submission is missing feedback ID');
-  }
-  if (email == null) {
-    throw new Error('Submission is missing email value');
-  }
-
   try {
+    const { email, feedbackId } = JSON.parse(event.body) as Email;
+
+    if (feedbackId == null) {
+      throw new Error('Submission is missing feedback ID');
+    }
+    if (email == null) {
+      throw new Error('Submission is missing email value');
+    }
+
     const googleSheetsClientEmail = await getSsmParam(
       SSM,
       '/feedback-api/sheets-email'
