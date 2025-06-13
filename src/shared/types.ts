@@ -31,6 +31,11 @@ export type FeedbackResponse = {
   body: string;
 };
 
+export type FeedbackBody = {
+  message: string;
+  feedbackId?: number;
+};
+
 export enum FeedbackResponseStatusCodes {
   Success = 200,
   Error = 500

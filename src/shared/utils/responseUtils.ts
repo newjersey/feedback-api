@@ -1,8 +1,12 @@
-import { FeedbackResponseStatusCodes, FeedbackResponse } from '../types';
+import {
+  FeedbackBody,
+  FeedbackResponseStatusCodes,
+  FeedbackResponse
+} from '../types';
 
 export const formatFeedbackResponse = (
   statusCode: FeedbackResponseStatusCodes,
-  response: Record<string, unknown>
+  response: FeedbackBody
 ): FeedbackResponse => {
   const result: FeedbackResponse = {
     statusCode: statusCode,
