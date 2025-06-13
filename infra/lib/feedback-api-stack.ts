@@ -88,6 +88,18 @@ export class FeedbackApiStack extends cdk.Stack {
         endpointType,
         new apigw.LambdaIntegration(handler, {})
       );
+
+      new cdk.CfnOutput(this, `${name}FunctionArnOutput`, {
+        key: `${name}FunctionArn`,
+        exportName: `${name}FunctionArn`,
+        value: handler.functionArn
+      });
+    });
+
+    new cdk.CfnOutput(this, 'ApiUrlOutput', {
+      key: 'feedbackApiUrl',
+      exportName: 'feedbackApiUrl',
+      value: feedbackApi.url
     });
   }
 }
