@@ -15,7 +15,7 @@ For the latest information on the API endpoints maintained, see the functions im
 ## Setup
 
 1. Clone this repository
-2. Run `npm install` (on Node 20, as listed in `.nvmrc`) to install Node dependencies
+2. Run `npm install` (on Node 22, as listed in `.nvmrc`) to install Node dependencies
 3. Save the credentials from the `Innov-Platform-dev` AWS account to your `~/.aws/credentials` file
 4. Run the API locally
 5. In another terminal window, you can test sending commands like the following:

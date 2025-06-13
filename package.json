@@ -10,10 +10,10 @@
     "typecheck": "tsc --noEmit --skipLibCheck"
   },
   "engines": {
-    "node": "20"
+    "node": "22"
   },
   "dependencies": {
-    "@aws-sdk/client-comprehend": "3.511.0",
+    "@aws-sdk/client-comprehend": "3.826.0",
     "@aws-sdk/client-ssm": "3.826.0",
     "@azure/openai": "1.0.0-beta.11",
     "@middy/core": "3.6.2",

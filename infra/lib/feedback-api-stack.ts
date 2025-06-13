@@ -51,7 +51,7 @@ export class FeedbackApiStack extends cdk.Stack {
       entry: '../src/functions/rating.ts',
       functionName: 'feedback-api-rating',
       role: lambdaExecutionRole,
-      runtime: lambda.Runtime.NODEJS_20_X,
+      runtime: lambda.Runtime.NODEJS_22_X,
       timeout: cdk.Duration.seconds(30)
     });
 
@@ -59,7 +59,7 @@ export class FeedbackApiStack extends cdk.Stack {
       entry: '../src/functions/comment.ts',
       functionName: 'feedback-api-comment',
       role: lambdaExecutionRole,
-      runtime: lambda.Runtime.NODEJS_20_X,
+      runtime: lambda.Runtime.NODEJS_22_X,
       timeout: cdk.Duration.seconds(30)
     });
 
@@ -67,7 +67,7 @@ export class FeedbackApiStack extends cdk.Stack {
       entry: '../src/functions/email.ts',
       functionName: 'feedback-api-email',
       role: lambdaExecutionRole,
-      runtime: lambda.Runtime.NODEJS_20_X,
+      runtime: lambda.Runtime.NODEJS_22_X,
       timeout: cdk.Duration.seconds(30)
     });
 
