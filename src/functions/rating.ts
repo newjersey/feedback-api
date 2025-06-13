@@ -18,9 +18,16 @@ const SSM = new SSMClient();
 export const handler = async (
   event: APIGatewayProxyEvent
 ): Promise<FeedbackResponse> => {
-  const { pageURL, rating } = JSON.parse(event.body) as Rating;
-
   try {
+    const { pageURL, rating } = JSON.parse(event.body) as Rating;
+
+    if (pageURL == null) {
+      throw new Error('Submission is missing page URL');
+    }
+    if (rating == null) {
+      throw new Error('Submission is missing rating value');
+    }
+
     const googleSheetsClientEmail = await getSsmParam(
       SSM,
       '/feedback-api/sheets-email'

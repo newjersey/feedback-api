@@ -2,7 +2,6 @@ import { formatFeedbackResponse } from '../shared/utils/responseUtils';
 import { APIGatewayProxyEvent } from 'aws-lambda';
 import {
   createFeedback,
-  Feedback,
   getAuthClient,
   updateFeedback
 } from '../shared/utils/googleSheetsUtils';
@@ -10,6 +9,7 @@ import { ComprehendClient } from '@aws-sdk/client-comprehend';
 import { SSMClient } from '@aws-sdk/client-ssm';
 import {
   Comment,
+  Feedback,
   FeedbackResponse,
   FeedbackResponseStatusCodes
 } from '../shared/types';
@@ -25,11 +25,15 @@ const SSM = new SSMClient();
 export const handler = async (
   event: APIGatewayProxyEvent
 ): Promise<FeedbackResponse> => {
-  const { feedbackId, comment, pageURL, rating } = JSON.parse(
-    event.body
-  ) as Comment;
-
   try {
+    const { feedbackId, comment, pageURL, rating } = JSON.parse(
+      event.body
+    ) as Comment;
+
+    if (comment == null) {
+      throw new Error('Submission is missing comment');
+    }
+
     const redactedComment = await redactPii(comment.trim(), COMPREHEND_CLIENT);
 
     const googleSheetsClientEmail = await getSsmParam(

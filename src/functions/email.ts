@@ -2,13 +2,13 @@ import { formatFeedbackResponse } from '../shared/utils/responseUtils';
 
 import { APIGatewayProxyEvent } from 'aws-lambda';
 import {
-  Feedback,
   getAuthClient,
   updateFeedback
 } from '../shared/utils/googleSheetsUtils';
 import { SSMClient } from '@aws-sdk/client-ssm';
 import {
   Email,
+  Feedback,
   FeedbackResponseStatusCodes,
   FeedbackResponse
 } from '../shared/types';
@@ -21,6 +21,13 @@ export const handler = async (
   event: APIGatewayProxyEvent
 ): Promise<FeedbackResponse> => {
   const { email, feedbackId } = JSON.parse(event.body) as Email;
+
+  if (feedbackId == null) {
+    throw new Error('Submission is missing feedback ID');
+  }
+  if (email == null) {
+    throw new Error('Submission is missing email value');
+  }
 
   try {
     const googleSheetsClientEmail = await getSsmParam(

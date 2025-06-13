@@ -15,6 +15,13 @@ export type Email = {
   feedbackId: number;
 };
 
+export type FeedbackRecord = {
+  date: number;
+  pageUrl: string;
+  rating: boolean;
+  comment?: string;
+};
+
 export type FeedbackResponse = {
   statusCode: FeedbackResponseStatusCodes;
   headers: {
@@ -27,4 +34,12 @@ export type FeedbackResponse = {
 export enum FeedbackResponseStatusCodes {
   Success = 200,
   Error = 500
+}
+
+export enum Feedback {
+  PageURL,
+  Rating,
+  Comment,
+  Email,
+  Timestamp
 }

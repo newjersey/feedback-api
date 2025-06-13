@@ -1,13 +1,5 @@
 import { google, sheets_v4 } from 'googleapis';
-
-// used by createFeedback, updateFeedback
-export enum Feedback {
-  PageURL,
-  Rating,
-  Comment,
-  Email,
-  Timestamp
-}
+import { FeedbackRecord, Feedback } from '../types';
 
 const SHEETS_COLUMN_MAP: { [K in Feedback]: 'A' | 'B' | 'C' | 'D' | 'E' } = {
   [Feedback.Timestamp]: 'A',
@@ -41,9 +33,19 @@ export async function createFeedback(
   comment?: string,
   email?: string
 ): Promise<number> {
-  const newRecord = [Date.now(), pageURL, rating];
-  if (comment != null) newRecord.push(comment);
-  if (email != null) newRecord.push(email);
+  const newRecord: FeedbackRecord = {
+    date: Date.now(),
+    pageUrl: pageURL,
+    rating: rating
+  };
+
+  if (comment != null) {
+    newRecord.comment = comment;
+  }
+
+  if (email != null) {
+    newRecord.comment = email;
+  }
 
   try {
     const result = await sheetsClient.spreadsheets.values.append({
@@ -51,7 +53,7 @@ export async function createFeedback(
       range: SHEET_NAME,
       valueInputOption: 'RAW',
       requestBody: {
-        values: [newRecord]
+        values: [Object.values(newRecord)]
       }
     });
 
