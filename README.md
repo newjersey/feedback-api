@@ -16,21 +16,17 @@ For the latest information on the API endpoints maintained, see the functions im
 
 1. Clone this repository
 2. Run `npm install` (on Node 22, as listed in `.nvmrc`) to install Node dependencies
-3. Save the credentials from the `Innov-Platform-dev` AWS account to your `~/.aws/credentials` file
-4. Run the API locally
-5. In another terminal window, you can test sending commands like the following:
-
-```bash
-curl -d '{"pageURL":"www.test.com","rating":true}' -H "Content-Type: application/json" http://localhost:3000/rating
-```
+3. Save the credentials from the `Innov-Platform-Dev` AWS account to your `~/.aws/credentials` file
 
 ## Deployment
 
-Deployment is done locally to the AWS account `Innov-Platform-dev` and _not_ yet connected to Github version control.
+Deployment to AWS is done locally on the command line and is _not_ yet connected to Github version control.
+
+The code can be deployed to either the dev account (`Innov-Platform-Dev`) or to the prod account (`Innov-Platform-Prod`). **Please be careful to deploy to the prod account only with extreme caution and after thoroughly testing changes in dev.**
 
 1. Make code changes locally
 2. Test code changes locally
-3. Log into AWS console, and open "Command line and programmatic access" option under `Innov-Platform-Dev` account
+3. Log into AWS console, and open "Command line and programmatic access" option under the appropriate account
 4. Save the account credentials to your `~/.aws/credentials` file.
 5. Run `export AWS_PROFILE=[PROFILE ID]` from your command line
 6. Navigate to the `/infra` directory
@@ -46,9 +42,9 @@ This template contains a single lambda function triggered by an HTTP request mad
 
 > :warning: As is, this template, once deployed, opens a **public** endpoint within your AWS account resources. Anybody with the URL can actively execute the API Gateway endpoint and the corresponding lambda. You should protect this endpoint with the authentication method of your choice.
 
-### Locally
+### In dev
 
-In order to test functions, run the following mock requests:
+In order to test functions, you can run the following mock requests from the "Testing" tab in the Lambda console for the appropriate function. Update the body of the request as needed to test different scenarios. **Please note that all requests will write directly to the Prod Google Sheet for the time being. After running requests, be sure to remove any changes from the spreadsheet.**
 
 #### Rating
 ```
@@ -81,19 +77,6 @@ In order to test functions, run the following mock requests:
 ```
 
 Note that to run locally, you need to export any environment variables used in code to your current environment. They can be found in the AWS Lambda configurations.
-
-### Remotely
-
-Copy and replace your `url` - found in Serverless `deploy` command output - and `name` parameter in the following `curl` command in your terminal or in Postman to test your newly deployed application.
-
-```
-curl --location --request POST 'https://endpoint.execute-api.region.amazonaws.com/dev/rating' \
---header 'Content-Type: application/json' \
---data-raw '{
-    "pageURL": "example.com",
-    "rating": true
-}'
-```
 
 ## Template features
 
