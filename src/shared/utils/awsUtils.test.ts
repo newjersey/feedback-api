@@ -35,7 +35,7 @@ describe('getSsmParam function', () => {
     expect(result).toEqual('paramValue');
   });
 
-  it('Throws an error if the data object if empty', async () => {
+  it('Throws an error if the data object is empty', async () => {
     MOCK_SSM_CLIENT.on(GetParameterCommand).resolves({});
 
     await expect(getSsmParam(MOCK_SSM_CLIENT, paramName)).rejects.toThrow(
