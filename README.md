@@ -80,6 +80,18 @@ Note that to run locally, you need to export any environment variables used in c
 
 #### Running the local dev database
 ##### Installation
+*Note: We can't use Docker Desktop because we don't currently have a way to procure licenses and it's not certified for use at the Office.*
+
+**Linux**
+
+Install the docker daemon as normal since this is open source software.
+
+**Windows**
+
+Install WSL2 and install the docker daemon inside the linux environment.
+
+**macOS**
+
 1. Install [colima](https://github.com/abiosoft/colima) with `brew install colima`
 2. Install docker with `brew install docker`
 3. Install docker-compose with `brew install docker-compose`
