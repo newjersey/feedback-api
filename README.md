@@ -107,34 +107,20 @@ Install WSL2 and install the docker daemon inside the linux environment.
         Make sure to follow these instructions or you won't able to run commands using `docker compose` (you will have to use `docker-compose` instead)
 
 ##### Starting the Docker container
-4. Run `colima start` to start the Docker runtime
+1. Run `colima start` to start the Docker runtime
     - If it prompts you to, run `brew install lima-additional-guestagents` (this is because there was a recent split in the package, see [GitHub issue #1333](https://github.com/abiosoft/colima/issues/1333) for more detail)
-5. Run `docker-compose up -d` from the project root.
+2. Run `docker-compose up -d` from the project root.
     - The `-d` flag indicated detached mode, which runs the container in the background (so it won't be attached to your terminal)
-6. The database should now be running at the connection string `postgresql://postgres:postgres@localhost:5432/postgres`
+3. The database should now be running at the connection string `postgresql://postgres:postgres@localhost:5432/postgres`
     - You can test this by checking that you can connect to the database via psql without erroring: 
         ```bash
         psql postgresql://postgres:postgres@localhost:5432/postgres
         ```
         
 ##### Clean up
-7. To stop the docker container, run `docker compose down` from the project root.
-8. When you’re done developing, run `colima stop` to stop the Docker runtime
+1. To stop the docker container, run `docker compose down` from the project root.
+2. When you’re done developing, run `colima stop` to stop the Docker runtime
     - Remember to run `colima start` in the future whenever you want to use Docker Compose
-
-### Remotely
-
-Copy and replace your `url` - found in Serverless `deploy` command output - and `name` parameter in the following `curl` command in your terminal or in Postman to test your newly deployed application.
-
-```
-curl --location --request POST 'https://endpoint.execute-api.region.amazonaws.com/dev/rating' \
---header 'Content-Type: application/json' \
---data-raw '{
-    "pageURL": "example.com",
-    "rating": true
-}'
-```
-
 
 ## Template features
 
