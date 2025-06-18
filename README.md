@@ -78,6 +78,50 @@ In order to test functions, you can run the following mock requests from the "Te
 
 Note that to run locally, you need to export any environment variables used in code to your current environment. They can be found in the AWS Lambda configurations.
 
+#### Running the local dev database
+##### Installation
+*Note: We can't use Docker Desktop because we don't currently have a way to procure licenses and it's not certified for use at the Office.*
+
+**Linux**
+
+Install the docker daemon as normal since this is open source software.
+
+**Windows**
+
+Install WSL2 and install the docker daemon inside the linux environment.
+
+**macOS**
+
+1. Install [colima](https://github.com/abiosoft/colima) with `brew install colima`
+2. Install docker with `brew install docker`
+3. Install docker-compose with `brew install docker-compose`
+    - This will give the message (also in [Homebrew docs](https://formulae.brew.sh/formula/docker-compose)): 
+        > ==> Caveats   
+        > Compose is a Docker plugin. For Docker to find the plugin, add "cliPluginsExtraDirs" to ~/.docker/config.json:
+        >
+        > ```
+        >"cliPluginsExtraDirs": [
+        >    "/opt/homebrew/lib/docker/cli-plugins"
+        > ]
+        >```
+        Make sure to follow these instructions or you won't able to run commands using `docker compose` (you will have to use `docker-compose` instead)
+
+##### Starting the Docker container
+1. Run `colima start` to start the Docker runtime
+    - If it prompts you to, run `brew install lima-additional-guestagents` (this is because there was a recent split in the package, see [GitHub issue #1333](https://github.com/abiosoft/colima/issues/1333) for more detail)
+2. Run `docker-compose up -d` from the project root.
+    - The `-d` flag indicated detached mode, which runs the container in the background (so it won't be attached to your terminal)
+3. The database should now be running at the connection string `postgresql://postgres:postgres@localhost:5432/postgres`
+    - You can test this by checking that you can connect to the database via psql without erroring: 
+        ```bash
+        psql postgresql://postgres:postgres@localhost:5432/postgres
+        ```
+        
+##### Clean up
+1. To stop the docker container, run `docker compose down` from the project root.
+2. When you’re done developing, run `colima stop` to stop the Docker runtime
+    - Remember to run `colima start` in the future whenever you want to use Docker Compose
+
 ## Template features
 
 ## Technical diagram
