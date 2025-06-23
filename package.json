@@ -7,7 +7,11 @@
     "test": "jest",
     "lint": "eslint . --ext .ts",
     "prettier-format": "prettier --config .prettierrc 'src/**/*.ts' --write",
-    "typecheck": "tsc --noEmit --skipLibCheck"
+    "typecheck": "tsc --noEmit --skipLibCheck",
+    "docker:up": "docker compose up -d",
+    "docker:down": "docker compose down",
+    "prisma-migrate:reset": "npx prisma migrate reset",
+    "prisma-migrate:dev": "npx prisma migrate dev"
   },
   "engines": {
     "node": "22"
