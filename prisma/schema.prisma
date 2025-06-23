@@ -13,9 +13,11 @@ generator client {
 
 model Feedback {
   id  Int @id @default(autoincrement())
-  createdTime DateTime @db.Timestamptz(3) @default(now())
+  createdAt DateTime @db.Timestamptz(3) @default(now())
   rating Boolean
   pageUrl String
   comment String?
   email String?
+
+  @@index([pageUrl, createdAt])
 }
