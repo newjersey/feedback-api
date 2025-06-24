@@ -11,4 +11,4 @@ CREATE TABLE "Feedback" (
 );
 
 -- CreateIndex
-CREATE INDEX "Feedback_pageUrl_createdAt_idx" ON "Feedback"("pageUrl", "createdAt");
+CREATE INDEX "Feedback_pageUrl_createdAt_idx" ON "Feedback"("pageUrl" text_pattern_ops, "createdAt");

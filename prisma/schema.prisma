@@ -19,5 +19,14 @@ model Feedback {
   comment String?
   email String?
 
+  /**
+    Note: The pageUrl index should use the `text_pattern_ops` operator instead of the default B-tree operator. 
+      
+    This is because `text_pattern_ops` is better suited to pattern matching expressions. (See PostgreSQL docs: https://www.postgresql.org/docs/current/indexes-opclass.html)
+      
+    However, we are unable to define this in the Prisma schema because doing so causes endless migrations (see similar GitHub issue: https://github.com/prisma/prisma/issues/17518)
+
+    As a workaround, the init migration (prisma/migrations/20250623215747_init/ migration.sql) has been manually cuztomized to set the text_pattern_ops operator.
+  **/
   @@index([pageUrl, createdAt])
 }
