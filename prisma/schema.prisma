@@ -26,7 +26,7 @@ model Feedback {
       
     However, we are unable to define this in the Prisma schema because doing so causes endless migrations (see similar GitHub issue: https://github.com/prisma/prisma/issues/17518)
 
-    As a workaround, the init migration (prisma/migrations/20250623215747_init/ migration.sql) has been manually cuztomized to set the text_pattern_ops operator.
+    As a workaround, the init migration (prisma/migrations/20250623215747_init/ migration.sql) has been manually customized to set the text_pattern_ops operator.
   **/
   @@index([pageUrl, createdAt])
 }
