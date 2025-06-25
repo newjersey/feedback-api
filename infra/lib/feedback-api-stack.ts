@@ -72,9 +72,9 @@ export class FeedbackApiStack extends cdk.Stack {
     });
 
     const functions = [
-      { name: 'rating', handler: ratingFunction, endpointType: 'POST' },
-      { name: 'comment', handler: commentFunction, endpointType: 'POST' },
-      { name: 'email', handler: emailFunction, endpointType: 'POST' }
+      { name: 'rating', handler: ratingFunction },
+      { name: 'comment', handler: commentFunction },
+      { name: 'email', handler: emailFunction }
     ];
 
     const feedbackApi = new apigw.RestApi(this, 'feedback-api', {
@@ -82,12 +82,10 @@ export class FeedbackApiStack extends cdk.Stack {
       description: 'API for Feedback Widget functions'
     });
 
-    functions.forEach(({ name, handler, endpointType }) => {
+    functions.forEach(({ name, handler }) => {
       const resource = feedbackApi.root.addResource(name);
-      resource.addMethod(
-        endpointType,
-        new apigw.LambdaIntegration(handler, {})
-      );
+      resource.addMethod('POST', new apigw.LambdaIntegration(handler, {}));
+      resource.addMethod('OPTIONS', new apigw.LambdaIntegration(handler, {}));
 
       new cdk.CfnOutput(this, `${name}FunctionArnOutput`, {
         key: `${name}FunctionArn`,
