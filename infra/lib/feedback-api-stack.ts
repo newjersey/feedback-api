@@ -72,9 +72,9 @@ export class FeedbackApiStack extends cdk.Stack {
     });
 
     const functions = [
-      { name: 'rating', handler: ratingFunction },
-      { name: 'comment', handler: commentFunction },
-      { name: 'email', handler: emailFunction }
+      { name: 'rating', handler: ratingFunction, method: 'POST' },
+      { name: 'comment', handler: commentFunction, method: 'POST' },
+      { name: 'email', handler: emailFunction, method: 'POST' }
     ];
 
     const feedbackApi = new apigw.RestApi(this, 'feedback-api', {
@@ -82,10 +82,19 @@ export class FeedbackApiStack extends cdk.Stack {
       description: 'API for Feedback Widget functions'
     });
 
-    functions.forEach(({ name, handler }) => {
+    functions.forEach(({ name, handler, method }) => {
       const resource = feedbackApi.root.addResource(name);
-      resource.addMethod('POST', new apigw.LambdaIntegration(handler, {}));
-      resource.addMethod('OPTIONS', new apigw.LambdaIntegration(handler, {}));
+      resource.addCorsPreflight({
+        allowOrigins: ['*'],
+        allowMethods: ['OPTIONS,POST'],
+        allowHeaders: [
+          'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent,X-Amzn-Trace-Id'
+        ],
+        allowCredentials: false
+      });
+      resource.addMethod(method, new apigw.LambdaIntegration(handler, {}), {
+        methodResponses: [{ statusCode: '200' }]
+      });
 
       new cdk.CfnOutput(this, `${name}FunctionArnOutput`, {
         key: `${name}FunctionArn`,
