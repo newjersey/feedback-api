@@ -84,7 +84,7 @@ export class FeedbackApiStack extends cdk.Stack {
 
     functions.forEach(({ name, handler, method }) => {
       const resource = feedbackApi.root.addResource(name);
-      resource.addCorsPreflight({
+      const optionsMethod = resource.addCorsPreflight({
         allowOrigins: ['*'],
         allowMethods: ['OPTIONS,POST'],
         allowHeaders: [
@@ -92,9 +92,17 @@ export class FeedbackApiStack extends cdk.Stack {
         ],
         allowCredentials: false
       });
-      resource.addMethod(method, new apigw.LambdaIntegration(handler, {}), {
-        methodResponses: [{ statusCode: '200' }]
+      optionsMethod.addMethodResponse({
+        statusCode: '200',
+        responseParameters: {
+          'method.response.header.Access-Control-Allow-Origin': true,
+          'method.response.header.Access-Control-Allow-Headers': true,
+          'method.response.header.Access-Control-Allow-Methods': true
+        },
+        responseModels: {}
       });
+
+      resource.addMethod(method, new apigw.LambdaIntegration(handler, {}));
 
       new cdk.CfnOutput(this, `${name}FunctionArnOutput`, {
         key: `${name}FunctionArn`,
