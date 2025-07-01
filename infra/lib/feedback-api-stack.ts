@@ -49,6 +49,10 @@ export class FeedbackApiStack extends cdk.Stack {
 
     const ratingFunction = new NodejsFunction(this, 'rating', {
       entry: '../src/functions/rating.ts',
+      environment: {
+        AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1',
+        NODE_OPTIONS: '--enable-source-maps'
+      },
       functionName: 'feedback-api-rating',
       role: lambdaExecutionRole,
       runtime: lambda.Runtime.NODEJS_22_X,
@@ -57,6 +61,10 @@ export class FeedbackApiStack extends cdk.Stack {
 
     const commentFunction = new NodejsFunction(this, 'comment', {
       entry: '../src/functions/comment.ts',
+      environment: {
+        AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1',
+        NODE_OPTIONS: '--enable-source-maps'
+      },
       functionName: 'feedback-api-comment',
       role: lambdaExecutionRole,
       runtime: lambda.Runtime.NODEJS_22_X,
@@ -65,6 +73,10 @@ export class FeedbackApiStack extends cdk.Stack {
 
     const emailFunction = new NodejsFunction(this, 'email', {
       entry: '../src/functions/email.ts',
+      environment: {
+        AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1',
+        NODE_OPTIONS: '--enable-source-maps'
+      },
       functionName: 'feedback-api-email',
       role: lambdaExecutionRole,
       runtime: lambda.Runtime.NODEJS_22_X,
@@ -79,19 +91,32 @@ export class FeedbackApiStack extends cdk.Stack {
 
     const feedbackApi = new apigw.RestApi(this, 'feedback-api', {
       restApiName: 'Feedback API',
-      description: 'API for Feedback Widget functions'
+      endpointConfiguration: {
+        types: [apigw.EndpointType.EDGE]
+      },
+      description: 'API for Feedback Widget functions',
+      minCompressionSize: cdk.Size.bytes(1024),
+      deploy: true
     });
 
     functions.forEach(({ name, handler, method }) => {
       const resource = feedbackApi.root.addResource(name);
+
       const optionsMethod = resource.addCorsPreflight({
-        allowOrigins: ['*'],
-        allowMethods: ['OPTIONS,POST'],
+        allowOrigins: apigw.Cors.ALL_ORIGINS,
+        allowMethods: ['OPTIONS', 'POST'],
         allowHeaders: [
-          'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent,X-Amzn-Trace-Id'
+          'Content-Type',
+          'X-Amz-Date',
+          'Authorization',
+          'X-Api-Key',
+          'X-Amz-Security-Token',
+          'X-Amz-User-Agent',
+          'X-Amzn-Trace-Id'
         ],
         allowCredentials: false
       });
+
       optionsMethod.addMethodResponse({
         statusCode: '200',
         responseParameters: {
