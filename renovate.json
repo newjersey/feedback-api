@@ -1,6 +1,13 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": ["config:best-practices"],
-  "transitiveRemediation": true,
-  "ignoreDeps": ["node", "@types/node"]
+  "baseBranchPatterns": ["dev"],
+  "ignoreDeps": ["node", "@types/node"],
+  "packageRules": [
+    {
+      "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
+      "automerge": true,
+      "automergeStrategy": "rebase"
+    }
+  ]
 }
