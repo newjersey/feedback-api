@@ -2,6 +2,7 @@
 CREATE TABLE "Feedback" (
     "id" SERIAL NOT NULL,
     "createdAt" TIMESTAMPTZ(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "createdAtFromApi" TIMESTAMPTZ(3) NOT NULL,
     "rating" BOOLEAN NOT NULL,
     "pageUrl" TEXT NOT NULL,
     "comment" TEXT,

@@ -14,6 +14,7 @@ generator client {
 model Feedback {
   id  Int @id @default(autoincrement())
   createdAt DateTime @db.Timestamptz(3) @default(now())
+  createdAtFromApi DateTime @db.Timestamptz(3)
   rating Boolean
   pageUrl String
   comment String?
