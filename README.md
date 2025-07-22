@@ -138,13 +138,13 @@ We use [Prisma Migrate](https://www.prisma.io/docs/orm/prisma-migrate) to handle
 ##### Squashing migrations in a dev environment
 In general, we should "squash" migrations before merging a feature branch to keep our migration history clean. For example, when setting up in the initial schema, several progressive changes were made, but it's more efficient to just execute all of those in a single migration in the same `CREATE TABLE` query.  
 
-Unliked squashing git commits, Prisma Migrate doesn't have a special squash function. Instead, when squashing in a development environment we can follow the procedure below: 
+Unlike squashing git commits, Prisma Migrate doesn't have a special squash function. Instead, when squashing in a development environment we can follow the procedure below: 
 
 1. Reset the migration history to the last migration we want to keep
   - In practice, do this by deleting the migrations you want to squash from the `migrations/` directory
 2. Reset the local database by running `npx prisma migrate reset` (or `npm run prisma-migrate:reset`)
 3. Run `npx prisma migrate dev`
-  - When we do this, Prisma will apply all the migrations in the `migrations` folder in order to the fresh database. 
+  - When we do this, Prisma will sequentially apply all the migrations in the `migrations` folder to the freshly reset database. 
   - Since we deleted the migrations we wanted to squash, it's as if they never existed in the first place from the perspective of the database. 
   - So Prisma will generate a single `migration.sql` file that accounts for all the schema changes between the last migration we kept in step (1) and the `schema.prisma`.
 
