@@ -34,7 +34,7 @@ model Feedback {
 
     Example:
     ```
-    CREATE INDEX "Feedback_pageUrl_createdAt_idx" ON "Feedback"("pageUrl" text_pattern_ops, "createdAt");
+    CREATE INDEX "feedback_page_url_created_at_idx" ON "feedback"("page_url" text_pattern_ops, "created_at")
     ```
   **/
   @@index([pageUrl, createdAt])
