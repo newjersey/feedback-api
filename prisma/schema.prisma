@@ -27,7 +27,15 @@ model Feedback {
       
     However, we are unable to define this in the Prisma schema because doing so causes endless migrations (see similar GitHub issue: https://github.com/prisma/prisma/issues/17518)
 
-    As a workaround, the init migration (prisma/migrations/20250623215747_init/ migration.sql) has been manually customized to set the text_pattern_ops operator.
+    As a workaround, the init migration with the CREATE TABLE command for the 
+    `feedback` table has been manually customized to set the text_pattern_ops operator.
+
+    If you ever regenerate this migration (i.e. while squashing), please make sure to edit the CREATE INDEX command to use the `text_pattern_ops` operator: 
+
+    Example:
+    ```
+    CREATE INDEX "Feedback_pageUrl_createdAt_idx" ON "Feedback"("pageUrl" text_pattern_ops, "createdAt");
+    ```
   **/
   @@index([pageUrl, createdAt])
 
