@@ -19,3 +19,6 @@ key.txt
 # CDK asset staging directory
 /infra/.cdk.staging
 /infra/cdk.out
+
+# Generated Prisma Client code
+/generated/prisma
