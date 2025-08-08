@@ -16,8 +16,9 @@ This project defines the infrastructure for the **Feedback Widget** using [AWS C
 To get started or continue working:
 
 ```bash
-npm install               # Install dependencies
-npm run diff              # Preview infrastructure changes
-npm run deploy            # Deploy to AWS
-npm run deploy-db:dev     # Deploy the dev database to AWS
-npm run synth:dev         # Synthesizes the CDK app into a dev CloudFormation template
+npm install                 # Install dependencies
+npm run diff                # Preview infrastructure changes
+npm run deploy              # Deploy to AWS
+npm run deploy-db:dev       # Deploy the dev database to AWS
+npm run synth:alarm         # Synthesizes the alarm stack into a CloudFormation template
+npm run synth-db:dev        # Synthesizes the CDK app into a dev CloudFormation template

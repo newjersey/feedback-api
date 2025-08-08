@@ -1,6 +1,10 @@
 import * as cdk from 'aws-cdk-lib';
 import { FeedbackApiStack } from '../lib/feedback-api-stack';
 import { FeedbackDbStack } from '../lib/feedback-db-stack';
+import { FeedbackApiAlarmStack } from '../lib/feedback-api-alarm-stack';
+import { config } from 'dotenv';
+
+config();
 
 const app = new cdk.App();
 
@@ -14,3 +18,7 @@ new FeedbackDbStack(app, 'FeedbackDbStack', {
 });
 
 new FeedbackApiStack(app, 'FeedbackApiStack', {});
+
+new FeedbackApiAlarmStack(app, 'FeedbackApiAlarmStack', {
+  env
+});
