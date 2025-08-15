@@ -1,19 +1,10 @@
 import { Construct } from 'constructs';
-import * as sns from 'aws-cdk-lib/aws-sns';
 import * as cloudwatch from 'aws-cdk-lib/aws-cloudwatch';
 import { aws_cloudwatch_actions, Duration } from 'aws-cdk-lib';
-
-interface FeedbackApi500XErrorAlarmProps {
-  restApiName: string;
-  alertTopic: sns.ITopic;
-}
+import { FeedbackApiAlarmProps } from './types';
 
 export class FeedbackApi500XErrorAlarm extends Construct {
-  constructor(
-    scope: Construct,
-    id: string,
-    props: FeedbackApi500XErrorAlarmProps
-  ) {
+  constructor(scope: Construct, id: string, props: FeedbackApiAlarmProps) {
     super(scope, id);
 
     const { alertTopic } = props;
@@ -35,7 +26,7 @@ export class FeedbackApi500XErrorAlarm extends Construct {
       threshold: 2,
       actionsEnabled: true,
       alarmDescription:
-        'Alarm when the feedback comment Lambda logs at least 2 errors in 15 minutes',
+        'Alarm when the Feedback API returns at least 2 5XX errors in 15 minutes',
       alarmName: 'Feedback API - 5XX Errors',
       comparisonOperator: cloudwatch.ComparisonOperator.GREATER_THAN_THRESHOLD,
       datapointsToAlarm: 1,
