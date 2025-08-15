@@ -5,7 +5,8 @@ import * as lambda from 'aws-cdk-lib/aws-lambda';
 import * as iam from 'aws-cdk-lib/aws-iam';
 import * as apigw from 'aws-cdk-lib/aws-apigateway';
 import * as sns from 'aws-cdk-lib/aws-sns';
-import { FeedbackApi500XErrorAlarm } from '../monitoring/feedback-api-alarm';
+import { FeedbackApi5xxErrorAlarm as FeedbackApi5xxErrorAlarm } from '../monitoring/feedback-api-5xx-error-alarm';
+import { FeedbackApi4xxErrorAlarm } from '../monitoring/feedback-api-4xx-error-alarm';
 
 export class FeedbackApiStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props: cdk.StackProps) {
@@ -112,7 +113,12 @@ export class FeedbackApiStack extends cdk.Stack {
       )
     );
 
-    new FeedbackApi500XErrorAlarm(this, 'FeedbackApi500XErrorAlarm', {
+    new FeedbackApi5xxErrorAlarm(this, 'FeedbackApi5XXErrorAlarm', {
+      alertTopic: alertTopic,
+      restApiName: feedbackApi.restApiName
+    });
+
+    new FeedbackApi4xxErrorAlarm(this, 'FeedbackApi4XX', {
       alertTopic: alertTopic,
       restApiName: feedbackApi.restApiName
     });
