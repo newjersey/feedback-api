@@ -15,6 +15,7 @@
     "synth:api": "cd infra && npx cdk synth FeedbackApiStack",
     "synth:db:dev": "cd infra && cdk synth --profile innov-platform-dev --app 'npx tsx bin/feedback.ts'",
     "test": "jest",
+    "test:watch": "jest --watch",
     "typecheck": "tsc --noEmit --skipLibCheck",
     "watch": "tsc -w",
     "docker:up": "docker compose up -d",

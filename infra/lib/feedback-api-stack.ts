@@ -8,8 +8,12 @@ import * as sns from 'aws-cdk-lib/aws-sns';
 import { FeedbackApi5xxErrorAlarm as FeedbackApi5xxErrorAlarm } from '../monitoring/feedback-api-5xx-error-alarm';
 import { FeedbackApi4xxErrorAlarm } from '../monitoring/feedback-api-4xx-error-alarm';
 
+interface FeedbackApiStackProps extends cdk.StackProps {
+  pathToSrcDirectory: string;
+}
+
 export class FeedbackApiStack extends cdk.Stack {
-  constructor(scope: Construct, id: string, props: cdk.StackProps) {
+  constructor(scope: Construct, id: string, props: FeedbackApiStackProps) {
     super(scope, id, props);
 
     const lambdaExecutionRole = new iam.Role(
@@ -51,7 +55,7 @@ export class FeedbackApiStack extends cdk.Stack {
     );
 
     const ratingFunction = new NodejsFunction(this, 'rating', {
-      entry: '../src/functions/rating.ts',
+      entry: `${props.pathToSrcDirectory}/functions/rating.ts`,
       functionName: 'feedback-api-rating',
       role: lambdaExecutionRole,
       runtime: lambda.Runtime.NODEJS_22_X,
@@ -59,7 +63,7 @@ export class FeedbackApiStack extends cdk.Stack {
     });
 
     const commentFunction = new NodejsFunction(this, 'comment', {
-      entry: '../src/functions/comment.ts',
+      entry: `${props.pathToSrcDirectory}/functions/comment.ts`,
       functionName: 'feedback-api-comment',
       role: lambdaExecutionRole,
       runtime: lambda.Runtime.NODEJS_22_X,
@@ -67,7 +71,7 @@ export class FeedbackApiStack extends cdk.Stack {
     });
 
     const emailFunction = new NodejsFunction(this, 'email', {
-      entry: '../src/functions/email.ts',
+      entry: `${props.pathToSrcDirectory}/functions/email.ts`,
       functionName: 'feedback-api-email',
       role: lambdaExecutionRole,
       runtime: lambda.Runtime.NODEJS_22_X,

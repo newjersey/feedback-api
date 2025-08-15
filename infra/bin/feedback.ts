@@ -13,4 +13,6 @@ new FeedbackDbStack(app, 'FeedbackDbStack', {
   env
 });
 
-new FeedbackApiStack(app, 'FeedbackApiStack', {});
+new FeedbackApiStack(app, 'FeedbackApiStack', {
+  pathToSrcDirectory: '../src/'
+});
