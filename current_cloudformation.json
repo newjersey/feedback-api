@@ -1,0 +1,1233 @@
+{
+  "Resources": {
+    "FeedbackApiLambdaExecutionRoleD18FA43B": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "lambda.amazonaws.com"
+              }
+            }
+          ],
+          "Version": "2012-10-17"
+        },
+        "Description": "Shared execution role for Feedback API Lambda functions",
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition"
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+              ]
+            ]
+          }
+        ],
+        "Policies": [
+          {
+            "PolicyDocument": {
+              "Statement": [
+                {
+                  "Action": [
+                    "ssm:DescribeParameters",
+                    "ssm:GetParameter",
+                    "ssm:GetParameters",
+                    "ssm:GetParametersByPath"
+                  ],
+                  "Effect": "Allow",
+                  "Resource": {
+                    "Fn::Join": [
+                      "",
+                      [
+                        "arn:aws:ssm:",
+                        {
+                          "Ref": "AWS::Region"
+                        },
+                        ":",
+                        {
+                          "Ref": "AWS::AccountId"
+                        },
+                        ":parameter/feedback-api/*"
+                      ]
+                    ]
+                  }
+                },
+                {
+                  "Action": "comprehend:DetectPiiEntities",
+                  "Effect": "Allow",
+                  "Resource": "*"
+                }
+              ],
+              "Version": "2012-10-17"
+            },
+            "PolicyName": "feedbackApiLambdaPolicy"
+          }
+        ],
+        "RoleName": "FeedbackApiLambdaExecutionRole"
+      },
+      "Metadata": {
+        "aws:cdk:path": "FeedbackApiStack/FeedbackApiLambdaExecutionRole/Resource"
+      }
+    },
+    "rating52F6F1F8": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Code": {
+          "S3Bucket": {
+            "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}"
+          },
+          "S3Key": "2f43abf2d2e8b8d5764f5fd887c6002ff91bb4dada3e4f0501f6a1a437774db0.zip"
+        },
+        "Environment": {
+          "Variables": {
+            "AWS_NODEJS_CONNECTION_REUSE_ENABLED": "1",
+            "NODE_OPTIONS": "--enable-source-maps"
+          }
+        },
+        "FunctionName": "feedback-api-rating",
+        "Handler": "index.handler",
+        "Role": {
+          "Fn::GetAtt": [
+            "FeedbackApiLambdaExecutionRoleD18FA43B",
+            "Arn"
+          ]
+        },
+        "Runtime": "nodejs22.x",
+        "Timeout": 30
+      },
+      "DependsOn": [
+        "FeedbackApiLambdaExecutionRoleD18FA43B"
+      ],
+      "Metadata": {
+        "aws:cdk:path": "FeedbackApiStack/rating/Resource",
+        "aws:asset:path": "asset.2f43abf2d2e8b8d5764f5fd887c6002ff91bb4dada3e4f0501f6a1a437774db0",
+        "aws:asset:is-bundled": true,
+        "aws:asset:property": "Code"
+      }
+    },
+    "comment0FC1024D": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Code": {
+          "S3Bucket": {
+            "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}"
+          },
+          "S3Key": "936473ec6d3a37f8f01fae3f9facd587423a7665caf4ec5f19ea7fc4ba8c7456.zip"
+        },
+        "Environment": {
+          "Variables": {
+            "AWS_NODEJS_CONNECTION_REUSE_ENABLED": "1",
+            "NODE_OPTIONS": "--enable-source-maps"
+          }
+        },
+        "FunctionName": "feedback-api-comment",
+        "Handler": "index.handler",
+        "Role": {
+          "Fn::GetAtt": [
+            "FeedbackApiLambdaExecutionRoleD18FA43B",
+            "Arn"
+          ]
+        },
+        "Runtime": "nodejs22.x",
+        "Timeout": 30
+      },
+      "DependsOn": [
+        "FeedbackApiLambdaExecutionRoleD18FA43B"
+      ],
+      "Metadata": {
+        "aws:cdk:path": "FeedbackApiStack/comment/Resource",
+        "aws:asset:path": "asset.936473ec6d3a37f8f01fae3f9facd587423a7665caf4ec5f19ea7fc4ba8c7456",
+        "aws:asset:is-bundled": true,
+        "aws:asset:property": "Code"
+      }
+    },
+    "email8FDCEDED": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Code": {
+          "S3Bucket": {
+            "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}"
+          },
+          "S3Key": "eec51d64ec73a1b219fdb25df174b4464df7507c9060c5129d68e0e5051c55eb.zip"
+        },
+        "Environment": {
+          "Variables": {
+            "AWS_NODEJS_CONNECTION_REUSE_ENABLED": "1",
+            "NODE_OPTIONS": "--enable-source-maps"
+          }
+        },
+        "FunctionName": "feedback-api-email",
+        "Handler": "index.handler",
+        "Role": {
+          "Fn::GetAtt": [
+            "FeedbackApiLambdaExecutionRoleD18FA43B",
+            "Arn"
+          ]
+        },
+        "Runtime": "nodejs22.x",
+        "Timeout": 30
+      },
+      "DependsOn": [
+        "FeedbackApiLambdaExecutionRoleD18FA43B"
+      ],
+      "Metadata": {
+        "aws:cdk:path": "FeedbackApiStack/email/Resource",
+        "aws:asset:path": "asset.eec51d64ec73a1b219fdb25df174b4464df7507c9060c5129d68e0e5051c55eb",
+        "aws:asset:is-bundled": true,
+        "aws:asset:property": "Code"
+      }
+    },
+    "feedbackapi5ED7BC6E": {
+      "Type": "AWS::ApiGateway::RestApi",
+      "Properties": {
+        "Description": "API for Feedback Widget functions",
+        "EndpointConfiguration": {
+          "Types": [
+            "EDGE"
+          ]
+        },
+        "MinimumCompressionSize": 1024,
+        "Name": "Feedback API"
+      },
+      "Metadata": {
+        "aws:cdk:path": "FeedbackApiStack/feedback-api/Resource"
+      }
+    },
+    "feedbackapiDeployment0DFC6084879761f94740de9b8d5875297e978b7d": {
+      "Type": "AWS::ApiGateway::Deployment",
+      "Properties": {
+        "Description": "API for Feedback Widget functions",
+        "RestApiId": {
+          "Ref": "feedbackapi5ED7BC6E"
+        }
+      },
+      "DependsOn": [
+        "feedbackapicommentOPTIONSCDDCEB41",
+        "feedbackapicommentPOST7BA70C9B",
+        "feedbackapicomment0AB89875",
+        "feedbackapiemailOPTIONSD87F715C",
+        "feedbackapiemailPOSTEA7BC41F",
+        "feedbackapiemailE446B22C",
+        "feedbackapiratingOPTIONSD5AF6D5C",
+        "feedbackapiratingPOSTF624CD41",
+        "feedbackapiratingEE6F1243"
+      ],
+      "Metadata": {
+        "aws:cdk:path": "FeedbackApiStack/feedback-api/Deployment/Resource"
+      }
+    },
+    "feedbackapiDeploymentStageprod395E1FA1": {
+      "Type": "AWS::ApiGateway::Stage",
+      "Properties": {
+        "DeploymentId": {
+          "Ref": "feedbackapiDeployment0DFC6084879761f94740de9b8d5875297e978b7d"
+        },
+        "RestApiId": {
+          "Ref": "feedbackapi5ED7BC6E"
+        },
+        "StageName": "prod"
+      },
+      "Metadata": {
+        "aws:cdk:path": "FeedbackApiStack/feedback-api/DeploymentStage.prod/Resource"
+      }
+    },
+    "feedbackapiratingEE6F1243": {
+      "Type": "AWS::ApiGateway::Resource",
+      "Properties": {
+        "ParentId": {
+          "Fn::GetAtt": [
+            "feedbackapi5ED7BC6E",
+            "RootResourceId"
+          ]
+        },
+        "PathPart": "rating",
+        "RestApiId": {
+          "Ref": "feedbackapi5ED7BC6E"
+        }
+      },
+      "Metadata": {
+        "aws:cdk:path": "FeedbackApiStack/feedback-api/Default/rating/Resource"
+      }
+    },
+    "feedbackapiratingOPTIONSD5AF6D5C": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "ApiKeyRequired": false,
+        "AuthorizationType": "NONE",
+        "HttpMethod": "OPTIONS",
+        "Integration": {
+          "IntegrationResponses": [
+            {
+              "ResponseParameters": {
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent,X-Amzn-Trace-Id'",
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,POST'"
+              },
+              "StatusCode": "204"
+            }
+          ],
+          "RequestTemplates": {
+            "application/json": "{ statusCode: 200 }"
+          },
+          "Type": "MOCK"
+        },
+        "MethodResponses": [
+          {
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Headers": true,
+              "method.response.header.Access-Control-Allow-Origin": true,
+              "method.response.header.Access-Control-Allow-Methods": true
+            },
+            "StatusCode": "204"
+          },
+          {
+            "ResponseModels": {},
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Origin": true,
+              "method.response.header.Access-Control-Allow-Headers": true,
+              "method.response.header.Access-Control-Allow-Methods": true
+            },
+            "StatusCode": "200"
+          }
+        ],
+        "ResourceId": {
+          "Ref": "feedbackapiratingEE6F1243"
+        },
+        "RestApiId": {
+          "Ref": "feedbackapi5ED7BC6E"
+        }
+      },
+      "Metadata": {
+        "aws:cdk:path": "FeedbackApiStack/feedback-api/Default/rating/OPTIONS/Resource"
+      }
+    },
+    "feedbackapiratingPOSTApiPermissionFeedbackApiStackfeedbackapi717A9CD4POSTrating52896010": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "rating52F6F1F8",
+            "Arn"
+          ]
+        },
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:",
+              {
+                "Ref": "AWS::Partition"
+              },
+              ":execute-api:",
+              {
+                "Ref": "AWS::Region"
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId"
+              },
+              ":",
+              {
+                "Ref": "feedbackapi5ED7BC6E"
+              },
+              "/",
+              {
+                "Ref": "feedbackapiDeploymentStageprod395E1FA1"
+              },
+              "/POST/rating"
+            ]
+          ]
+        }
+      },
+      "Metadata": {
+        "aws:cdk:path": "FeedbackApiStack/feedback-api/Default/rating/POST/ApiPermission.FeedbackApiStackfeedbackapi717A9CD4.POST..rating"
+      }
+    },
+    "feedbackapiratingPOSTApiPermissionTestFeedbackApiStackfeedbackapi717A9CD4POSTrating203FDE4F": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "rating52F6F1F8",
+            "Arn"
+          ]
+        },
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:",
+              {
+                "Ref": "AWS::Partition"
+              },
+              ":execute-api:",
+              {
+                "Ref": "AWS::Region"
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId"
+              },
+              ":",
+              {
+                "Ref": "feedbackapi5ED7BC6E"
+              },
+              "/test-invoke-stage/POST/rating"
+            ]
+          ]
+        }
+      },
+      "Metadata": {
+        "aws:cdk:path": "FeedbackApiStack/feedback-api/Default/rating/POST/ApiPermission.Test.FeedbackApiStackfeedbackapi717A9CD4.POST..rating"
+      }
+    },
+    "feedbackapiratingPOSTF624CD41": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "AuthorizationType": "NONE",
+        "HttpMethod": "POST",
+        "Integration": {
+          "IntegrationHttpMethod": "POST",
+          "Type": "AWS_PROXY",
+          "Uri": {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition"
+                },
+                ":apigateway:",
+                {
+                  "Ref": "AWS::Region"
+                },
+                ":lambda:path/2015-03-31/functions/",
+                {
+                  "Fn::GetAtt": [
+                    "rating52F6F1F8",
+                    "Arn"
+                  ]
+                },
+                "/invocations"
+              ]
+            ]
+          }
+        },
+        "ResourceId": {
+          "Ref": "feedbackapiratingEE6F1243"
+        },
+        "RestApiId": {
+          "Ref": "feedbackapi5ED7BC6E"
+        }
+      },
+      "Metadata": {
+        "aws:cdk:path": "FeedbackApiStack/feedback-api/Default/rating/POST/Resource"
+      }
+    },
+    "feedbackapicomment0AB89875": {
+      "Type": "AWS::ApiGateway::Resource",
+      "Properties": {
+        "ParentId": {
+          "Fn::GetAtt": [
+            "feedbackapi5ED7BC6E",
+            "RootResourceId"
+          ]
+        },
+        "PathPart": "comment",
+        "RestApiId": {
+          "Ref": "feedbackapi5ED7BC6E"
+        }
+      },
+      "Metadata": {
+        "aws:cdk:path": "FeedbackApiStack/feedback-api/Default/comment/Resource"
+      }
+    },
+    "feedbackapicommentOPTIONSCDDCEB41": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "ApiKeyRequired": false,
+        "AuthorizationType": "NONE",
+        "HttpMethod": "OPTIONS",
+        "Integration": {
+          "IntegrationResponses": [
+            {
+              "ResponseParameters": {
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent,X-Amzn-Trace-Id'",
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,POST'"
+              },
+              "StatusCode": "204"
+            }
+          ],
+          "RequestTemplates": {
+            "application/json": "{ statusCode: 200 }"
+          },
+          "Type": "MOCK"
+        },
+        "MethodResponses": [
+          {
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Headers": true,
+              "method.response.header.Access-Control-Allow-Origin": true,
+              "method.response.header.Access-Control-Allow-Methods": true
+            },
+            "StatusCode": "204"
+          },
+          {
+            "ResponseModels": {},
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Origin": true,
+              "method.response.header.Access-Control-Allow-Headers": true,
+              "method.response.header.Access-Control-Allow-Methods": true
+            },
+            "StatusCode": "200"
+          }
+        ],
+        "ResourceId": {
+          "Ref": "feedbackapicomment0AB89875"
+        },
+        "RestApiId": {
+          "Ref": "feedbackapi5ED7BC6E"
+        }
+      },
+      "Metadata": {
+        "aws:cdk:path": "FeedbackApiStack/feedback-api/Default/comment/OPTIONS/Resource"
+      }
+    },
+    "feedbackapicommentPOSTApiPermissionFeedbackApiStackfeedbackapi717A9CD4POSTcommentCD549432": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "comment0FC1024D",
+            "Arn"
+          ]
+        },
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:",
+              {
+                "Ref": "AWS::Partition"
+              },
+              ":execute-api:",
+              {
+                "Ref": "AWS::Region"
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId"
+              },
+              ":",
+              {
+                "Ref": "feedbackapi5ED7BC6E"
+              },
+              "/",
+              {
+                "Ref": "feedbackapiDeploymentStageprod395E1FA1"
+              },
+              "/POST/comment"
+            ]
+          ]
+        }
+      },
+      "Metadata": {
+        "aws:cdk:path": "FeedbackApiStack/feedback-api/Default/comment/POST/ApiPermission.FeedbackApiStackfeedbackapi717A9CD4.POST..comment"
+      }
+    },
+    "feedbackapicommentPOSTApiPermissionTestFeedbackApiStackfeedbackapi717A9CD4POSTcommentDF5A71C4": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "comment0FC1024D",
+            "Arn"
+          ]
+        },
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:",
+              {
+                "Ref": "AWS::Partition"
+              },
+              ":execute-api:",
+              {
+                "Ref": "AWS::Region"
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId"
+              },
+              ":",
+              {
+                "Ref": "feedbackapi5ED7BC6E"
+              },
+              "/test-invoke-stage/POST/comment"
+            ]
+          ]
+        }
+      },
+      "Metadata": {
+        "aws:cdk:path": "FeedbackApiStack/feedback-api/Default/comment/POST/ApiPermission.Test.FeedbackApiStackfeedbackapi717A9CD4.POST..comment"
+      }
+    },
+    "feedbackapicommentPOST7BA70C9B": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "AuthorizationType": "NONE",
+        "HttpMethod": "POST",
+        "Integration": {
+          "IntegrationHttpMethod": "POST",
+          "Type": "AWS_PROXY",
+          "Uri": {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition"
+                },
+                ":apigateway:",
+                {
+                  "Ref": "AWS::Region"
+                },
+                ":lambda:path/2015-03-31/functions/",
+                {
+                  "Fn::GetAtt": [
+                    "comment0FC1024D",
+                    "Arn"
+                  ]
+                },
+                "/invocations"
+              ]
+            ]
+          }
+        },
+        "ResourceId": {
+          "Ref": "feedbackapicomment0AB89875"
+        },
+        "RestApiId": {
+          "Ref": "feedbackapi5ED7BC6E"
+        }
+      },
+      "Metadata": {
+        "aws:cdk:path": "FeedbackApiStack/feedback-api/Default/comment/POST/Resource"
+      }
+    },
+    "feedbackapiemailE446B22C": {
+      "Type": "AWS::ApiGateway::Resource",
+      "Properties": {
+        "ParentId": {
+          "Fn::GetAtt": [
+            "feedbackapi5ED7BC6E",
+            "RootResourceId"
+          ]
+        },
+        "PathPart": "email",
+        "RestApiId": {
+          "Ref": "feedbackapi5ED7BC6E"
+        }
+      },
+      "Metadata": {
+        "aws:cdk:path": "FeedbackApiStack/feedback-api/Default/email/Resource"
+      }
+    },
+    "feedbackapiemailOPTIONSD87F715C": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "ApiKeyRequired": false,
+        "AuthorizationType": "NONE",
+        "HttpMethod": "OPTIONS",
+        "Integration": {
+          "IntegrationResponses": [
+            {
+              "ResponseParameters": {
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent,X-Amzn-Trace-Id'",
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,POST'"
+              },
+              "StatusCode": "204"
+            }
+          ],
+          "RequestTemplates": {
+            "application/json": "{ statusCode: 200 }"
+          },
+          "Type": "MOCK"
+        },
+        "MethodResponses": [
+          {
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Headers": true,
+              "method.response.header.Access-Control-Allow-Origin": true,
+              "method.response.header.Access-Control-Allow-Methods": true
+            },
+            "StatusCode": "204"
+          },
+          {
+            "ResponseModels": {},
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Origin": true,
+              "method.response.header.Access-Control-Allow-Headers": true,
+              "method.response.header.Access-Control-Allow-Methods": true
+            },
+            "StatusCode": "200"
+          }
+        ],
+        "ResourceId": {
+          "Ref": "feedbackapiemailE446B22C"
+        },
+        "RestApiId": {
+          "Ref": "feedbackapi5ED7BC6E"
+        }
+      },
+      "Metadata": {
+        "aws:cdk:path": "FeedbackApiStack/feedback-api/Default/email/OPTIONS/Resource"
+      }
+    },
+    "feedbackapiemailPOSTApiPermissionFeedbackApiStackfeedbackapi717A9CD4POSTemail95CD7130": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "email8FDCEDED",
+            "Arn"
+          ]
+        },
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:",
+              {
+                "Ref": "AWS::Partition"
+              },
+              ":execute-api:",
+              {
+                "Ref": "AWS::Region"
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId"
+              },
+              ":",
+              {
+                "Ref": "feedbackapi5ED7BC6E"
+              },
+              "/",
+              {
+                "Ref": "feedbackapiDeploymentStageprod395E1FA1"
+              },
+              "/POST/email"
+            ]
+          ]
+        }
+      },
+      "Metadata": {
+        "aws:cdk:path": "FeedbackApiStack/feedback-api/Default/email/POST/ApiPermission.FeedbackApiStackfeedbackapi717A9CD4.POST..email"
+      }
+    },
+    "feedbackapiemailPOSTApiPermissionTestFeedbackApiStackfeedbackapi717A9CD4POSTemail0F356107": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "email8FDCEDED",
+            "Arn"
+          ]
+        },
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:",
+              {
+                "Ref": "AWS::Partition"
+              },
+              ":execute-api:",
+              {
+                "Ref": "AWS::Region"
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId"
+              },
+              ":",
+              {
+                "Ref": "feedbackapi5ED7BC6E"
+              },
+              "/test-invoke-stage/POST/email"
+            ]
+          ]
+        }
+      },
+      "Metadata": {
+        "aws:cdk:path": "FeedbackApiStack/feedback-api/Default/email/POST/ApiPermission.Test.FeedbackApiStackfeedbackapi717A9CD4.POST..email"
+      }
+    },
+    "feedbackapiemailPOSTEA7BC41F": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "AuthorizationType": "NONE",
+        "HttpMethod": "POST",
+        "Integration": {
+          "IntegrationHttpMethod": "POST",
+          "Type": "AWS_PROXY",
+          "Uri": {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition"
+                },
+                ":apigateway:",
+                {
+                  "Ref": "AWS::Region"
+                },
+                ":lambda:path/2015-03-31/functions/",
+                {
+                  "Fn::GetAtt": [
+                    "email8FDCEDED",
+                    "Arn"
+                  ]
+                },
+                "/invocations"
+              ]
+            ]
+          }
+        },
+        "ResourceId": {
+          "Ref": "feedbackapiemailE446B22C"
+        },
+        "RestApiId": {
+          "Ref": "feedbackapi5ED7BC6E"
+        }
+      },
+      "Metadata": {
+        "aws:cdk:path": "FeedbackApiStack/feedback-api/Default/email/POST/Resource"
+      }
+    },
+    "CDKMetadata": {
+      "Type": "AWS::CDK::Metadata",
+      "Properties": {
+        "Analytics": "v2:deflate64:H4sIAAAAAAAA/02Py26DQAxFvyX7wSVk1WVC1V3ainwAcsBQ85hB2FMUIf69GqCP1bm+un4lkMQxHA84SVSUbdTxHeabYtEanCSfGXuYM9eRSSsbuJgO+3uJuXUlNQJvK169LZSdNXLKUYRU4Bxg5AQXX7SkFxTaW2FOK/vbkVb2g8aeRdjZxeDANSpN+IA5I9HzwOvqXb7Q0LlHT1aD+6+6KdbrkZvISJwfC1rX/hT7oE1fST9dGaxNLctfbr09DGJbh8S718HrYsLP0MjTVxLD8RmSQyPM0eitck+QbfwGU6J4Q1MBAAA="
+      },
+      "Metadata": {
+        "aws:cdk:path": "FeedbackApiStack/CDKMetadata/Default"
+      },
+      "Condition": "CDKMetadataAvailable"
+    }
+  },
+  "Outputs": {
+    "feedbackapiEndpoint22C86332": {
+      "Value": {
+        "Fn::Join": [
+          "",
+          [
+            "https://",
+            {
+              "Ref": "feedbackapi5ED7BC6E"
+            },
+            ".execute-api.",
+            {
+              "Ref": "AWS::Region"
+            },
+            ".",
+            {
+              "Ref": "AWS::URLSuffix"
+            },
+            "/",
+            {
+              "Ref": "feedbackapiDeploymentStageprod395E1FA1"
+            },
+            "/"
+          ]
+        ]
+      }
+    },
+    "ratingFunctionArn": {
+      "Value": {
+        "Fn::GetAtt": [
+          "rating52F6F1F8",
+          "Arn"
+        ]
+      },
+      "Export": {
+        "Name": "ratingFunctionArn"
+      }
+    },
+    "commentFunctionArn": {
+      "Value": {
+        "Fn::GetAtt": [
+          "comment0FC1024D",
+          "Arn"
+        ]
+      },
+      "Export": {
+        "Name": "commentFunctionArn"
+      }
+    },
+    "emailFunctionArn": {
+      "Value": {
+        "Fn::GetAtt": [
+          "email8FDCEDED",
+          "Arn"
+        ]
+      },
+      "Export": {
+        "Name": "emailFunctionArn"
+      }
+    },
+    "feedbackApiUrl": {
+      "Value": {
+        "Fn::Join": [
+          "",
+          [
+            "https://",
+            {
+              "Ref": "feedbackapi5ED7BC6E"
+            },
+            ".execute-api.",
+            {
+              "Ref": "AWS::Region"
+            },
+            ".",
+            {
+              "Ref": "AWS::URLSuffix"
+            },
+            "/",
+            {
+              "Ref": "feedbackapiDeploymentStageprod395E1FA1"
+            },
+            "/"
+          ]
+        ]
+      },
+      "Export": {
+        "Name": "feedbackApiUrl"
+      }
+    }
+  },
+  "Conditions": {
+    "CDKMetadataAvailable": {
+      "Fn::Or": [
+        {
+          "Fn::Or": [
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "af-south-1"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "ap-east-1"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "ap-northeast-1"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "ap-northeast-2"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "ap-northeast-3"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "ap-south-1"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "ap-south-2"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "ap-southeast-1"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "ap-southeast-2"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "ap-southeast-3"
+              ]
+            }
+          ]
+        },
+        {
+          "Fn::Or": [
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "ap-southeast-4"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "ca-central-1"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "ca-west-1"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "cn-north-1"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "cn-northwest-1"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "eu-central-1"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "eu-central-2"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "eu-north-1"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "eu-south-1"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "eu-south-2"
+              ]
+            }
+          ]
+        },
+        {
+          "Fn::Or": [
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "eu-west-1"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "eu-west-2"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "eu-west-3"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "il-central-1"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "me-central-1"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "me-south-1"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "sa-east-1"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "us-east-1"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "us-east-2"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "us-west-1"
+              ]
+            }
+          ]
+        },
+        {
+          "Fn::Equals": [
+            {
+              "Ref": "AWS::Region"
+            },
+            "us-west-2"
+          ]
+        }
+      ]
+    }
+  },
+  "Parameters": {
+    "BootstrapVersion": {
+      "Type": "AWS::SSM::Parameter::Value<String>",
+      "Default": "/cdk-bootstrap/hnb659fds/version",
+      "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]"
+    }
+  },
+  "Rules": {
+    "CheckBootstrapVersion": {
+      "Assertions": [
+        {
+          "Assert": {
+            "Fn::Not": [
+              {
+                "Fn::Contains": [
+                  [
+                    "1",
+                    "2",
+                    "3",
+                    "4",
+                    "5"
+                  ],
+                  {
+                    "Ref": "BootstrapVersion"
+                  }
+                ]
+              }
+            ]
+          },
+          "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI."
+        }
+      ]
+    }
+  }
+}

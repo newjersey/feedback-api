@@ -4,6 +4,8 @@ import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
 import * as iam from 'aws-cdk-lib/aws-iam';
 import * as apigw from 'aws-cdk-lib/aws-apigateway';
+import * as sns from 'aws-cdk-lib/aws-sns';
+import { FeedbackApi500XErrorAlarm } from '../monitoring/feedback-api-alarm';
 
 export class FeedbackApiStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props: cdk.StackProps) {
@@ -98,6 +100,21 @@ export class FeedbackApiStack extends cdk.Stack {
       key: 'feedbackApiUrl',
       exportName: 'feedbackApiUrl',
       value: feedbackApi.url
+    });
+
+    const alertTopic = new sns.Topic(this, 'AlertTopic', {
+      topicName: 'slack-platform-eng-alerts'
+    });
+
+    alertTopic.addSubscription(
+      new cdk.aws_sns_subscriptions.EmailSubscription(
+        'platform-eng-alerts-aaaapo5zcsgpp4xexgu4ggjvje@njcio.slack.com'
+      )
+    );
+
+    new FeedbackApi500XErrorAlarm(this, 'FeedbackApi500XErrorAlarm', {
+      alertTopic: alertTopic,
+      restApiName: feedbackApi.restApiName
     });
   }
 }
