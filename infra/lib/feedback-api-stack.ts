@@ -118,7 +118,7 @@ export class FeedbackApiStack extends cdk.Stack {
       restApiName: feedbackApi.restApiName
     });
 
-    new FeedbackApi4xxErrorAlarm(this, 'FeedbackApi4XX', {
+    new FeedbackApi4xxErrorAlarm(this, 'FeedbackApi4xxErrorAlarm', {
       alertTopic: alertTopic,
       restApiName: feedbackApi.restApiName
     });
