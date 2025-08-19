@@ -5,7 +5,7 @@ import * as lambda from 'aws-cdk-lib/aws-lambda';
 import * as iam from 'aws-cdk-lib/aws-iam';
 import * as apigw from 'aws-cdk-lib/aws-apigateway';
 import * as sns from 'aws-cdk-lib/aws-sns';
-import { FeedbackApi5xxErrorAlarm as FeedbackApi5xxErrorAlarm } from '../monitoring/feedback-api-5xx-error-alarm';
+import { FeedbackApi5xxErrorAlarm } from '../monitoring/feedback-api-5xx-error-alarm';
 import { FeedbackApi4xxErrorAlarm } from '../monitoring/feedback-api-4xx-error-alarm';
 
 interface FeedbackApiStackProps extends cdk.StackProps {
