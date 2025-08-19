@@ -114,9 +114,9 @@ export class FeedbackApiStack extends cdk.Stack {
 
     alertTopic.addSubscription(
       new cdk.aws_sns_subscriptions.EmailSubscription(
-        ssm.StringParameter.valueFromLookup(
+        ssm.StringParameter.valueForStringParameter(
           this,
-          '/shared/alarm-subscription/slack-email/platform-eng-alerts'
+          '/shared/alarms/subscriptions/slack-emails/platform-eng-alerts'
         )
       )
     );
