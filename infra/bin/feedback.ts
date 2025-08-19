@@ -2,6 +2,8 @@ import * as cdk from 'aws-cdk-lib';
 import { FeedbackApiStack } from '../lib/feedback-api-stack';
 import { FeedbackDbStack } from '../lib/feedback-db-stack';
 
+const PATH_TO_SRC_DIRECTORY = '../src/';
+
 const app = new cdk.App();
 
 const env = {
@@ -14,5 +16,5 @@ new FeedbackDbStack(app, 'FeedbackDbStack', {
 });
 
 new FeedbackApiStack(app, 'FeedbackApiStack', {
-  pathToSrcDirectory: '../src/'
+  pathToSrcDirectory: PATH_TO_SRC_DIRECTORY
 });
