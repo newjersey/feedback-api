@@ -16,5 +16,9 @@ new FeedbackDbStack(app, 'FeedbackDbStack', {
 });
 
 new FeedbackApiStack(app, 'FeedbackApiStack', {
-  pathToSrcDirectory: PATH_TO_SRC_DIRECTORY
+  pathToSrcDirectory: PATH_TO_SRC_DIRECTORY,
+  env: {
+    account: process.env.CDK_DEFAULT_ACCOUNT,
+    region: process.env.CDK_DEFAULT_REGION
+  }
 });

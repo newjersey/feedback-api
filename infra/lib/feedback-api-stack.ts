@@ -5,6 +5,7 @@ import * as lambda from 'aws-cdk-lib/aws-lambda';
 import * as iam from 'aws-cdk-lib/aws-iam';
 import * as apigw from 'aws-cdk-lib/aws-apigateway';
 import * as sns from 'aws-cdk-lib/aws-sns';
+import * as ssm from 'aws-cdk-lib/aws-ssm';
 import { FeedbackApi5xxErrorAlarm } from '../monitoring/feedback-api-5xx-error-alarm';
 import { FeedbackApi4xxErrorAlarm } from '../monitoring/feedback-api-4xx-error-alarm';
 
@@ -113,7 +114,10 @@ export class FeedbackApiStack extends cdk.Stack {
 
     alertTopic.addSubscription(
       new cdk.aws_sns_subscriptions.EmailSubscription(
-        'platform-eng-alerts-aaaapo5zcsgpp4xexgu4ggjvje@njcio.slack.com'
+        ssm.StringParameter.valueFromLookup(
+          this,
+          '/shared/alarm-subscription/slack-email/platform-eng-alerts'
+        )
       )
     );
 
