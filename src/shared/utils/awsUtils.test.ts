@@ -50,7 +50,7 @@ describe('getSsmParam function', () => {
   it('Throws an error if the value of the parameter is null', async () => {
     MOCK_SSM_CLIENT.on(GetParameterCommand).resolves({
       Parameter: {
-        Value: null
+        Value: null as unknown as string | undefined
       }
     });
 
