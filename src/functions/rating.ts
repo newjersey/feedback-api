@@ -19,7 +19,7 @@ export const handler = async (
   event: APIGatewayProxyEvent
 ): Promise<FeedbackResponse> => {
   try {
-    const { pageURL, rating } = JSON.parse(event.body) as Rating;
+    const { pageURL, rating } = JSON.parse(event.body as string) as Rating;
 
     if (pageURL == null) {
       throw new Error('Submission is missing page URL');
