@@ -39,7 +39,7 @@ describe('google-sheets', () => {
       const client = await getAuthClient(mockClientEmail, mockPrivateKey);
       expect(google.auth.JWT).toHaveBeenCalledWith(
         mockClientEmail,
-        null,
+        undefined,
         mockPrivateKey,
         ['https://www.googleapis.com/auth/spreadsheets']
       );
