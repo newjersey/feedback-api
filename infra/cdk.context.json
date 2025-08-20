@@ -24,5 +24,6 @@
         ]
       }
     ]
-  }
+  },
+  "ssm:account=152320432929:parameterName=/feedback-api/alarms/email-subscription:region=us-east-1": "platform-eng-alerts-aaaapo5zcsgpp4xexgu4ggjvje@njcio.slack.com"
 }
