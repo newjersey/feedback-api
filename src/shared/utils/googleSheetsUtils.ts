@@ -14,17 +14,15 @@ export async function getAuthClient(clientEmail: string, privateKey: string) {
   try {
     const auth = new google.auth.JWT(
       clientEmail,
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      null,
+      undefined,
       privateKey.replace(/\\n/g, '\n'),
       ['https://www.googleapis.com/auth/spreadsheets']
     );
     await auth.authorize();
     return google.sheets({ version: 'v4', auth });
   } catch (e) {
-    const error = e as { message: string };
-    throw new Error(`Google Sheets API failed to authorize: ${error.message}`);
+    const error = e as { message?: string };
+    throw new Error(`Google Sheets API failed to authorize: ${error?.message}`);
   }
 }
 
@@ -65,9 +63,9 @@ export async function createFeedback(
     }
     return getRowFromAppendRange(result.data.updates.updatedRange);
   } catch (e) {
-    const error = e as { message: string };
+    const error = e as { message?: string };
     throw Error(
-      `Google Sheets API failed to create feedback row: ${error.message}`
+      `Google Sheets API failed to create feedback row: ${error?.message}`
     );
   }
 }
@@ -93,9 +91,9 @@ export async function updateFeedback(
     }
     return getRowFromUpdateRange(result.data.updatedRange);
   } catch (e) {
-    const error = e as { message: string };
+    const error = e as { message?: string };
     throw Error(
-      `Google Sheets API failed to update feedback row: ${error.message}`
+      `Google Sheets API failed to update feedback row: ${error?.message}`
     );
   }
 }
