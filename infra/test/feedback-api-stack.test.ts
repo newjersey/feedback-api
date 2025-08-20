@@ -5,7 +5,10 @@ import path from 'path';
 import * as ssm from 'aws-cdk-lib/aws-ssm';
 
 describe('Feedback API Stack', () => {
-  const createTemplate = () => {
+  const createStackAndTemplate = (): {
+    stack: FeedbackApiStack;
+    template: Template;
+  } => {
     const app = new App();
     const currentWorkingDir = path.basename(path.resolve(process.cwd()));
     const rootDir = path.basename(path.resolve(__dirname, '../../'));
@@ -19,7 +22,7 @@ describe('Feedback API Stack', () => {
       pathToSrcDirectory: './src'
     });
 
-    return Template.fromStack(stack);
+    return { stack: stack, template: Template.fromStack(stack) };
   };
 
   beforeEach(() => {
@@ -27,7 +30,7 @@ describe('Feedback API Stack', () => {
   });
 
   it('creates an SNS topic', () => {
-    const template = createTemplate();
+    const { template } = createStackAndTemplate();
     template.hasResourceProperties('AWS::SNS::Topic', {
       TopicName: 'slack-platform-eng-alerts'
     });
@@ -41,10 +44,10 @@ describe('Feedback API Stack', () => {
     const ssmParamName =
       '/shared/alarms/subscriptions/slack-emails/platform-eng-alerts';
 
-    const template = createTemplate();
+    const { stack, template } = createStackAndTemplate();
 
     expect(valueForStringParameterMock).toHaveBeenCalledWith(
-      expect.any(FeedbackApiStack),
+      stack,
       ssmParamName
     );
 
@@ -67,7 +70,7 @@ describe('Feedback API Stack', () => {
   it.each(['4XXError', '5XXError'])(
     'creates a CloudWatch alarm tracking the %s metric',
     (metricName) => {
-      const template = createTemplate();
+      const { template } = createStackAndTemplate();
       template.hasResourceProperties('AWS::CloudWatch::Alarm', {
         MetricName: metricName,
         Threshold: 2,
