@@ -1,6 +1,5 @@
 import {
   DetectPiiEntitiesCommand,
-  PiiEntity,
   type ComprehendClient
 } from '@aws-sdk/client-comprehend';
 
@@ -14,25 +13,23 @@ export const redactPii = async (
       LanguageCode: 'en'
     });
     const response = await comprehendClient.send(command);
+    const entities = response.Entities;
 
-    if (response.Entities == undefined) {
+    if (entities == undefined) {
       throw Error('Pii entities are undefined.');
     }
-
-    const sortedEntities = [...(response.Entities as PiiEntity[])].sort(
-      (a, b) => {
-        if (a.BeginOffset == undefined || b.BeginOffset == undefined) {
-          throw Error("Entity's BeginOffset is undefined.");
-        }
-        if (a.BeginOffset < b.BeginOffset) {
-          return -1;
-        }
-        if (a.BeginOffset > b.BeginOffset) {
-          return 1;
-        }
-        return 0;
+    const sortedEntities = entities.sort((a, b) => {
+      if (a.BeginOffset == undefined || b.BeginOffset == undefined) {
+        throw Error("Entity's BeginOffset is undefined.");
       }
-    );
+      if (a.BeginOffset < b.BeginOffset) {
+        return -1;
+      }
+      if (a.BeginOffset > b.BeginOffset) {
+        return 1;
+      }
+      return 0;
+    });
 
     let result = input;
     sortedEntities.forEach((pii) => {
