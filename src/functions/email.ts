@@ -21,7 +21,7 @@ export const handler = async (
   event: APIGatewayProxyEvent
 ): Promise<FeedbackResponse> => {
   try {
-    const { email, feedbackId } = JSON.parse(event.body as string) as Email;
+    const { email, feedbackId } = JSON.parse(event.body) as Email;
 
     if (feedbackId == null) {
       throw new Error('Submission is missing feedback ID');

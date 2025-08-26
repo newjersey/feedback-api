@@ -2,13 +2,9 @@ name: Automated CI checks
 
 on:
   push:
-    branches: 
-      - main
-      - dev
+    branches: main
   pull_request:
-    branches: 
-      - main
-      - dev
+    branches: main
 
 jobs:
   install-and-test:
