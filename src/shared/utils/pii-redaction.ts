@@ -13,8 +13,15 @@ export const redactPii = async (
       LanguageCode: 'en'
     });
     const response = await comprehendClient.send(command);
+    const entities = response.Entities;
 
-    const sortedEntities = [...response.Entities].sort((a, b) => {
+    if (entities == undefined) {
+      throw Error('Pii entities are undefined.');
+    }
+    const sortedEntities = entities.sort((a, b) => {
+      if (a.BeginOffset == undefined || b.BeginOffset == undefined) {
+        throw Error("Entity's BeginOffset is undefined.");
+      }
       if (a.BeginOffset < b.BeginOffset) {
         return -1;
       }
@@ -26,6 +33,12 @@ export const redactPii = async (
 
     let result = input;
     sortedEntities.forEach((pii) => {
+      if (pii.BeginOffset == undefined) {
+        throw Error("Entity's BeginOffset is undefined.");
+      }
+      if (pii.EndOffset == undefined) {
+        throw Error("Entity's EndOffset is undefined.");
+      }
       const stringToRedact = input.substring(pii.BeginOffset, pii.EndOffset);
       result = result.replace(stringToRedact, `[${pii.Type}]`);
     });
