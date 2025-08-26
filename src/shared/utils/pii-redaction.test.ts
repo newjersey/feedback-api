@@ -12,12 +12,12 @@ describe('redactPii function', () => {
     MOCK_COMPREHEND_CLIENT.reset();
   });
 
-  it('should throw an error if the Pii entities are undefined', () => {
+  it('should throw an error if the Pii entities are undefined', async () => {
     MOCK_COMPREHEND_CLIENT.on(DetectPiiEntitiesCommand).resolvesOnce({
       Entities: undefined
     });
 
-    expect(
+    await expect(
       redactPii(
         'testInput',
         MOCK_COMPREHEND_CLIENT as unknown as ComprehendClient
@@ -27,7 +27,7 @@ describe('redactPii function', () => {
     );
   });
 
-  it("should throw an error if a Pii entity's BeginOffset is undefined", () => {
+  it("should throw an error if a Pii entity's BeginOffset is undefined", async () => {
     MOCK_COMPREHEND_CLIENT.on(DetectPiiEntitiesCommand).resolvesOnce({
       Entities: [
         { BeginOffset: 0, EndOffset: 1 },
@@ -35,7 +35,7 @@ describe('redactPii function', () => {
       ]
     });
 
-    expect(
+    await expect(
       redactPii(
         'testInput',
         MOCK_COMPREHEND_CLIENT as unknown as ComprehendClient
@@ -45,7 +45,7 @@ describe('redactPii function', () => {
     );
   });
 
-  it("should throw an error if a Pii entity's EndOffset is undefined", () => {
+  it("should throw an error if a Pii entity's EndOffset is undefined", async () => {
     MOCK_COMPREHEND_CLIENT.on(DetectPiiEntitiesCommand).resolvesOnce({
       Entities: [
         { BeginOffset: 0, EndOffset: 1 },
@@ -53,7 +53,7 @@ describe('redactPii function', () => {
       ]
     });
 
-    expect(
+    await expect(
       redactPii(
         'testInput',
         MOCK_COMPREHEND_CLIENT as unknown as ComprehendClient

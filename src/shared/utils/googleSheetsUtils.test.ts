@@ -68,7 +68,7 @@ describe('google-sheets', () => {
 
     it('should throw an error if authorization fails', async () => {
       MOCK_AUTHORIZE.mockRejectedValueOnce(new Error('Failed to authorize'));
-      expect(
+      await expect(
         getAuthClient(MOCK_CLIENT_EMAIL, MOCK_PRIVATE_KEY)
       ).rejects.toThrow(
         'Google Sheets API failed to authorize: Failed to authorize'
@@ -81,7 +81,7 @@ describe('google-sheets', () => {
       MOCK_SHEETS.spreadsheets.values.append.mockRejectedValueOnce(
         new Error('Failed to create')
       );
-      expect(
+      await expect(
         createFeedback(
           await getMockSheetsClient(),
           'fakeSheetId',
@@ -99,7 +99,7 @@ describe('google-sheets', () => {
       MOCK_SHEETS.spreadsheets.values.update.mockRejectedValueOnce(
         new Error('Failed to update')
       );
-      expect(
+      await expect(
         updateFeedback(
           await getMockSheetsClient(),
           'mockSheetId',
