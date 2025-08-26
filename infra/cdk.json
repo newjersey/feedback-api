@@ -1,5 +1,5 @@
 {
-  "app": "npx tsx bin/feedback.ts",
+  "app": "npx tsx bin/feedback-api.ts",
   "watch": {
     "include": ["**"],
     "exclude": [
@@ -17,7 +17,7 @@
   "context": {
     "@aws-cdk/aws-lambda:recognizeLayerVersion": true,
     "@aws-cdk/core:checkSecretUsage": true,
-    "@aws-cdk/core:target-partitions": ["aws"],
+    "@aws-cdk/core:target-partitions": ["aws", "aws-cn"],
     "@aws-cdk-containers/ecs-service-extensions:enableDefaultLogDriver": true,
     "@aws-cdk/aws-ec2:uniqueImdsv2TemplateName": true,
     "@aws-cdk/aws-ecs:arnFormatIncludesClusterName": true,
@@ -74,20 +74,6 @@
     "@aws-cdk/aws-lambda-nodejs:sdkV3ExcludeSmithyPackages": true,
     "@aws-cdk/aws-stepfunctions-tasks:fixRunEcsTaskPolicy": true,
     "@aws-cdk/aws-ec2:bastionHostUseAmazonLinux2023ByDefault": true,
-    "@aws-cdk/aws-route53-targets:userPoolDomainNameMethodWithoutCustomResource": true,
-    "@aws-cdk/aws-elasticloadbalancingV2:albDualstackWithoutPublicIpv4SecurityGroupRulesDefault": true,
-    "@aws-cdk/aws-iam:oidcRejectUnauthorizedConnections": true,
-    "@aws-cdk/aws-kms:applyImportedAliasPermissionsToPrincipal": true,
-    "@aws-cdk/core:enableAdditionalMetadataCollection": true,
-    "@aws-cdk/aws-lambda:createNewPoliciesWithAddToRolePolicy": false,
-    "@aws-cdk/aws-s3:setUniqueReplicationRoleName": true,
-    "@aws-cdk/aws-dynamodb:retainTableReplica": true,
-    "@aws-cdk/aws-ec2:requirePrivateSubnetsForEgressOnlyInternetGateway": true,
-    "@aws-cdk/core:aspectPrioritiesMutating": true,
-    "@aws-cdk/aws-events:requireEventBusPolicySid": true,
-    "@aws-cdk/s3-notifications:addS3TrustKeyPolicyForSnsSubscriptions": true,
-    "@aws-cdk/aws-stepfunctions:useDistributedMapResultWriterV2": true,
-    "@aws-cdk/aws-s3:publicAccessBlockedByDefault": true,
-    "@aws-cdk/aws-lambda:useCdkManagedLogGroup": true
+    "@aws-cdk/aws-route53-targets:userPoolDomainNameMethodWithoutCustomResource": true
   }
 }
