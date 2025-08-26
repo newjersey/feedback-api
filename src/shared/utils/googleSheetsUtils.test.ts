@@ -33,6 +33,7 @@ jest.mock('googleapis', () => {
 
 const MOCK_CLIENT_EMAIL = 'hello@hello.com';
 const MOCK_PRIVATE_KEY = 'mockKey';
+const TEST_SHEET_ID = 'testSheetId';
 const TEST_FEEDBACK_RECORD = {
   date: 12345,
   pageUrl: 'example.com',
@@ -84,7 +85,7 @@ describe('google-sheets', () => {
       await expect(
         createFeedback(
           await getMockSheetsClient(),
-          'fakeSheetId',
+          TEST_SHEET_ID,
           TEST_FEEDBACK_RECORD.pageUrl,
           TEST_FEEDBACK_RECORD.rating
         )
@@ -102,7 +103,7 @@ describe('google-sheets', () => {
       await expect(
         updateFeedback(
           await getMockSheetsClient(),
-          'mockSheetId',
+          TEST_SHEET_ID,
           1,
           Feedback.Comment,
           TEST_FEEDBACK_RECORD.comment
