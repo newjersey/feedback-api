@@ -2,6 +2,9 @@
 node_modules
 jspm_packages
 
+# Serverless directories
+.serverless
+
 # esbuild directories
 .esbuild
 
@@ -11,14 +14,3 @@ secrets.json
 key.txt
 ~/
 .env
-
-# infra directory
-/infra/*.js
-/infra/*.d.ts
-
-# CDK asset staging directory
-/infra/.cdk.staging
-/infra/cdk.out
-
-# Generated Prisma Client code
-/generated/prisma
