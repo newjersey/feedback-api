@@ -13,7 +13,7 @@ describe('comment Lambda', () => {
 
   beforeEach(() => jest.resetAllMocks());
 
-  it('returns a 200 success response when request contains a feedbackId and comment', async () => {
+  it("returns a response containing the 'Access-Control-Allow-Origin':'*' header to enable CORS", async () => {
     const testEvent = {
       body: JSON.stringify({
         feedbackId: 1,

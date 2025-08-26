@@ -11,7 +11,7 @@ describe('rating Lambda', () => {
   jest.spyOn(googleSheetsUtils, 'getAuthClient').mockImplementation(jest.fn());
   jest.spyOn(awsUtils, 'getSsmParam').mockImplementation(jest.fn());
 
-  it('returns a 200 success response when request contains a pageURL and rating', async () => {
+  it("returns a response containing the 'Access-Control-Allow-Origin':'*' header to enable CORS", async () => {
     const testEvent = {
       body: JSON.stringify({
         pageURL: TEST_PAGE_URL,
