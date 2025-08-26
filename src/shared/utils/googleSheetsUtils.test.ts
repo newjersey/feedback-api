@@ -1,5 +1,10 @@
-import { google } from 'googleapis';
-import { getAuthClient } from './googleSheetsUtils';
+import { google, sheets_v4 } from 'googleapis';
+import {
+  getAuthClient,
+  createFeedback,
+  updateFeedback
+} from './googleSheetsUtils';
+import { Feedback, FeedbackRecord } from '../types';
 
 const MOCK_AUTHORIZE = jest.fn().mockResolvedValue(undefined);
 const MOCK_SHEETS = {
@@ -26,21 +31,32 @@ jest.mock('googleapis', () => {
   };
 });
 
+const MOCK_CLIENT_EMAIL = 'hello@hello.com';
+const MOCK_PRIVATE_KEY = 'mockKey';
+const TEST_SHEET_ID = 'testSheetId';
+const TEST_FEEDBACK_RECORD = {
+  date: 12345,
+  pageUrl: 'example.com',
+  rating: true,
+  comment: 'comment'
+} as const satisfies FeedbackRecord;
+
+const getMockSheetsClient = (): Promise<sheets_v4.Sheets> => {
+  return getAuthClient(MOCK_CLIENT_EMAIL, MOCK_PRIVATE_KEY);
+};
+
 describe('google-sheets', () => {
   afterEach(() => {
     jest.clearAllMocks();
   });
 
   describe('getAuthClient', () => {
-    const mockClientEmail = 'hello@hello.com';
-    const mockPrivateKey = 'mockKey';
-
     it('should successfully create and authorize a Google Sheets API client', async () => {
-      const client = await getAuthClient(mockClientEmail, mockPrivateKey);
+      const client = await getAuthClient(MOCK_CLIENT_EMAIL, MOCK_PRIVATE_KEY);
       expect(google.auth.JWT).toHaveBeenCalledWith(
-        mockClientEmail,
-        null,
-        mockPrivateKey,
+        MOCK_CLIENT_EMAIL,
+        undefined,
+        MOCK_PRIVATE_KEY,
         ['https://www.googleapis.com/auth/spreadsheets']
       );
       expect(MOCK_AUTHORIZE).toHaveBeenCalled();
@@ -54,9 +70,46 @@ describe('google-sheets', () => {
     it('should throw an error if authorization fails', async () => {
       MOCK_AUTHORIZE.mockRejectedValueOnce(new Error('Failed to authorize'));
       await expect(
-        getAuthClient(mockClientEmail, mockPrivateKey)
+        getAuthClient(MOCK_CLIENT_EMAIL, MOCK_PRIVATE_KEY)
       ).rejects.toThrow(
         'Google Sheets API failed to authorize: Failed to authorize'
+      );
+    });
+  });
+
+  describe('createFeedback', () => {
+    it('should throw an error if creating a feedback row fails', async () => {
+      MOCK_SHEETS.spreadsheets.values.append.mockRejectedValueOnce(
+        new Error('Failed to create')
+      );
+      await expect(
+        createFeedback(
+          await getMockSheetsClient(),
+          TEST_SHEET_ID,
+          TEST_FEEDBACK_RECORD.pageUrl,
+          TEST_FEEDBACK_RECORD.rating
+        )
+      ).rejects.toThrow(
+        'Google Sheets API failed to create feedback row: Failed to create'
+      );
+    });
+  });
+
+  describe('createFeedback', () => {
+    it('should throw an error if updating a feedback row fails', async () => {
+      MOCK_SHEETS.spreadsheets.values.update.mockRejectedValueOnce(
+        new Error('Failed to update')
+      );
+      await expect(
+        updateFeedback(
+          await getMockSheetsClient(),
+          TEST_SHEET_ID,
+          1,
+          Feedback.Comment,
+          TEST_FEEDBACK_RECORD.comment
+        )
+      ).rejects.toThrow(
+        'Google Sheets API failed to update feedback row: Failed to update'
       );
     });
   });

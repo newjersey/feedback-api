@@ -27,7 +27,7 @@ export const handler = async (
 ): Promise<FeedbackResponse> => {
   try {
     const { feedbackId, comment, pageURL, rating } = JSON.parse(
-      event.body
+      event.body as string
     ) as Comment;
 
     if (comment == null) {
@@ -77,6 +77,10 @@ export const handler = async (
         message: 'Success',
         feedbackId: createdId
       });
+    } else {
+      throw Error(
+        'If submission is missing feedbackId, then it must include pageURL and rating.'
+      );
     }
   } catch (e) {
     const message = e instanceof Error ? e.message : 'No further details';
