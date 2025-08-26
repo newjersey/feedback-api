@@ -1,23 +1,35 @@
 {
   "extends": "./tsconfig.paths.json",
   "compilerOptions": {
-    "lib": ["ESNext"],
+    "alwaysStrict": true,
+    "declaration": true,
+    "experimentalDecorators": true,
+    "inlineSources": true,
+    "esModuleInterop": true,
+    "lib": ["es2022"],
     "moduleResolution": "node",
+    "noFallthroughCasesInSwitch": false,
+    "noImplicitAny": true,
+    "noImplicitReturns": true,
+    "noImplicitThis": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
+    "outDir": "infra/lib",
     "removeComments": true,
+    "strict": true,
+    "strictNullChecks": true,
+    "strictPropertyInitialization": false,
     "sourceMap": true,
-    "target": "ES2020",
-    "outDir": "lib",
-    "esModuleInterop": true,
+    "target": "ES2022",
+    "types": ["jest", "node"]
   },
-  "include": ["src/**/*.ts", "serverless.ts"],
+  "include": ["src/**/*.ts"],
   "exclude": [
     "node_modules/**/*",
-    ".serverless/**/*",
     ".webpack/**/*",
     "_warmup/**/*",
-    ".vscode/**/*"
+    ".vscode/**/*",
+    "cdk.out"
   ],
   "ts-node": {
     "require": ["tsconfig-paths/register"]
