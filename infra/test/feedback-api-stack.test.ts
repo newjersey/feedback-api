@@ -26,7 +26,36 @@ describe('Feedback API Stack', () => {
   };
 
   beforeEach(() => {
-    jest.restoreAllMocks();
+    jest.resetAllMocks();
+  });
+
+  it('creates a REST API that enables CORS for the preflight request', () => {
+    const { template } = createStackAndTemplate();
+
+    const optionMethods = template.findResources('AWS::ApiGateway::Method', {
+      Properties: {
+        HttpMethod: 'OPTIONS'
+      }
+    });
+
+    for (const logicalId in optionMethods) {
+      const integration: {
+        IntegrationResponses: object[];
+        RequestTemplates: object;
+        Type: string;
+      } = optionMethods[logicalId]['Properties']['Integration'];
+
+      const integrationResponses = integration['IntegrationResponses'];
+
+      expect(integrationResponses).toContainEqual({
+        StatusCode: '204',
+        ResponseParameters: expect.objectContaining({
+          'method.response.header.Access-Control-Allow-Origin': "'*'",
+          'method.response.header.Access-Control-Allow-Methods':
+            "'OPTIONS,POST'"
+        })
+      });
+    }
   });
 
   it('creates an SNS topic', () => {
@@ -65,6 +94,8 @@ describe('Feedback API Stack', () => {
         `SsmParameterValue${ssmParamNameAlphanumericOnly}`
       )
     });
+
+    valueForStringParameterMock.mockRestore();
   });
 
   it.each(['4XXError', '5XXError'])(
