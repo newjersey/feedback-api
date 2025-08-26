@@ -4,40 +4,33 @@
 
 This project is for the REST API that handles interactions on the feedback widget UI and adds this data to a database, currently Google Sheets. It is deployed to AWS Lambda + API Gateway. For full architecture of feedback system, see "Technical diagram" section below.
 
-This project has been generated using the `aws-nodejs-typescript` template from the [Serverless framework](https://www.serverless.com/). For detailed instructions, please refer to the [documentation](https://www.serverless.com/framework/docs/providers/aws/).
-
 ## Endpoints
 
-For the latest information on the API endpoints maintained, see the functions imported and configured within the `serverless.ts` file. Within the `src/functions/` folder, each sub-folder corresponds to an API endpoint, and the `index.ts` file within it has detail on the type of endpoint. For example, see `src/functions/comment/index.ts` and `src/functions/comment/schema.ts` for details on the `POST /comment` endpoint. For a quick summary, this repo supports the following endpoints:
+For the latest information on the API endpoints maintained, see the functions imported and configured within the `feedback-api-stack.ts` file. Within the `src/functions/` folder, each file corresponds to an API endpoint. For example, see `src/functions/comment.ts` for details on the `POST /comment` endpoint. For a quick summary, this repo supports the following endpoints:
 
 - `POST /rating` - saves Yes/No rating to database
 - `POST /comment`- saves text comment to database (and cleans PII)
 - `POST /email` - saves email to database
-- `POST /summary` - generates summary from list of comments using OpenAI's GPT model
 
 ## Setup
 
 1. Clone this repository
-2. Create `.env` file in root directory, pasting in values from [Bitwarden secure note](https://vault.bitwarden.com/#/vault?collectionId=30a0c305-72f6-4e50-a403-b09a010f5467&itemId=65d29f31-d443-415d-b8b9-b10f017a41a5). Note that these values are production keys that will allow for live testing. We hope to create a dev or local stage in the future.
-3. Run `npm install` (on Node 18, as listed in `.nvmrc`) to install Node dependencies
-4. Run `npx sls offline` to start the API locally
-5. In another terminal, try calling API endpoints such as the example below. Note that this will actually add data to our live production database (Google Sheets).
-
-```bash
-curl -d '{"pageURL":"www.test.com","rating":true}' -H "Content-Type: application/json" http://localhost:3000/rating
-```
+2. Run `npm install` (on Node 22, as listed in `.nvmrc`) to install Node dependencies
+3. Save the credentials from the `Innov-Platform-Dev` AWS account to your `~/.aws/credentials` file
 
 ## Deployment
 
-Deployment is done locally to the AWS account `Innov-RES-Dev` and _not_ yet connected to Github version control.
+Deployment to AWS is done locally on the command line and is _not_ yet connected to Github version control.
+
+The code can be deployed to either the dev account (`Innov-Platform-Dev`) or to the prod account (`Innov-Platform-Prod`). **Please be careful to deploy to the prod account only with extreme caution and after thoroughly testing changes in dev.**
 
 1. Make code changes locally
 2. Test code changes locally
-3. Log into AWS console, and open "Command line and programmatic access" option under `Innov-RES-Dev` account
-4. Follow instructions in modal to save AWS credentials to `~/.aws/credentials` file
-5. Log into Bitwarden and copy the value of the "Feedback API Serverless Access Key" item in the "Resident Experience" collection
-6. Run `export SERVERLESS_ACCESS_KEY={INSERT ACCESS KEY VALUE FROM BITWARDEN HERE}` in the terminal
-7. Run `npx sls deploy --aws-profile {INSERT PROFILE NAME HERE} --` to deploy this Serverless project to AWS
+3. Log into AWS console, and open "Command line and programmatic access" option under the appropriate account
+4. Save the account credentials to your `~/.aws/credentials` file.
+5. Run `export AWS_PROFILE=[PROFILE ID]` from your command line
+6. Navigate to the `/infra` directory
+7. Run `npx cdk deploy` to deploy this AWS CDK project to AWS
 
 ## Test your service
 
@@ -49,74 +42,115 @@ This template contains a single lambda function triggered by an HTTP request mad
 
 > :warning: As is, this template, once deployed, opens a **public** endpoint within your AWS account resources. Anybody with the URL can actively execute the API Gateway endpoint and the corresponding lambda. You should protect this endpoint with the authentication method of your choice.
 
-### Locally
+### In dev
 
-In order to test the rating function locally, run the following command:
+In order to test functions, you can run the following mock requests from the "Testing" tab in the Lambda console for the appropriate function. Update the body of the request as needed to test different scenarios. **Please note that all requests will write directly to the Prod Google Sheet for the time being. After running requests, be sure to remove any changes from the spreadsheet.**
 
-- `npx sls invoke local -f rating --path src/functions/rating/mock.json` if you're using NPM
-- `npx sls offline` to run the API locally on `https://localhost:3000`
+#### Rating
+```
+{
+  "headers": {
+    "Content-Type": "application/json"
+  },
+  "body": "{\"pageURL\":\"example.com\",\"rating\":\"true\"}"
+}
+```
 
-Check the [sls invoke local command documentation](https://www.serverless.com/framework/docs/providers/aws/cli-reference/invoke-local/) for more information.
+#### Email
+```
+{
+  "headers": {
+    "Content-Type": "application/json"
+  },
+  "body": "{\"email\":\"hi@example.com\",\"feedbackId\":\"2\"}"
+}
+```
+
+#### Comment
+```
+{
+  "headers": {
+    "Content-Type": "application/json"
+  },
+  "body": "{\"feedbackId\":\"1\",\"comment\":\"good\"}"
+}
+```
 
 Note that to run locally, you need to export any environment variables used in code to your current environment. They can be found in the AWS Lambda configurations.
 
-### Remotely
+#### Running the local dev database
+##### Installation
+*Note: We can't use Docker Desktop because we don't currently have a way to procure licenses and it's not certified for use at the Office.*
 
-Copy and replace your `url` - found in Serverless `deploy` command output - and `name` parameter in the following `curl` command in your terminal or in Postman to test your newly deployed application.
+**Linux**
 
-```
-curl --location --request POST 'https://endpoint.execute-api.region.amazonaws.com/dev/rating' \
---header 'Content-Type: application/json' \
---data-raw '{
-    "pageURL": "example.com",
-    "rating": true
-}'
-```
+Install the docker daemon as normal since this is open source software.
+
+**Windows**
+
+Install WSL2 and install the docker daemon inside the linux environment.
+
+**macOS**
+
+1. Install [colima](https://github.com/abiosoft/colima) with `brew install colima`
+2. Install docker with `brew install docker`
+3. Install docker-compose with `brew install docker-compose`
+    - This will give the message (also in [Homebrew docs](https://formulae.brew.sh/formula/docker-compose)): 
+        > ==> Caveats   
+        > Compose is a Docker plugin. For Docker to find the plugin, add "cliPluginsExtraDirs" to ~/.docker/config.json:
+        >
+        > ```
+        >"cliPluginsExtraDirs": [
+        >    "/opt/homebrew/lib/docker/cli-plugins"
+        > ]
+        >```
+        Make sure to follow these instructions or you won't able to run commands using `docker compose` (you will have to use `docker-compose` instead)
+
+##### Starting the Docker container
+1. Run `colima start` to start the Docker runtime
+    - If it prompts you to, run `brew install lima-additional-guestagents` (this is because there was a recent split in the package, see [GitHub issue #1333](https://github.com/abiosoft/colima/issues/1333) for more detail)
+2. Run `docker-compose up -d` (or `npm run docker:up`) from the project root.
+    - The `-d` flag indicated detached mode, which runs the container in the background (so it won't be attached to your terminal)
+3. The database should now be running at the connection string `postgresql://postgres:postgres@localhost:5432/postgres`
+    - You can test this by checking that you can connect to the database via psql without erroring: 
+        ```bash
+        psql postgresql://postgres:postgres@localhost:5432/postgres
+        ```
+        
+##### Clean up
+1. To stop the docker container, run `docker compose down` (or `npm run docker:down`) from the project root.
+2. When you’re done developing, run `colima stop` to stop the Docker runtime
+    - Remember to run `colima start` in the future whenever you want to use Docker Compose
+
+#### Applying migrations to the local database
+We use [Prisma Migrate](https://www.prisma.io/docs/orm/prisma-migrate) to handle schema migrations.
+
+##### Applying a migration
+1. Make your desired changes to database schema by editing the `schema.prisma` file. 
+2. Run `npx prisma migrate dev` (or `npm run prisma-migrate:dev`) to generate AND apply the migration to the local database. 
+  - (Optional) Use the `--create-only` flag to generate the `migration.sql` file without applying it to the database. 
+      - This allows us to directly customize the `migration.sql` file, which is useful if we need to make a schema change that isn't supported by Prisma. 
+      - If you use this flag, make sure to run `npx prisma migrate dev` again to apply the migration to the database.
+3. (Optional) Run `npx prisma generate` (or `npm run prisma:generate`) to [generate the Prisma Client](https://www.prisma.io/docs/orm/prisma-client/setup-and-configuration/generating-prisma-client).
+  - This generates the Prisma Client code, which is a database client customized based on the `schema.prisma` file. The Prisma Client is what you'll use to write SQL queries in TypeScript, and this generation step provides the types to make these  queries type-safe. 
+  - The generated Prisma Client code is output to the `generated/prisma/` directory. Since this directory is git ignored, it doesn't matter whether you run prisma generate before committing schema migrations. It's just that you need to re-run the prisma generate command after every change that's made to `schema.prisma` to sync the Prisma Client to the new schema (including when you haven't personally made schema changes but you're pulling down code that has). 
+
+##### Squashing migrations in a dev environment
+In general, we should "squash" migrations before merging a feature branch to keep our migration history clean. For example, when setting up in the initial schema, several progressive changes were made, but it's more efficient to just execute all of those in a single migration in the same `CREATE TABLE` query.  
+
+Unlike squashing git commits, Prisma Migrate doesn't have a special squash function. Instead, when squashing in a development environment we can follow the procedure below: 
+
+1. Reset the migration history to the last migration we want to keep
+  - In practice, do this by deleting the migrations you want to squash from the `migrations/` directory
+2. Reset the local database by running `npx prisma migrate reset` (or `npm run prisma-migrate:reset`)
+3. Run `npx prisma migrate dev`
+  - When we do this, Prisma will sequentially apply all the migrations in the `migrations` folder to the freshly reset database. 
+  - Since we deleted the migrations we wanted to squash, it's as if they never existed in the first place from the perspective of the database. 
+  - So Prisma will generate a single `migration.sql` file that accounts for all the schema changes between the last migration we kept in step (1) and the `schema.prisma`.
+
+Important note: Never squash migrations that have already been applied to the prod database. The procedure described here relies on dropping the entire database in step (2), which causes all data to be lost. There's a separate procedure for [cleaning the migration history in a prod environment](https://www.prisma.io/docs/orm/prisma-migrate/workflows/squashing-migrations#creating-a-clean-history-in-a-production-environment) which we don't need to do during normal development. 
 
 ## Template features
-
-### Project structure
-
-The project code base is mainly located within the `src` folder. This folder is divided in:
-
-- `functions` - containing code base and configuration for your lambda functions
-- `libs` - containing shared code base between your lambdas
-
-```
-.
-├── src
-│   ├── functions               # Lambda configuration and source code folder
-│   │   ├── rating
-│   │   │   ├── handler.ts      # `rating` lambda source code
-│   │   │   ├── index.ts        # `rating` lambda Serverless configuration
-│   │   │   ├── mock.json       # `rating` lambda input parameter, if any, for local invocation
-│   │   │   └── schema.ts       # `rating` lambda input event JSON-Schema
-│   │   │
-│   │   └── index.ts            # Import/export of all lambda configurations
-│   │
-│   └── libs                    # Lambda shared code
-│       └── apiGateway.ts       # API Gateway specific helpers
-│       └── handlerResolver.ts  # Sharable library for resolving lambda handlers
-│       └── lambda.ts           # Lambda middleware
-│
-├── package.json
-├── serverless.ts               # Serverless service file
-├── tsconfig.json               # Typescript compiler configuration
-├── tsconfig.paths.json         # Typescript paths
-└── webpack.config.js           # Webpack configuration
-```
-
-This project also contains a `scripts` folder, which contains post-processing Python scripts that help analyze the feedback data.
-
-### 3rd party libraries
-
-- [json-schema-to-ts](https://github.com/ThomasAribart/json-schema-to-ts) - uses JSON-Schema definitions used by API Gateway for HTTP request validation to statically generate TypeScript types in your lambda's handler code base
-- [middy](https://github.com/middyjs/middy) - middleware engine for Node.Js lambda. This template uses [http-json-body-parser](https://github.com/middyjs/middy/tree/master/packages/http-json-body-parser) to convert API Gateway `event.body` property, originally passed as a stringified JSON, to its corresponding parsed object
-- [@serverless/typescript](https://github.com/serverless/typescript) - provides up-to-date TypeScript definitions for your `serverless.ts` service file
-
-### Advanced usage
-
-Any tsconfig.json can be used, but if you do, set the environment variable `TS_NODE_CONFIG` for building the application, eg `TS_NODE_CONFIG=./tsconfig.app.json npx serverless webpack`
 
 ## Technical diagram
 
