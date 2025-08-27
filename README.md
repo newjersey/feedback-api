@@ -22,7 +22,9 @@ For the latest information on the API endpoints maintained, see the functions im
 
 Deployment to AWS is done locally on the command line and is _not_ yet connected to Github version control.
 
-The code can be deployed to either the dev account (`Innov-Platform-Dev`) or to the prod account (`Innov-Platform-Prod`). **Please be careful to deploy to the prod account only with extreme caution and after thoroughly testing changes in dev.**
+The code can be deployed to either the dev account (`Innov-Platform-Dev`) or to the prod account (`Innov-Platform-Prod`). 
+
+> :warning: Please be careful to deploy to the prod account only with extreme caution and after thoroughly testing changes in dev. **Make sure to test that sending requests to our redirect dummy app works before deploying to prod** (see [Test API Requests](#test-api-requests) for instructions). This ensures that the API works with requests sent to a redirect URL.
 
 1. Make code changes locally
 2. Test code changes locally
@@ -44,9 +46,22 @@ This template contains a single lambda function triggered by an HTTP request mad
 
 ### In dev
 
-In order to test functions, you can run the following mock requests from the "Testing" tab in the Lambda console for the appropriate function. Update the body of the request as needed to test different scenarios. **Please note that all requests will write directly to the Prod Google Sheet for the time being. After running requests, be sure to remove any changes from the spreadsheet.**
+#### Test API Requests
 
-#### Rating
+This section includes test requests for testing the Feedback API Lambdas/endpoints. Update the body of the request as needed to test different scenarios.
+
+There are three different methods for testing these requests:
+
+1. **Run requests as JSON via the AWS console**: Go to the "Testing" tab in the Lambda console for the appropriate function.
+2. **Send API requests to the dev API Gateway URL**. Go the API Gateway resource in the AWS console to find the URL. The URL can also be found in the ResX Bitwarden under the `Feedback API Testing Info` item.
+
+3. **Send API requests to our dummy app for testing redirects**. 
+    - In production, the frontend feedback widget doesn't send requests directly to the API Gateway URL. Instead, the widget sends requests to a URL on the Innovation site which then redirects to the prod API Gateway URL. **Testing via this method is crucial because the API can behave differently or even break depending on whether you call it directly vs. via a redirect** (e.g. due to CORS issues).
+    - The URL and test CURL requests can be found in the ResX Bitwarden under the `Feedback API Testing Info` item.
+
+> :warning: **Please note that all requests will write directly to the Prod Google Sheet for the time being.** After running requests, be sure to remove any changes from the spreadsheet
+
+##### Rating
 ```
 {
   "headers": {
@@ -56,7 +71,7 @@ In order to test functions, you can run the following mock requests from the "Te
 }
 ```
 
-#### Email
+##### Email
 ```
 {
   "headers": {
@@ -66,7 +81,7 @@ In order to test functions, you can run the following mock requests from the "Te
 }
 ```
 
-#### Comment
+##### Comment
 ```
 {
   "headers": {
@@ -75,8 +90,6 @@ In order to test functions, you can run the following mock requests from the "Te
   "body": "{\"feedbackId\":\"1\",\"comment\":\"good\"}"
 }
 ```
-
-Note that to run locally, you need to export any environment variables used in code to your current environment. They can be found in the AWS Lambda configurations.
 
 #### Running the local dev database
 ##### Installation
