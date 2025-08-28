@@ -90,8 +90,8 @@ export class FeedbackApiStack extends cdk.Stack {
       description: 'API for Feedback Widget functions',
       defaultCorsPreflightOptions: {
         allowOrigins: apigw.Cors.ALL_ORIGINS,
-        allowHeaders: apigw.Cors.DEFAULT_HEADERS,
-        allowMethods: ['POST']
+        allowMethods: ['POST'],
+        allowHeaders: apigw.Cors.DEFAULT_HEADERS
       }
     });
 
