@@ -33,7 +33,7 @@
     "@azure/openai": "1.0.0-beta.13",
     "@middy/core": "3.6.2",
     "@middy/http-json-body-parser": "3.6.2",
-    "aws-cdk-lib": "2.200.1",
+    "aws-cdk-lib": "2.213.0",
     "aws-sdk": "2.1692.0",
     "aws-sdk-client-mock": "4.1.0",
     "aws-sdk-client-mock-jest": "4.1.0",
