@@ -87,13 +87,17 @@ export class FeedbackApiStack extends cdk.Stack {
 
     const feedbackApi = new apigw.RestApi(this, 'feedback-api', {
       restApiName: 'Feedback API',
-      description: 'API for Feedback Widget functions'
+      description: 'API for Feedback Widget functions',
+      defaultCorsPreflightOptions: {
+        allowOrigins: apigw.Cors.ALL_ORIGINS,
+        allowMethods: ['POST'],
+        allowHeaders: apigw.Cors.DEFAULT_HEADERS
+      }
     });
 
     functions.forEach(({ name, handler }) => {
       const resource = feedbackApi.root.addResource(name);
       resource.addMethod('POST', new apigw.LambdaIntegration(handler, {}));
-      resource.addMethod('OPTIONS', new apigw.LambdaIntegration(handler, {}));
 
       new cdk.CfnOutput(this, `${name}FunctionArnOutput`, {
         key: `${name}FunctionArn`,
