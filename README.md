@@ -22,8 +22,11 @@ For the latest information on the API endpoints maintained, see the functions im
 
 Deployment to AWS is done locally on the command line and is _not_ yet connected to Github version control.
 
-The code can be deployed to either the dev account (`Innov-Platform-Dev`) or to the prod account (`Innov-Platform-Prod`). **Please be careful to deploy to the prod account only with extreme caution and after thoroughly testing changes in dev.**
+The code can be deployed to either the dev account (`Innov-Platform-Dev`) or to the prod account (`Innov-Platform-Prod`). 
 
+> :warning: Please be careful to deploy to the prod account only with extreme caution and after thoroughly testing changes in dev. **Make sure to test that API requests work in the browser before deploying to prod** (see [Test API Requests in the browser](#test-api-requests-in-the-browser) for instructions). This ensures that CORS is enabled properly.
+
+To deploy to the  dev/prod AWS account:
 1. Make code changes locally
 2. Test code changes locally
 3. Log into AWS console, and open "Command line and programmatic access" option under the appropriate account
@@ -44,9 +47,22 @@ This template contains a single lambda function triggered by an HTTP request mad
 
 ### In dev
 
-In order to test functions, you can run the following mock requests from the "Testing" tab in the Lambda console for the appropriate function. Update the body of the request as needed to test different scenarios. **Please note that all requests will write directly to the Prod Google Sheet for the time being. After running requests, be sure to remove any changes from the spreadsheet.**
+#### Test API requests (non-browser)
 
-#### Rating
+This section includes test requests for testing the Feedback API Lambdas/endpoints. Update the body of the request as needed to test different scenarios.
+
+There are three different methods for testing these requests outside the browser:
+
+1. **Run requests as JSON via the AWS console**: Go to the "Testing" tab in the Lambda console for the appropriate function.
+2. **Send API requests to the dev API Gateway URL**. Go the API Gateway resource in the AWS console to find the URL. The URL can also be found in the ResX Bitwarden under the `Feedback API Testing Info` item.
+
+3. **Send API requests to our dummy app for testing redirects**. 
+    - In production, the frontend feedback widget doesn't send requests directly to the API Gateway URL. Instead, the widget sends requests to a URL on the Innovation site which then redirects to the prod API Gateway URL. 
+    - The URL and test CURL requests can be found in the ResX Bitwarden under the `Feedback API Testing Info` item.
+
+> :warning: **Please note that all requests will write directly to the Prod Google Sheet for the time being.** After running requests, be sure to remove any changes from the spreadsheet
+
+##### Rating
 ```
 {
   "headers": {
@@ -56,7 +72,7 @@ In order to test functions, you can run the following mock requests from the "Te
 }
 ```
 
-#### Email
+##### Email
 ```
 {
   "headers": {
@@ -66,7 +82,7 @@ In order to test functions, you can run the following mock requests from the "Te
 }
 ```
 
-#### Comment
+##### Comment
 ```
 {
   "headers": {
@@ -76,7 +92,18 @@ In order to test functions, you can run the following mock requests from the "Te
 }
 ```
 
-Note that to run locally, you need to export any environment variables used in code to your current environment. They can be found in the AWS Lambda configurations.
+#### Test API requests in the browser
+
+**It is crucial to test API requests in the browser before deploying to prod, because only web browsers enforce CORS. Non-browser clients (e.g. cURL, Postman, etc.) bypass CORS restrictions entirely.**
+
+Test the dev API deployment in the browser by running the front-end feedback widget component locally and redirecting its API requests to the dev API Gateway URL:
+
+1. Clone the [feedback-widget](https://github.com/newjersey/feedback-widget) repo.
+2. Update the [`API_URL` in feedback-widget.js](https://github.com/newjersey/feedback-widget/blob/52d7f6d10518ed721b232112421d46a1deb18593/feedback-widget.js#L64) to the dev API Gateway URL.
+    - To find the URL in the AWS Console, first make sure you're logged into the Innov-Platform-Dev account! Then search "API Gateway" -> click "Feedback API" in the list of APIs -> click "Stages" in the sidebar -> "Invoke URL" under "Stage details"
+3. Open the `feedback-widget.html` in the browser — you should see a page containing just the frontend feedback widget component. Test that submiting a rating/comment/email works (use the network tab to ensure requests are being sent to the dev API  URL and are returning a success response).
+
+> :warning: **Please note that all requests will write directly to the Prod Google Sheet for the time being.** After running requests, be sure to remove any changes from the spreadsheet
 
 #### Running the local dev database
 ##### Installation

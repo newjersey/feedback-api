@@ -13,6 +13,19 @@ describe('comment Lambda', () => {
 
   beforeEach(() => jest.resetAllMocks());
 
+  it("returns a response containing the 'Access-Control-Allow-Origin':'*' header to enable CORS", async () => {
+    const testEvent = {
+      body: JSON.stringify({
+        feedbackId: 1,
+        comment: 'test comment'
+      })
+    } as APIGatewayProxyEvent;
+
+    const response = await handler(testEvent);
+    expect(response.statusCode).toBe(200);
+    expect(response.headers['Access-Control-Allow-Origin']).toBe('*');
+  });
+
   describe('expected 500 errors', () => {
     beforeAll(() => jest.spyOn(console, 'error').mockImplementation(jest.fn()));
     afterAll(() => jest.spyOn(console, 'error').mockRestore());

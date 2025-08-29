@@ -3,6 +3,7 @@ import { Capture, Template } from 'aws-cdk-lib/assertions';
 import { FeedbackApiStack } from '../lib/feedback-api-stack';
 import path from 'path';
 import * as ssm from 'aws-cdk-lib/aws-ssm';
+import * as apigw from 'aws-cdk-lib/aws-apigateway';
 
 describe('Feedback API Stack', () => {
   const createStackAndTemplate = (): {
@@ -26,7 +27,48 @@ describe('Feedback API Stack', () => {
   };
 
   beforeEach(() => {
-    jest.restoreAllMocks();
+    jest.resetAllMocks();
+  });
+
+  it('creates a REST API that enables CORS for the preflight request', () => {
+    const { template } = createStackAndTemplate();
+
+    const optionMethods = template.findResources('AWS::ApiGateway::Method', {
+      Properties: {
+        HttpMethod: 'OPTIONS'
+      }
+    });
+
+    for (const logicalId in optionMethods) {
+      const integration: {
+        IntegrationResponses: object[];
+        RequestTemplates: object;
+        Type: string;
+      } = optionMethods[logicalId]['Properties']['Integration'];
+
+      const integrationResponses = integration['IntegrationResponses'];
+
+      expect(integrationResponses).toContainEqual({
+        StatusCode: '204',
+        ResponseParameters: expect.objectContaining({
+          'method.response.header.Access-Control-Allow-Origin': "'*'"
+        })
+      });
+
+      expect(integrationResponses).toContainEqual({
+        StatusCode: '204',
+        ResponseParameters: expect.objectContaining({
+          'method.response.header.Access-Control-Allow-Methods': "'POST'"
+        })
+      });
+
+      expect(integrationResponses).toContainEqual({
+        StatusCode: '204',
+        ResponseParameters: expect.objectContaining({
+          'method.response.header.Access-Control-Allow-Headers': `'${apigw.Cors.DEFAULT_HEADERS.join()}'`
+        })
+      });
+    }
   });
 
   it('creates an SNS topic', () => {
@@ -65,6 +107,8 @@ describe('Feedback API Stack', () => {
         `SsmParameterValue${ssmParamNameAlphanumericOnly}`
       )
     });
+
+    valueForStringParameterMock.mockRestore();
   });
 
   it.each(['4XXError', '5XXError'])(
