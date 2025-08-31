@@ -28,8 +28,8 @@
     "node": "22"
   },
   "dependencies": {
-    "@aws-sdk/client-comprehend": "3.826.0",
-    "@aws-sdk/client-ssm": "3.826.0",
+    "@aws-sdk/client-comprehend": "3.879.0",
+    "@aws-sdk/client-ssm": "3.879.0",
     "@azure/openai": "1.0.0-beta.13",
     "@middy/core": "3.6.2",
     "@middy/http-json-body-parser": "3.6.2",
