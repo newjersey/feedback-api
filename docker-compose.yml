@@ -1,7 +1,7 @@
 services:
   postgres:
     container_name: feedback-local-postgres
-    image: postgres:17
+    image: postgres:17@sha256:feff5b24fedd610975a1f5e743c51a4b360437f4dc3a11acf740dcd708f413f6
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
