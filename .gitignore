@@ -22,3 +22,7 @@ key.txt
 
 # Generated Prisma Client code
 /generated/prisma
+
+# Template YAMLs
+/infra/dev-template.yaml
+/infra/prod-template.yaml
