@@ -1,9 +1,12 @@
 import * as cdk from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 import { aws_ec2 as ec2, aws_rds as rds } from 'aws-cdk-lib';
+import { ServerlessV2Capacity } from './deployment-config';
 
 interface FeedbackDbStackProps extends cdk.StackProps {
   vpc?: ec2.IVpc; // allows for mocking in tests
+  vpcId: string;
+  serverlessV2Capacity: ServerlessV2Capacity;
 }
 
 export class FeedbackDbStack extends cdk.Stack {
@@ -14,8 +17,8 @@ export class FeedbackDbStack extends cdk.Stack {
 
     this.vpc =
       props.vpc ??
-      ec2.Vpc.fromLookup(this, 'DevVpc', {
-        vpcId: 'vpc-06ea0349e255c4c59'
+      ec2.Vpc.fromLookup(this, 'Vpc', {
+        vpcId: props.vpcId
       });
 
     const subnetGroup = new rds.SubnetGroup(this, 'FeedbackSubnetGroup', {
@@ -33,8 +36,8 @@ export class FeedbackDbStack extends cdk.Stack {
       },
       credentials: rds.Credentials.fromGeneratedSecret('postgres'),
       defaultDatabaseName: 'feedbackWidgetDb',
-      serverlessV2MaxCapacity: 2,
-      serverlessV2MinCapacity: 0.5,
+      serverlessV2MinCapacity: props.serverlessV2Capacity.minCapacity,
+      serverlessV2MaxCapacity: props.serverlessV2Capacity.maxCapacity,
       storageEncrypted: true,
       subnetGroup: subnetGroup,
       vpc: this.vpc,
