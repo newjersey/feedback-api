@@ -127,14 +127,12 @@ export class FeedbackApiStack extends cdk.Stack {
 
     new FeedbackApi5xxErrorAlarm(this, 'FeedbackApi5XXErrorAlarm', {
       alertTopic: alertTopic,
-      restApiName: feedbackApi.restApiName,
-      stageName: feedbackApi.deploymentStage.stageName
+      restApiName: feedbackApi.restApiName
     });
 
     new FeedbackApi4xxErrorAlarm(this, 'FeedbackApi4xxErrorAlarm', {
       alertTopic: alertTopic,
-      restApiName: feedbackApi.restApiName,
-      stageName: feedbackApi.deploymentStage.stageName
+      restApiName: feedbackApi.restApiName
     });
   }
 }
