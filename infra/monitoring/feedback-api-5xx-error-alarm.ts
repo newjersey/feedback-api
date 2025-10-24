@@ -15,8 +15,7 @@ export class FeedbackApi5xxErrorAlarm extends Construct {
       period: Duration.minutes(15),
       statistic: 'Sum',
       dimensionsMap: {
-        ApiName: restApiName,
-        Stage: stageName
+        ApiName: restApiName
       }
     });
 

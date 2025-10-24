@@ -92,9 +92,6 @@ export class FeedbackApiStack extends cdk.Stack {
         allowOrigins: apigw.Cors.ALL_ORIGINS,
         allowMethods: ['POST'],
         allowHeaders: apigw.Cors.DEFAULT_HEADERS
-      },
-      deployOptions: {
-        stageName: 'prod'
       }
     });
 
