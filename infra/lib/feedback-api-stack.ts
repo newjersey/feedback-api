@@ -92,6 +92,9 @@ export class FeedbackApiStack extends cdk.Stack {
         allowOrigins: apigw.Cors.ALL_ORIGINS,
         allowMethods: ['POST'],
         allowHeaders: apigw.Cors.DEFAULT_HEADERS
+      },
+      deployOptions: {
+        stageName: 'prod'
       }
     });
 
@@ -127,12 +130,14 @@ export class FeedbackApiStack extends cdk.Stack {
 
     new FeedbackApi5xxErrorAlarm(this, 'FeedbackApi5XXErrorAlarm', {
       alertTopic: alertTopic,
-      restApiName: feedbackApi.restApiName
+      restApiName: feedbackApi.restApiName,
+      stageName: feedbackApi.deploymentStage.stageName
     });
 
     new FeedbackApi4xxErrorAlarm(this, 'FeedbackApi4xxErrorAlarm', {
       alertTopic: alertTopic,
-      restApiName: feedbackApi.restApiName
+      restApiName: feedbackApi.restApiName,
+      stageName: feedbackApi.deploymentStage.stageName
     });
   }
 }

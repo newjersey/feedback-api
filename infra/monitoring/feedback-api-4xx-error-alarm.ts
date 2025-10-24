@@ -7,7 +7,7 @@ export class FeedbackApi4xxErrorAlarm extends Construct {
   constructor(scope: Construct, id: string, props: FeedbackApiAlarmProps) {
     super(scope, id);
 
-    const { alertTopic, restApiName } = props;
+    const { alertTopic, restApiName, stageName } = props;
 
     const metric = new cloudwatch.Metric({
       metricName: '4XXError',
@@ -15,8 +15,8 @@ export class FeedbackApi4xxErrorAlarm extends Construct {
       period: Duration.minutes(15),
       statistic: 'Sum',
       dimensionsMap: {
-        Name: 'ApiName',
-        Value: restApiName
+        ApiName: restApiName,
+        Stage: stageName
       }
     });
 
