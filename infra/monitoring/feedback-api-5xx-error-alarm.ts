@@ -15,8 +15,7 @@ export class FeedbackApi5xxErrorAlarm extends Construct {
       period: Duration.minutes(15),
       statistic: 'Sum',
       dimensionsMap: {
-        Name: 'ApiName',
-        Value: restApiName
+        ApiName: restApiName
       }
     });
 
@@ -26,7 +25,7 @@ export class FeedbackApi5xxErrorAlarm extends Construct {
       threshold: 2,
       actionsEnabled: true,
       alarmDescription:
-        'Alarm when the Feedback API returns at least 2 5XX errors in 15 minutes',
+        'Alarm when the Feedback API returns over 2 5XX errors in 15 minutes',
       alarmName: 'Feedback API - 5XX Errors',
       comparisonOperator: cloudwatch.ComparisonOperator.GREATER_THAN_THRESHOLD,
       datapointsToAlarm: 1,
