@@ -27,14 +27,13 @@ This repo has two primary branches: `dev` and `main`.
 
 #### Workflow Steps
 1. Create a feature branch from the latest commit on `dev`.
-2. While working in a feature branch, if you need to deploy for testing, always deploy to the `Innov-Platform-Dev` account.
-3. Create PRs against the `dev` branch. Once a PR has been merged into `dev`, deploy the updated `dev` branch to the `Innov-Platform-Dev` account.
-4. Thoroughly test your changes in `dev` before deploying to the `Innov-Platform-Prod` account.
-   - At a minimum, you should test API requests to the dev API Gateway URL (see [Test API requests (non-browser)](https://github.com/newjersey/feedback-api?tab=readme-ov-file#test-api-requests-non-browser)) as well as [test API requests in the browser](https://github.com/newjersey/feedback-api?tab=readme-ov-file#test-api-requests-in-the-browser).
-   - Also, ensure that the expected changes to resources, etc. are visible in the AWS console.
-5. Once you've confirmed the dev deployment is working, merge `dev` into `main`.
-6. At this point, the changes are ready to be deployed to production. Make sure that you've checked out `main` and pulled the latest commits locally! Then, deploy the `main` branch to the `Innov-Platform-Prod` account.
-
+2.  Once your implementation is complete, thoroughly test your changes in the dev environment by deploying to the `Innov-Platform-Dev` account (see [Deployment](https://github.com/newjersey/feedback-api/tree/dev?tab=readme-ov-file#deployment) for detailed steps.).
+3. Once you've confirmed the dev deployment is working, push your changes and create a PR against the `dev` branch.
+4. Once the PR is approved, merge the `dev` branch into `main`.
+5. At this point, the changes are ready to be deployed to production.
+  - Check out the `main` branch and pull the latest commits locally.
+  - Deploy the `main` branch to the `Innov-Platform-Prod` account.
+  
 ## Deployment
 
 Deployment to AWS is done locally on the command line and is _not_ yet connected to Github version control.
