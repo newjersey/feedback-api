@@ -2,7 +2,7 @@
 
 ## Architecture
 
-This project is for the REST API that handles interactions on the feedback widget UI and adds this data to a database, currently Google Sheets. It is deployed to AWS Lambda + API Gateway. For full architecture of feedback system, see "Technical diagram" section below.
+This project is for the REST API that handles interactions on the feedback widget UI and adds this data to a database, currently Google Sheets. It is deployed to AWS Lambda + API Gateway. For full architecture of feedback system, see ["Technical diagram"](https://github.com/newjersey/feedback-api/tree/dev?tab=readme-ov-file#technical-diagram) section below.
 
 ## Endpoints
 
@@ -17,6 +17,18 @@ For the latest information on the API endpoints maintained, see the functions im
 1. Clone this repository
 2. Run `npm install` (on Node 22, as listed in `.nvmrc`) to install Node dependencies
 3. Save the credentials from the `Innov-Platform-Dev` AWS account to your `~/.aws/credentials` file
+
+### CDK Setup & Commands
+
+To get started or continue working:
+
+```bash
+npm install                 # Install dependencies
+npm run diff                # Preview infrastructure changes
+npm run deploy              # Deploy to AWS
+npm run deploy:api          # Deploy the API to AWS
+npm run synth:api           # Synthesizes the API stack into a CloudFormation template
+```
 
 ## Branching
 This repo has two primary branches: `dev` and `main`.
@@ -201,8 +213,6 @@ Unlike squashing git commits, Prisma Migrate doesn't have a special squash funct
   - So Prisma will generate a single `migration.sql` file that accounts for all the schema changes between the last migration we kept in step (1) and the `schema.prisma`.
 
 Important note: Never squash migrations that have already been applied to the prod database. The procedure described here relies on dropping the entire database in step (2), which causes all data to be lost. There's a separate procedure for [cleaning the migration history in a prod environment](https://www.prisma.io/docs/orm/prisma-migrate/workflows/squashing-migrations#creating-a-clean-history-in-a-production-environment) which we don't need to do during normal development. 
-
-## Template features
 
 ## Technical diagram
 
