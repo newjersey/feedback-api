@@ -2,7 +2,7 @@
 
 ## Architecture
 
-This project is for the REST API that handles interactions on the feedback widget UI and adds this data to a database, currently Google Sheets. It is deployed to AWS Lambda + API Gateway. For full architecture of feedback system, see "Technical diagram" section below.
+This project is for the REST API that handles interactions on the feedback widget UI and adds this data to a database, currently Google Sheets. It is deployed to AWS Lambda + API Gateway. For full architecture of feedback system, see ["Technical diagram"](https://github.com/newjersey/feedback-api/tree/dev?tab=readme-ov-file#technical-diagram) section below.
 
 ## Endpoints
 
@@ -18,6 +18,34 @@ For the latest information on the API endpoints maintained, see the functions im
 2. Run `npm install` (on Node 22, as listed in `.nvmrc`) to install Node dependencies
 3. Save the credentials from the `Innov-Platform-Dev` AWS account to your `~/.aws/credentials` file
 
+### CDK Setup & Commands
+
+To get started or continue working:
+
+```bash
+npm install                 # Install dependencies
+npm run diff                # Preview infrastructure changes
+npm run deploy              # Deploy to AWS
+npm run deploy:api          # Deploy the API to AWS
+npm run synth:api           # Synthesizes the API stack into a CloudFormation template
+```
+
+## Branching
+This repo has two primary branches: `dev` and `main`.
+
+### Branch and Environment Mapping
+- `dev` branch maps to the `Innov-Platform-Dev` AWS account
+- `main` branch maps to the `Innov-Platform-Prod` AWS account
+
+#### Workflow Steps
+1. Create a feature branch from the latest commit on `dev`.
+2.  Once your implementation is complete, thoroughly test your changes in the dev environment by deploying to the `Innov-Platform-Dev` account (see [Deployment](https://github.com/newjersey/feedback-api/tree/dev?tab=readme-ov-file#deployment) for detailed steps.).
+3. Once you've confirmed the dev deployment is working, push your changes and create a PR against the `dev` branch.
+4. Once the PR is approved, merge the `dev` branch into `main`.
+5. At this point, the changes are ready to be deployed to production.
+  - Check out the `main` branch and pull the latest commits locally.
+  - Deploy the `main` branch to the `Innov-Platform-Prod` account.
+  
 ## Deployment
 
 Deployment to AWS is done locally on the command line and is _not_ yet connected to Github version control.
@@ -26,14 +54,23 @@ The code can be deployed to either the dev account (`Innov-Platform-Dev`) or to 
 
 > :warning: Please be careful to deploy to the prod account only with extreme caution and after thoroughly testing changes in dev. **Make sure to test that API requests work in the browser before deploying to prod** (see [Test API Requests in the browser](#test-api-requests-in-the-browser) for instructions). This ensures that CORS is enabled properly.
 
-To deploy to the  dev/prod AWS account:
-1. Make code changes locally
-2. Test code changes locally
-3. Log into AWS console, and open "Command line and programmatic access" option under the appropriate account
+### Steps to test dev/prod environments:
+1. [Ensure AWS CLI is installed/up to date](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html).
+2. [Configure](https://docs.aws.amazon.com/cli/v1/userguide/cli-configure-files.html) your `~/.aws/credentials` and `~/.aws/config` files with `dev` and `prod` profile names.
+3. Start an active AWS SSO session (run the `aws sso login` script).
+   - **Note:** You need to be logged in before running synth or deploy.
+4. Run **synth scripts** to verify CloudFormation templates.
+
+### Steps to deploy to the dev/prod AWS account:
+1. Make code changes locally.
+2. Test code changes locally.
+3. Log into AWS console, and open "Command line and programmatic access" option under the appropriate account.
 4. Save the account credentials to your `~/.aws/credentials` file.
-5. Run `export AWS_PROFILE=[PROFILE ID]` from your command line
-6. Navigate to the `/infra` directory
-7. Run `npx cdk deploy` to deploy this AWS CDK project to AWS
+5. Run `export AWS_PROFILE=[PROFILE ID]` from your command line.
+6. Run **deploy scripts** to deploy this AWS CDK project to AWS.
+   - **Note:** 
+        - If you don't run the scripts, you'll have to navigate to the `/infra` directory before deploying.
+        - Running `npx cdk deploy` deploys this entire AWS CDK project to AWS. See individual scripts for stack-specific deploys.
 
 ## Test your service
 
@@ -176,8 +213,6 @@ Unlike squashing git commits, Prisma Migrate doesn't have a special squash funct
   - So Prisma will generate a single `migration.sql` file that accounts for all the schema changes between the last migration we kept in step (1) and the `schema.prisma`.
 
 Important note: Never squash migrations that have already been applied to the prod database. The procedure described here relies on dropping the entire database in step (2), which causes all data to be lost. There's a separate procedure for [cleaning the migration history in a prod environment](https://www.prisma.io/docs/orm/prisma-migrate/workflows/squashing-migrations#creating-a-clean-history-in-a-production-environment) which we don't need to do during normal development. 
-
-## Template features
 
 ## Technical diagram
 
