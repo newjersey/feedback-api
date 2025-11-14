@@ -63,15 +63,17 @@ Feedback API ~/.aws/config` item.
 3. Run `sso:login:dev` or `sso:login:prod` to start an active AWS SSO session with the desired account.
 
 #### Option B: Set AWS environment variables
-1. Go to the AWS console
+1. Go to the AWS access portal.
 2. Click the desired account, and then click "Access keys"
 3. Export the environment variables under "Option 1: Set AWS environment variables" to your terminal.
    - These environment variables will expire after the session duration, so you will have to periodically re-export new variables following the instructions.
 
 ### Steps to deploy to the dev/prod AWS account
-To deploy this AWS CDK project to AWS: 
-  - If you authenticated using AWS SSO (Option A), run `deploy:api:dev` or `deploy:api:prod` based on which account you want to deploy to.
-  - If you authenticated by setting env vars (Option B), run `deploy:api`. The CDK project will be deployed to the account whose env vars you exported last.
+To deploy this AWS CDK project to AWS
+  - If you authenticated using AWS SSO (Option A):
+    -  Run `deploy:api:dev` or `deploy:api:prod` based on which account you want to deploy to.
+  - If you authenticated by setting env vars (Option B):
+    - Run `deploy:api`. The CDK project will be deployed to the account whose env vars you last exported.
 
 **Note:** If you don't run the scripts, you'll have to navigate to the `/infra` directory before deploying. Running `npx cdk deploy` deploys this entire AWS CDK project to AWS. See individual scripts for stack-specific deploys.
 
