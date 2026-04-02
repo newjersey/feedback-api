@@ -23,7 +23,7 @@
     "target": "ES2022",
     "types": ["jest", "node"]
   },
-  "include": ["src/**/*.ts"],
+  "include": ["src/**/*.ts", "infra/test/**/*.ts"],
   "exclude": [
     "node_modules/**/*",
     ".webpack/**/*",
