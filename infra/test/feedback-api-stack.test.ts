@@ -111,16 +111,25 @@ describe('Feedback API Stack', () => {
     valueForStringParameterMock.mockRestore();
   });
 
-  it.each(['4XXError', '5XXError'])(
-    'creates a CloudWatch alarm tracking the %s metric',
-    (metricName) => {
+  describe('CloudWatch alarms', () => {
+    it('creates a CloudWatch alarm tracking the 4XXError metric with threshold of 2', () => {
       const { template } = createStackAndTemplate();
       template.hasResourceProperties('AWS::CloudWatch::Alarm', {
-        MetricName: metricName,
+        MetricName: '4XXError',
         Threshold: 2,
         EvaluationPeriods: 1,
         Period: 900 // seconds
       });
-    }
-  );
+    });
+
+    it('creates a CloudWatch alarm tracking the 5XXError metric with threshold of 5', () => {
+      const { template } = createStackAndTemplate();
+      template.hasResourceProperties('AWS::CloudWatch::Alarm', {
+        MetricName: '5XXError',
+        Threshold: 5,
+        EvaluationPeriods: 1,
+        Period: 900 // seconds
+      });
+    });
+  });
 });
