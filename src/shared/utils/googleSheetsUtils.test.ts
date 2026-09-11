@@ -5,28 +5,34 @@ import {
   updateFeedback
 } from './googleSheetsUtils';
 import { Feedback, FeedbackRecord } from '../types';
+import { afterEach, describe, it, expect, vi } from 'vitest';
 
-const MOCK_AUTHORIZE = jest.fn().mockResolvedValue(undefined);
+const MOCK_AUTHORIZE = vi.fn().mockResolvedValue(undefined);
 const MOCK_SHEETS = {
   spreadsheets: {
     values: {
-      get: jest.fn(),
-      append: jest.fn(),
-      update: jest.fn()
+      get: vi.fn(),
+      append: vi.fn(),
+      update: vi.fn()
     }
   }
 };
 
-jest.mock('googleapis', () => {
-  const originalModule = jest.requireActual('googleapis');
+vi.mock('googleapis', async () => {
+  const originalModule = await vi.importActual<typeof import('googleapis')>(
+    'googleapis'
+  );
+
   return {
     ...originalModule,
     google: {
-      ...originalModule.google,
       auth: {
-        JWT: jest.fn().mockImplementation(() => ({ authorize: MOCK_AUTHORIZE }))
+        ...originalModule.google,
+        JWT: vi.fn(function () {
+          return { authorize: MOCK_AUTHORIZE };
+        })
       },
-      sheets: jest.fn().mockImplementation(() => MOCK_SHEETS)
+      sheets: vi.fn().mockImplementation(() => MOCK_SHEETS)
     }
   };
 });
@@ -47,11 +53,11 @@ const getMockSheetsClient = (): Promise<sheets_v4.Sheets> => {
 
 describe('google-sheets', () => {
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   describe('getAuthClient', () => {
-    it('should successfully create and authorize a Google Sheets API client', async () => {
+    it('successfully creates and authorizes a Google Sheets API client', async () => {
       const client = await getAuthClient(MOCK_CLIENT_EMAIL, MOCK_PRIVATE_KEY);
       expect(google.auth.JWT).toHaveBeenCalledWith(
         MOCK_CLIENT_EMAIL,
@@ -67,7 +73,7 @@ describe('google-sheets', () => {
       expect(client).toEqual(MOCK_SHEETS);
     });
 
-    it('should throw an error if authorization fails', async () => {
+    it('throws an error if authorization fails', async () => {
       MOCK_AUTHORIZE.mockRejectedValueOnce(new Error('Failed to authorize'));
       await expect(
         getAuthClient(MOCK_CLIENT_EMAIL, MOCK_PRIVATE_KEY)
@@ -78,7 +84,7 @@ describe('google-sheets', () => {
   });
 
   describe('createFeedback', () => {
-    it('should throw an error if creating a feedback row fails', async () => {
+    it('throws an error if creating a feedback row fails', async () => {
       MOCK_SHEETS.spreadsheets.values.append.mockRejectedValueOnce(
         new Error('Failed to create')
       );
@@ -96,7 +102,7 @@ describe('google-sheets', () => {
   });
 
   describe('createFeedback', () => {
-    it('should throw an error if updating a feedback row fails', async () => {
+    it('throws an error if updating a feedback row fails', async () => {
       MOCK_SHEETS.spreadsheets.values.update.mockRejectedValueOnce(
         new Error('Failed to update')
       );
