@@ -1,6 +1,6 @@
-import { formatFeedbackResponse } from './responseUtils';
+import { describe, expect, it } from 'vitest';
 import { FeedbackResponseStatusCodes } from '../types';
-import { describe, it, expect } from 'vitest';
+import { formatFeedbackResponse } from './responseUtils';
 
 describe('formatFeedbackResponse', () => {
   it('should return a formatted response including the given status code and response body', () => {

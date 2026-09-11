@@ -1,7 +1,7 @@
 import { APIGatewayProxyEvent } from 'aws-lambda';
-import { handler } from './rating';
+import { describe, expect, it, vi } from 'vitest';
 import { FeedbackResponseStatusCodes } from '../shared/types';
-import { describe, it, expect, vi } from 'vitest';
+import { handler } from './rating';
 
 const TEST_PAGE_URL = 'example.com';
 const TEST_RATING = false;

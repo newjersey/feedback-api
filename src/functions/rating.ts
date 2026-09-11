@@ -1,17 +1,16 @@
-import { formatFeedbackResponse } from '../shared/utils/responseUtils';
+import { SSMClient } from '@aws-sdk/client-ssm';
 import { APIGatewayProxyEvent } from 'aws-lambda';
+import {
+  FeedbackResponse,
+  FeedbackResponseStatusCodes,
+  Rating
+} from '../shared/types';
+import { getSsmParam } from '../shared/utils/awsUtils';
 import {
   createFeedback,
   getAuthClient
 } from '../shared/utils/googleSheetsUtils';
-import { SSMClient } from '@aws-sdk/client-ssm';
-import {
-  Rating,
-  FeedbackResponse,
-  FeedbackResponseStatusCodes
-} from '../shared/types';
-
-import { getSsmParam } from '../shared/utils/awsUtils';
+import { formatFeedbackResponse } from '../shared/utils/responseUtils';
 
 const SSM = new SSMClient();
 

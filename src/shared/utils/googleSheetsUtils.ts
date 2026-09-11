@@ -1,5 +1,5 @@
 import { google, sheets_v4 } from 'googleapis';
-import { FeedbackRecord, Feedback } from '../types';
+import { Feedback, FeedbackRecord } from '../types';
 
 const SHEETS_COLUMN_MAP: { [K in Feedback]: 'A' | 'B' | 'C' | 'D' | 'E' } = {
   [Feedback.Timestamp]: 'A',

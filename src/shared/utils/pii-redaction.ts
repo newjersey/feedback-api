@@ -1,6 +1,6 @@
 import {
-  DetectPiiEntitiesCommand,
-  type ComprehendClient
+  type ComprehendClient,
+  DetectPiiEntitiesCommand
 } from '@aws-sdk/client-comprehend';
 
 export const redactPii = async (
