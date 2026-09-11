@@ -3,8 +3,8 @@ import {
   DetectPiiEntitiesCommand
 } from '@aws-sdk/client-comprehend';
 import { mockClient } from 'aws-sdk-client-mock';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { redactPii } from './pii-redaction';
-import { beforeEach, describe, it, expect } from 'vitest';
 
 const MOCK_COMPREHEND_CLIENT = mockClient(ComprehendClient);
 
