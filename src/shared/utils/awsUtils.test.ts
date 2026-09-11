@@ -2,6 +2,7 @@ import { GetParameterCommand, SSMClient } from '@aws-sdk/client-ssm';
 import { mockClient } from 'aws-sdk-client-mock';
 import * as AwsSdkMockMatchers from 'aws-sdk-client-mock-jest';
 import { getSsmParam } from './awsUtils';
+import { describe, it, expect, beforeEach } from 'vitest';
 
 expect.extend(AwsSdkMockMatchers);
 const MOCK_SSM_CLIENT = mockClient(SSMClient);
