@@ -5,12 +5,22 @@ on:
     types: ["labeled"]
 
 jobs:
+  request-internal-reviewer:
+    if: ${{ github.event.label.name == 'pr-review' }}
+    uses: newjersey/innovation-shared-actions/.github/workflows/pickaroo.yml@a9cafee1cac60fc1b2a491d5e1145a1c2ba920b3 # main
+    secrets: inherit
+    permissions: {}
+    with:
+      include_users: "ColinBuyck ezhangy sannidhishukla"
+      number_of_reviewers: 1
+      channel_id: "C0590CD1EE8" # resx-eng
   request-resx-reviewers:
     if: ${{ github.event.label.name == 'pr-review' }}
+    needs: request-internal-reviewer
     uses: newjersey/innovation-shared-actions/.github/workflows/pickaroo.yml@a9cafee1cac60fc1b2a491d5e1145a1c2ba920b3 # main
     with:
       include_teams: "innovation-engineering-resx"
-      number_of_reviewers: 2
+      number_of_reviewers: 1
       channel_id: "C0590CD1EE8" # resx-eng
     secrets: inherit
   pr-show:
