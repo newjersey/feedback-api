@@ -1,0 +1,22 @@
+name: Pickaroo Reviewers
+
+on:
+  pull_request:
+    types: ["labeled"]
+
+jobs:
+  request-resx-reviewers:
+    if: ${{ github.event.label.name == 'pr-review' }}
+    uses: newjersey/innovation-shared-actions/.github/workflows/pickaroo.yml@a9cafee1cac60fc1b2a491d5e1145a1c2ba920b3 # main
+    with:
+      include_teams: "innovation-engineering-resx"
+      number_of_reviewers: 2
+      channel_id: "C0590CD1EE8" # resx-eng
+    secrets: inherit
+  pr-show:
+    if: ${{ github.event.label.name == 'pr-show' }}
+    uses: newjersey/innovation-shared-actions/.github/workflows/pickaroo.yml@a9cafee1cac60fc1b2a491d5e1145a1c2ba920b3 # main
+    with:
+      show: true
+      channel_id: "C0590CD1EE8" # resx-eng
+    secrets: inherit
