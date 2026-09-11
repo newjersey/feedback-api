@@ -2,7 +2,6 @@ import { APIGatewayProxyEvent } from "aws-lambda";
 import * as awsUtils from "../shared/utils/awsUtils";
 import * as googleSheetsUtils from "../shared/utils/googleSheetsUtils";
 import { handler } from "./email";
-import { Describe } from "jest";
 
 const TEST_FEEDBACK_ID = 1;
 const TEST_EMAIL = "example@test.com";
