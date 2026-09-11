@@ -1,9 +1,9 @@
 import { App } from 'aws-cdk-lib';
 import { Capture, Template } from 'aws-cdk-lib/assertions';
-import { FeedbackApiStack } from '../lib/feedback-api-stack';
-import path from 'path';
-import * as ssm from 'aws-cdk-lib/aws-ssm';
 import * as apigw from 'aws-cdk-lib/aws-apigateway';
+import * as ssm from 'aws-cdk-lib/aws-ssm';
+import path from 'path';
+import { FeedbackApiStack } from '../lib/feedback-api-stack';
 
 describe('Feedback API Stack', () => {
   const createStackAndTemplate = (): {

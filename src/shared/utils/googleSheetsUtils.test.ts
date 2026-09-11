@@ -1,10 +1,10 @@
 import { google, sheets_v4 } from 'googleapis';
+import { Feedback, FeedbackRecord } from '../types';
 import {
-  getAuthClient,
   createFeedback,
+  getAuthClient,
   updateFeedback
 } from './googleSheetsUtils';
-import { Feedback, FeedbackRecord } from '../types';
 
 const MOCK_AUTHORIZE = jest.fn().mockResolvedValue(undefined);
 const MOCK_SHEETS = {

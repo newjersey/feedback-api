@@ -1,6 +1,6 @@
-import { Construct } from 'constructs';
-import * as cloudwatch from 'aws-cdk-lib/aws-cloudwatch';
 import { aws_cloudwatch_actions, Duration } from 'aws-cdk-lib';
+import * as cloudwatch from 'aws-cdk-lib/aws-cloudwatch';
+import { Construct } from 'constructs';
 import { FeedbackApiAlarmProps } from './types';
 
 export class FeedbackApi4xxErrorAlarm extends Construct {

@@ -1,6 +1,6 @@
-import * as AwsSdkMockMatchers from 'aws-sdk-client-mock-jest';
-import { mockClient } from 'aws-sdk-client-mock';
 import { GetParameterCommand, SSMClient } from '@aws-sdk/client-ssm';
+import { mockClient } from 'aws-sdk-client-mock';
+import * as AwsSdkMockMatchers from 'aws-sdk-client-mock-jest';
 import { getSsmParam } from './awsUtils';
 
 expect.extend(AwsSdkMockMatchers);

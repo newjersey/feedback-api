@@ -11,8 +11,10 @@
     "deploy:api:dev": "npm run deploy:api -- --profile dev",
     "deploy:api:prod": "npm run deploy:api -- --profile prod",
     "diff": "cdk diff",
-    "lint": "eslint . --ext .ts",
-    "prettier-format": "prettier --config .prettierrc 'src/**/*.ts' --write",
+    "format": "biome format --write",
+    "format:check": "biome format .",
+    "lint": "biome check .",
+    "lint:fix": "biome check --write .",
     "sso:login:dev": "aws sso login --profile dev",
     "sso:login:prod": "aws sso login --profile prod",
     "test": "jest",
@@ -23,7 +25,8 @@
     "docker:down": "docker compose down",
     "prisma-migrate:reset": "npx prisma migrate reset",
     "prisma-migrate:dev": "npx prisma migrate dev",
-    "prisma:generate": "npx prisma generate"
+    "prisma:generate": "npx prisma generate",
+    "prepare": "husky"
   },
   "engines": {
     "node": "22"
@@ -44,6 +47,7 @@
     "source-map-support": "^0.5.21"
   },
   "devDependencies": {
+    "@biomejs/biome": "2.5.13",
     "@types/aws-lambda": "8.10.162",
     "@types/jest": "29.5.14",
     "@types/node": "18.19.110",
@@ -56,6 +60,7 @@
     "eslint-plugin-prettier": "4.2.5",
     "jest": "29.7.0",
     "json-schema-to-ts": "1.6.5",
+    "lint-staged": "^17.5.1",
     "prettier": "2.8.8",
     "prisma": "6.19.3",
     "ts-jest": "29.4.11",

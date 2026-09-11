@@ -1,8 +1,8 @@
 import { APIGatewayProxyEvent } from 'aws-lambda';
-import { handler } from './comment';
-import * as piiRedaction from '../shared/utils/pii-redaction';
 import * as awsUtils from '../shared/utils/awsUtils';
 import * as googleSheetsUtils from '../shared/utils/googleSheetsUtils';
+import * as piiRedaction from '../shared/utils/pii-redaction';
+import { handler } from './comment';
 
 describe('comment Lambda', () => {
   jest.spyOn(awsUtils, 'getSsmParam').mockImplementation(jest.fn());

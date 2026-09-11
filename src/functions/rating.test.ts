@@ -1,6 +1,6 @@
-import * as googleSheetsUtils from '../shared/utils/googleSheetsUtils';
-import * as awsUtils from '../shared/utils/awsUtils';
 import { APIGatewayProxyEvent } from 'aws-lambda';
+import * as awsUtils from '../shared/utils/awsUtils';
+import * as googleSheetsUtils from '../shared/utils/googleSheetsUtils';
 import { handler } from './rating';
 
 const TEST_PAGE_URL = 'example.com';
