@@ -7,7 +7,6 @@ on:
 jobs:
   request-resx-reviewers:
     if: ${{ github.event.label.name == 'pr-review' }}
-    needs: request-platform-sso-reviewer
     uses: newjersey/innovation-shared-actions/.github/workflows/pickaroo.yml@a9cafee1cac60fc1b2a491d5e1145a1c2ba920b3 # main
     with:
       include_teams: "innovation-engineering-resx"
