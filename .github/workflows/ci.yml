@@ -22,7 +22,7 @@ jobs:
           node-version: 22.x
       - name: Install dependencies
         run: npm ci
-      - name: Run linter (eslint)
+      - name: Run linter (biome)
         run: npm run lint
       - name: Run type check (typescript)
         run: npm run typecheck

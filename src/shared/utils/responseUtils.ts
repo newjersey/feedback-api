@@ -1,7 +1,7 @@
 import {
   FeedbackBody,
-  FeedbackResponseStatusCodes,
-  FeedbackResponse
+  FeedbackResponse,
+  FeedbackResponseStatusCodes
 } from '../types';
 
 export const formatFeedbackResponse = (

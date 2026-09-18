@@ -1,6 +1,6 @@
 import {
-  GetParameterCommandInput,
   GetParameterCommand,
+  GetParameterCommandInput,
   SSMClient
 } from '@aws-sdk/client-ssm';
 

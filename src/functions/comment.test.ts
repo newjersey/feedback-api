@@ -1,7 +1,7 @@
 import { APIGatewayProxyEvent } from 'aws-lambda';
-import { handler } from './comment';
+import { describe, expect, it, vi } from 'vitest';
 import { FeedbackResponseStatusCodes } from '../shared/types';
-import { describe, it, expect, vi } from 'vitest';
+import { handler } from './comment';
 
 vi.mock('../shared/utils/awsUtils', () => ({
   getSsmParam: vi.fn()

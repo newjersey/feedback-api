@@ -1,7 +1,7 @@
 import { APIGatewayProxyEvent } from 'aws-lambda';
-import { handler } from './email';
+import { describe, expect, it, vi } from 'vitest';
 import { FeedbackResponseStatusCodes } from '../shared/types';
-import { describe, it, expect, vi } from 'vitest';
+import { handler } from './email';
 
 const TEST_FEEDBACK_ID = 1;
 const TEST_EMAIL = 'example@test.com';

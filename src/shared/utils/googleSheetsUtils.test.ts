@@ -1,11 +1,11 @@
 import { google, sheets_v4 } from 'googleapis';
+import { afterEach, describe, expect, it, vi } from 'vitest';
+import { Feedback, FeedbackRecord } from '../types';
 import {
-  getAuthClient,
   createFeedback,
+  getAuthClient,
   updateFeedback
 } from './googleSheetsUtils';
-import { Feedback, FeedbackRecord } from '../types';
-import { afterEach, describe, it, expect, vi } from 'vitest';
 
 const MOCK_AUTHORIZE = vi.fn().mockResolvedValue(undefined);
 const MOCK_SHEETS = {
@@ -19,9 +19,8 @@ const MOCK_SHEETS = {
 };
 
 vi.mock('googleapis', async () => {
-  const originalModule = await vi.importActual<typeof import('googleapis')>(
-    'googleapis'
-  );
+  const originalModule =
+    await vi.importActual<typeof import('googleapis')>('googleapis');
 
   return {
     ...originalModule,
