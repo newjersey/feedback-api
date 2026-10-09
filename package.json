@@ -11,6 +11,7 @@
     "deploy:api:prod": "npm run deploy:api -- --profile prod",
     "format": "biome format --write",
     "format:check": "biome format .",
+    "infra:check": "checkov -d infra",
     "lint": "biome check .",
     "lint:fix": "biome check --write .",
     "test": "vitest",
