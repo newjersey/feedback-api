@@ -1,5 +1,5 @@
 {
-  "app": "npx tsx bin/feedback.ts",
+  "app": "npx tsx bin/feedback-api.ts",
   "watch": {
     "include": ["**"],
     "exclude": [

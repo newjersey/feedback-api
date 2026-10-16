@@ -6,8 +6,8 @@ import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
 import * as sns from 'aws-cdk-lib/aws-sns';
 import * as ssm from 'aws-cdk-lib/aws-ssm';
 import { Construct } from 'constructs';
-import { FeedbackApi4xxErrorAlarm } from '../monitoring/feedback-api-4xx-error-alarm';
-import { FeedbackApi5xxErrorAlarm } from '../monitoring/feedback-api-5xx-error-alarm';
+import { FeedbackApi4xxErrorAlarm } from './monitoring/feedback-api-4xx-error-alarm';
+import { FeedbackApi5xxErrorAlarm } from './monitoring/feedback-api-5xx-error-alarm';
 
 interface FeedbackApiStackProps extends cdk.StackProps {
   pathToSrcDirectory: string;

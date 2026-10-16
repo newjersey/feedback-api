@@ -1,6 +1,6 @@
 {
   "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
-  "files": { "includes": ["**", "!package-lock.json"] },
+  "files": { "includes": ["**", "!package-lock.json", "!**/cdk.out/**"] },
   "formatter": {
     "enabled": true,
     "formatWithErrors": false,

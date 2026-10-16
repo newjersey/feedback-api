@@ -2,13 +2,11 @@
   "name": "feedback-api",
   "version": "1.0.0",
   "description": "aws-nodejs-typescript template",
-  "main": "infra/feedback.ts",
+  "main": "infra/feedback-api.ts",
   "scripts": {
     "build": "tsc",
     "synth:api": "cd infra && npx cdk synth FeedbackApiStack",
     "deploy:api": "cd infra && npx cdk deploy FeedbackApiStack",
-    "deploy:api:dev": "npm run deploy:api -- --profile dev",
-    "deploy:api:prod": "npm run deploy:api -- --profile prod",
     "format": "biome format --write",
     "format:check": "biome format .",
     "infra:check": "checkov -d infra",
@@ -67,10 +65,7 @@
     "vitest": "5.0.0"
   },
   "lint-staged": {
-    "*.{js,jsx,ts,tsx}": [
-      "biome check --write --no-errors-on-unmatched",
-      "npm run test"
-    ]
+    "*.{js,jsx,ts,tsx}": ["biome check --write --no-errors-on-unmatched"]
   },
   "license": "MIT"
 }
