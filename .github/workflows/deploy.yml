@@ -22,8 +22,12 @@ jobs:
       contents: read
     steps:
       - uses: actions/checkout@v7
+      - name: Use Node.js 22.x
+        uses: actions/setup-node@v7
         with:
-          ref: ${{ vars.DEPLOYMENT_BRANCH }}
+          node-version-file: ".nvmrc"
+      - name: Install dependencies
+        run: npm ci
       - name: Assume AWS Credentials
         uses: aws-actions/configure-aws-credentials@v6
         with:
