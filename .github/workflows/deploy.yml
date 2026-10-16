@@ -1,0 +1,32 @@
+name: Deploy
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: The environment to deploy to
+        required: true
+        type: environment
+
+jobs:
+  run-checks:
+    uses: ./.github/workflows/run-checks.yml
+  test:
+    uses: ./.github/workflows/test.yml
+  deploy:
+    needs: [run-checks, test]
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v7
+      - name: Assume AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v6
+        with:
+          role-to-assume: ${{ vars.AWS_DEPLOYMENT_ROLE }}
+          aws-region: ${{ vars.AWS_REGION }}
+      - name: Deploy CDK Stack
+        shell: bash
+        run: npm run deploy:api
