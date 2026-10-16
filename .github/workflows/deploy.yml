@@ -22,7 +22,8 @@ jobs:
       contents: read
     steps:
       - uses: actions/checkout@v7
-        with: ${{ vars.DEPLOYMENT_BRANCH }}
+        with:
+          ref: ${{ vars.DEPLOYMENT_BRANCH }}
       - name: Assume AWS Credentials
         uses: aws-actions/configure-aws-credentials@v6
         with:
