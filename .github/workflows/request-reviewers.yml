@@ -30,4 +30,3 @@ jobs:
       show: true
       channel_id: "C0590CD1EE8" # resx-eng
     secrets: inherit
-    

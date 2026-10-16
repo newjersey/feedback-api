@@ -20,4 +20,3 @@ jobs:
         run: npm run lint
       - name: Run type check (typescript)
         run: npm run typecheck
-        
