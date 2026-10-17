@@ -43,7 +43,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "2.5.15",
-    "@types/aws-lambda": "8.10.162",
+    "@types/aws-lambda": "8.10.164",
     "@types/node": "22.20.2",
     "@typescript-eslint/eslint-plugin": "5.62.0",
     "@typescript-eslint/parser": "5.62.0",
