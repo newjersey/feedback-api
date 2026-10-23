@@ -22,10 +22,10 @@ export class FeedbackApi4xxErrorAlarm extends Construct {
     const feedbackApi4xxErrorsAlarm = new cloudwatch.Alarm(this, id, {
       metric,
       evaluationPeriods: 1,
-      threshold: 2,
+      threshold: 10,
       actionsEnabled: true,
       alarmDescription:
-        'Alarm when the Feedback API returns over 2 4XX errors in 15 minutes',
+        'Alarm when the Feedback API returns over 10 4XX errors in 15 minutes',
       alarmName: 'Feedback API - 4XX Errors',
       comparisonOperator: cloudwatch.ComparisonOperator.GREATER_THAN_THRESHOLD,
       datapointsToAlarm: 1,

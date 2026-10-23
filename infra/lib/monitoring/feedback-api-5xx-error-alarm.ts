@@ -35,5 +35,8 @@ export class FeedbackApi5xxErrorAlarm extends Construct {
     feedbackApi5xxErrorsAlarm.addAlarmAction(
       new aws_cloudwatch_actions.SnsAction(alertTopic)
     );
+    feedbackApi5xxErrorsAlarm.addOkAction(
+      new aws_cloudwatch_actions.SnsAction(alertTopic)
+    );
   }
 }

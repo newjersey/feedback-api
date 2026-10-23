@@ -16,6 +16,10 @@ key.txt
 /infra/*.js
 /infra/*.d.ts
 
+# tsc outDir mirrors src/ under infra/lib, so "npm run build" compiles here too
+/infra/lib/functions
+/infra/lib/shared
+
 # CDK asset staging directory
 /infra/.cdk.staging
 /infra/cdk.out
