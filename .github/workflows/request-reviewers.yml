@@ -7,7 +7,7 @@ on:
 jobs:
   request-internal-reviewer:
     if: ${{ github.event.label.name == 'pr-review' }}
-    uses: newjersey/innovation-shared-actions/.github/workflows/pickaroo.yml@27fd9d05f0f09a3cbaaafb9532d99d2366ee7ebd # main
+    uses: newjersey/innovation-shared-actions/.github/workflows/pickaroo.yml@a3d617ea38d83f96d60b632e56324f9007cbc0f2 # main
     secrets: inherit
     permissions: {}
     with:
@@ -17,7 +17,7 @@ jobs:
   request-resx-reviewers:
     if: ${{ github.event.label.name == 'pr-review' }}
     needs: request-internal-reviewer
-    uses: newjersey/innovation-shared-actions/.github/workflows/pickaroo.yml@27fd9d05f0f09a3cbaaafb9532d99d2366ee7ebd # main
+    uses: newjersey/innovation-shared-actions/.github/workflows/pickaroo.yml@a3d617ea38d83f96d60b632e56324f9007cbc0f2 # main
     with:
       include_teams: "innovation-engineering-resx"
       number_of_reviewers: 1
@@ -25,7 +25,7 @@ jobs:
     secrets: inherit
   pr-show:
     if: ${{ github.event.label.name == 'pr-show' }}
-    uses: newjersey/innovation-shared-actions/.github/workflows/pickaroo.yml@27fd9d05f0f09a3cbaaafb9532d99d2366ee7ebd # main
+    uses: newjersey/innovation-shared-actions/.github/workflows/pickaroo.yml@a3d617ea38d83f96d60b632e56324f9007cbc0f2 # main
     with:
       show: true
       channel_id: "C0590CD1EE8" # resx-eng
