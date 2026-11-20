@@ -1,13 +1,13 @@
 import { APIGatewayProxyEvent } from 'aws-lambda';
-import { getSsmParam } from 'src/shared/utils/awsUtils';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { FeedbackResponseStatusCodes } from '../shared/types';
+import { getSsmParam } from '../shared/utils/awsUtils';
 import {
   createFeedback,
   getAuthClient,
   updateFeedback
-} from 'src/shared/utils/googleSheetsUtils';
-import { redactPii } from 'src/shared/utils/pii-redaction';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { FeedbackResponseStatusCodes } from '../shared/types';
+} from '../shared/utils/googleSheetsUtils';
+import { redactPii } from '../shared/utils/pii-redaction';
 import { handler } from './comment';
 
 vi.mock('../shared/utils/awsUtils', () => ({
