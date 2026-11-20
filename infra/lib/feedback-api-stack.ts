@@ -9,6 +9,10 @@ import { Construct } from 'constructs';
 import { FeedbackApi4xxErrorAlarm } from './monitoring/feedback-api-4xx-error-alarm';
 import { FeedbackApi5xxErrorAlarm } from './monitoring/feedback-api-5xx-error-alarm';
 
+// The 128MB default left the functions running at 119-121MB with timeouts
+// occurring at the cap, so this gives them memory headroom
+const LAMBDA_MEMORY_SIZE_MB = 256;
+
 interface FeedbackApiStackProps extends cdk.StackProps {
   pathToSrcDirectory: string;
 }
@@ -60,6 +64,7 @@ export class FeedbackApiStack extends cdk.Stack {
       functionName: 'feedback-api-rating',
       role: lambdaExecutionRole,
       runtime: lambda.Runtime.NODEJS_22_X,
+      memorySize: LAMBDA_MEMORY_SIZE_MB,
       timeout: cdk.Duration.seconds(30)
     });
 
@@ -68,6 +73,7 @@ export class FeedbackApiStack extends cdk.Stack {
       functionName: 'feedback-api-comment',
       role: lambdaExecutionRole,
       runtime: lambda.Runtime.NODEJS_22_X,
+      memorySize: LAMBDA_MEMORY_SIZE_MB,
       timeout: cdk.Duration.seconds(30)
     });
 
@@ -76,6 +82,7 @@ export class FeedbackApiStack extends cdk.Stack {
       functionName: 'feedback-api-email',
       role: lambdaExecutionRole,
       runtime: lambda.Runtime.NODEJS_22_X,
+      memorySize: LAMBDA_MEMORY_SIZE_MB,
       timeout: cdk.Duration.seconds(30)
     });
 
